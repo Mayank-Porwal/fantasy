@@ -1,13 +1,15 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import CreateTeam from '../container/CreateTeam';
 import Home from '../container/Home/index';
+import React from 'react';
 const RouteComponent = () => {
-    return <BrowserRouter>
-    <Routes>
-        <Route path="/" Component={(routeProps) => <Home {...routeProps}/>} />
-        <Route path="/home" Component={(routeProps) => <Home {...routeProps}/>} />
-    </Routes>
-    </BrowserRouter>
-}
+    return (
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/create-team" element={<CreateTeam />} />
+        </Routes>
+    );
+};
 
-export default RouteComponent
+export default RouteComponent;
