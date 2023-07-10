@@ -1,6 +1,6 @@
 import { CATEGORY_ENUM, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants';
-import { CREATE_TEAM_VALIDATION_MESSAGES } from './constants';
-import { PLAYERS_INTERFACE } from './types';
+import { C, CREATE_TEAM_VALIDATION_MESSAGES, VC } from './constants';
+import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE } from './types';
 export const updatePlayerList = (
     player: PLAYERS_INTERFACE,
     playersList: PLAYERS_INTERFACE[] | [],
@@ -55,8 +55,18 @@ export const getFilteredData = (playersData: PLAYERS_INTERFACE[] | [], filterVal
     return filteredData;
 };
 
-export const checkMaximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFACE[] | []) => {
-    if (selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET) {
+export const checkMaximumPlayerAllowedValidation = (
+    selectedPlayers: PLAYERS_INTERFACE[] | [],
+    teamName: string,
+    captainData: CaptainInterface | null,
+) => {
+    if (selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET && !teamName && !captainData) {
+        return true;
+    }
+    if (!captainData?.captains.id) {
+        return true;
+    }
+    if (!captainData?.viceCaptains.id) {
         return true;
     }
     return false;
@@ -75,4 +85,47 @@ export const minimumPlayersByCategory = (selectedPlayers: PLAYERS_INTERFACE[] | 
     } else {
         return { error: true, message: CREATE_TEAM_VALIDATION_MESSAGES.MINIMUM_PLAYERS_REQUIRED };
     }
+};
+
+export const createTeamRequestBody = (
+    selectedPlayers: PLAYERS_INTERFACE[],
+    teamName: string,
+    captainData: CaptainInterface,
+) => {
+    const request: CreateTeamInterface = {
+        name: teamName,
+        players: getPlayersForRequestBody(selectedPlayers, captainData),
+        user_name: 'test2',
+    };
+    return request;
+};
+
+const getPlayersForRequestBody = (players: PLAYERS_INTERFACE[], captainData: CaptainInterface) => {
+    return players.map((player) => {
+        return {
+            name: player.name,
+            captain: captainData.captains.id === player.id ? true : false,
+            vice_captain: captainData.viceCaptains.id === player.id ? true : false,
+        };
+    });
+};
+
+export const setCaptainAndViceCaptain = (
+    type: string,
+    player: PLAYERS_INTERFACE,
+    captainsData: CaptainInterface | null,
+) => {
+    let captainData = captainsData
+        ? captainsData
+        : { captains: { name: '', id: NaN }, viceCaptains: { name: '', id: NaN } };
+    if (type === C) {
+        if (captainData.viceCaptains.id !== player.id) {
+            captainData = { ...captainData, captains: { name: player.name, id: player.id } };
+        }
+    } else if (type === VC) {
+        if (captainData.captains.id !== player.id) {
+            captainData = { ...captainData, viceCaptains: { name: player.name, id: player.id } };
+        }
+    }
+    return captainData;
 };

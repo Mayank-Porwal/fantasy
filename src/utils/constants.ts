@@ -12,6 +12,7 @@ export enum REQUEST_TYPE {
 
 export enum API_URLS {
     FETCH_ALL_PLAYERS = '/players',
+    CREATE_TEAM = '/create-team',
 }
 
 export interface ResponseGenerator {

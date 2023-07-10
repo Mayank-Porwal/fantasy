@@ -20,13 +20,38 @@ function* fetchAllPlayers(action: actionTypes.GetAllPlayersInterface) {
             );
         }
     } catch (e) {
-        console.error(e);
         yield put(actionTypes.getAllPlayersFailure(MESSAGES.SOMETHING_WENT_WRONG));
+        console.error(e);
+    }
+}
+function* makeTeam(action: actionTypes.CreateTeamActionInterface) {
+    try {
+        const response: ResponseGenerator = yield call(_request, {
+            url: API_URLS.CREATE_TEAM,
+            method: REQUEST_TYPE.POST,
+            data: action.payload,
+            headers: HTTPS_HEADERS,
+        });
+        if (response.status && response.status >= 200 && response.status <= 299) {
+            yield put(actionTypes.createTeamSuccess(response?.data));
+        } else {
+            yield put(
+                actionTypes.createTeamSuccess(
+                    response?.data.message ? response?.data.message : MESSAGES.SOMETHING_WENT_WRONG,
+                ),
+            );
+        }
+    } catch (e) {
+        yield put(actionTypes.createTeamFailure(MESSAGES.SOMETHING_WENT_WRONG));
+        console.error(e);
     }
 }
 
 function* createTeamSaga() {
-    yield all([takeLatest(actionTypes.CREATE_TEAM_ACTIONS.GET_ALL_PLAYERS, fetchAllPlayers)]);
+    yield all([
+        takeLatest(actionTypes.CREATE_TEAM_ACTIONS.GET_ALL_PLAYERS, fetchAllPlayers),
+        takeLatest(actionTypes.CREATE_TEAM_ACTIONS.CREATE_TEAM, makeTeam),
+    ]);
 }
 
 export default createTeamSaga;

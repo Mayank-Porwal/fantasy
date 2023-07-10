@@ -4,7 +4,7 @@ import { tokens } from '../../utils/theme';
 import SearchIcon from '@mui/icons-material/Search';
 import FantasyTabs from '../FantasyTabs';
 import { DEFAULT_AVAILABLE_PLAYERS_TABS_DATA } from './constants';
-import { PLAYERS_INTERFACE } from '../../container/CreateTeam/types';
+import { CaptainInterface, PLAYERS_INTERFACE } from '../../container/CreateTeam/types';
 import Cards from '../Cards';
 import { CREATE_TEAM_FLOW } from '../../container/CreateTeam/constants';
 interface Props {
@@ -16,6 +16,8 @@ interface Props {
     onTabsChange?: Function;
     allPlayers?: PLAYERS_INTERFACE[] | [] | null;
     tabsValue?: string;
+    handleChipSelection?: Function;
+    captainData?: CaptainInterface | null;
 }
 const CardTable = (props: Props) => {
     const theme = useTheme();
@@ -79,9 +81,11 @@ const CardTable = (props: Props) => {
                             >
                                 <Cards
                                     flow={props.flow ? props.flow : CREATE_TEAM_FLOW.ALL_PLAYERS}
-                                    keyItem={player.id}
+                                    keyItem={`${player.id}`}
                                     player={player}
                                     handleActions={props.handleActions}
+                                    handleChipSelection={props.handleChipSelection}
+                                    captainData={props.captainData}
                                 />
                             </div>
                         );

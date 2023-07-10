@@ -8,3 +8,6 @@ export const CREATE_TEAM_VALIDATION_MESSAGES = {
     ELEVEN_PLAYERS_REQUIRED_TO_CREATE_A_TEAM: '11 players are required to create a team',
     MINIMUM_PLAYERS_REQUIRED: 'Minimum of 1 player from each category is required to create a team',
 };
+
+export const C = 'Captain';
+export const VC = 'ViceCaptain';
