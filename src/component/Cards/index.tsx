@@ -57,42 +57,53 @@ const Cards = (props: Props) => {
                             <Typography component="div" variant="h5">
                                 Game Changers
                             </Typography>
-                            <Chip
+                            <span
                                 onClick={() => {
                                     if (props.handleChipSelection) {
                                         props.handleChipSelection(C, props.player);
                                     }
                                 }}
-                                label="C"
-                                sx={{
-                                    m: '2px',
+                                style={{
+                                    margin: '2px 5%',
                                     cursor: 'pointer',
                                     backgroundColor:
                                         props.player &&
                                         props.captainData &&
                                         props.captainData.captains.id === props.player.id
                                             ? colors.greenAccent[500]
-                                            : 'inherit',
+                                            : '#f3f6f4',
                                 }}
-                            />
-                            <Chip
+                            >
+                                C
+                            </span>
+                            <span
                                 onClick={() => {
                                     if (props.handleChipSelection) {
                                         props.handleChipSelection(VC, props.player);
                                     }
                                 }}
-                                label="VC"
-                                sx={{
-                                    m: '2px',
+                                style={{
+                                    margin: '2px 5%',
                                     cursor: 'pointer',
+                                    color: 'black',
                                     backgroundColor:
                                         props.player &&
                                         props.captainData &&
                                         props.captainData.viceCaptains.id === props.player.id
                                             ? colors.blueAccent[500]
-                                            : 'inherit',
+                                            : '#f3f6f4',
+
+                                    borderRadius:
+                                        props.player &&
+                                        props.captainData &&
+                                        props.captainData.viceCaptains.id === props.player.id
+                                            ? '50%'
+                                            : '50%',
+                                    padding: '10px',
                                 }}
-                            />
+                            >
+                                VC
+                            </span>
                         </Grid>
                     )}
                     <Grid item xs={1}>

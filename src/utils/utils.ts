@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { HTTPS_HEADERS, REQUEST_TYPE } from './constants';
 
-export const BASE_URL = 'https://iplfantasy-maya.onrender.com';
+export const BASE_URL = 'https://iplfantasy-refactor.onrender.com';
 export const _request = async (config: AxiosRequestConfig) => {
     try {
         const options: AxiosRequestConfig = {

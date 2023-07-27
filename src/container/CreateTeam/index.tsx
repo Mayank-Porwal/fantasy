@@ -31,7 +31,7 @@ const CreateTeam = () => {
     const [filteredAllPlayers, setFilteredAllPlayers] = useState<PLAYERS_INTERFACE[] | []>(propsState.allPlayer);
     const [availablePlayers, setAvailablePlayers] = useState<PLAYERS_INTERFACE[] | []>(propsState.allPlayer);
     const [availableSelectedPlayers, setAvailableSelectedPlayers] = useState<PLAYERS_INTERFACE[] | []>([]);
-    const [tabsValue, setTabsValue] = useState<string>('All');
+    const [tabsValue, setTabsValue] = useState<string>('all');
     const [availablePlayersSearch, setAvailablePlayersSearch] = useState<string>('');
     const [teamName, setTeamName] = useState<string>('');
     const [captainData, setCaptainData] = useState<CaptainInterface | null>(null);
@@ -110,7 +110,6 @@ const CreateTeam = () => {
                 captains: { name: 'Kyle Jamieson', id: 12 },
                 viceCaptains: { name: 'Nishant Sindhu', id: 15 },
             });
-            console.log(requestBody);
             dispatch(createTeam(requestBody));
         } else {
             dispatch(updateToastState({ message: validationCheck.message, type: 'error' }));
@@ -149,6 +148,7 @@ const CreateTeam = () => {
             >
                 <Grid item xs={12} sm={4} md={4}>
                     <FantasyTextField
+                        required
                         placeholder={'Enter Team Name'}
                         id={'teamName'}
                         label={'Team Name*'}
@@ -158,10 +158,7 @@ const CreateTeam = () => {
                     />
                 </Grid>
                 <Grid item xs={10} sm={4} md={4}>
-                    <span style={{ fontWeight: 'bold' }}>
-                        Selected Players: {availableSelectedPlayers && availableSelectedPlayers.length}/(
-                        {MAXIMUM_ALLOWED_PLAYERS.CRICKET})
-                    </span>
+                    <span>* {CREATE_TEAM_VALIDATION_MESSAGES.MINIMUM_PLAYERS_REQUIRED}</span>
                 </Grid>
                 <Grid item xs={2} sm={1} md={1}>
                     <Button
@@ -169,6 +166,7 @@ const CreateTeam = () => {
                         color="secondary"
                         disabled={checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamName, captainData)}
                         onClick={handleSaveTeam}
+                        sx={{ fontWeight: 'bold' }}
                     >
                         Save Team
                     </Button>
@@ -189,7 +187,7 @@ const CreateTeam = () => {
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                     <CardTable
-                        filter={false}
+                        filter={true}
                         availablePlayers={propsState.selectedPlayers}
                         handleActions={handleActions}
                         flow={CREATE_TEAM_FLOW.SELECTED_PLAYERS}

@@ -6,18 +6,38 @@ interface Props {
     onChange: Function;
     endAdornment?: any;
     placeholder?: string;
+    type?: string;
+    autoComplete?: boolean | undefined;
+    error?: { error: boolean; message: string };
+    value?: any;
+    required: boolean;
 }
+const inputStyle = { WebkitBoxShadow: '0 0 0 1000px white inset !important' };
 const FantasyTextField = (props: Props) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     return (
         <TextField
+            type={props.type ? props.type : 'text'}
             fullWidth
+            value={props.value ? props.value : ''}
             placeholder={props.placeholder ? props.placeholder : ''}
-            label={props.label}
+            label={
+                props.required ? (
+                    <>
+                        {props.label}
+                        <span style={{ color: 'red' }}>*</span>
+                    </>
+                ) : (
+                    props.label
+                )
+            }
             id={props.id}
+            autoComplete={props.autoComplete ? 'on' : 'off'}
+            error={props.error ? props.error.error : false}
+            helperText={props.error ? props.error.message : ''}
             sx={{
-                m: 1,
+                margin: '8px 0px',
                 '& .MuiOutlinedInput-root': {
                     '&.Mui-focused fieldset': {
                         borderColor: colors.greenAccent[500],
@@ -27,7 +47,13 @@ const FantasyTextField = (props: Props) => {
             onChange={(e) => props.onChange(e)}
             InputLabelProps={{ style: { color: colors.primary[100] }, shrink: true }}
             InputProps={{
-                endAdornment: <InputAdornment position="start">{props.endAdornment}</InputAdornment>,
+                endAdornment: props.endAdornment && (
+                    <InputAdornment position="start">{props.endAdornment}</InputAdornment>
+                ),
+                style: { ...inputStyle },
+            }}
+            inputProps={{
+                style: { ...inputStyle, width: '100%' },
             }}
         />
     );

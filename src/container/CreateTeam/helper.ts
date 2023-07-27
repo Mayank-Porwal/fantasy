@@ -1,4 +1,4 @@
-import { CATEGORY_ENUM, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants';
+import { CATEGORY_ENUM, CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants';
 import { C, CREATE_TEAM_VALIDATION_MESSAGES, VC } from './constants';
 import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE } from './types';
 export const updatePlayerList = (
@@ -32,19 +32,19 @@ export const searchAvailablePlayers = (availablePlayers: PLAYERS_INTERFACE[] | [
 export const getFilteredData = (playersData: PLAYERS_INTERFACE[] | [], filterValue: string, searchString: string) => {
     let filteredData: PLAYERS_INTERFACE[] | [] = [];
     switch (filterValue) {
-        case CATEGORY_ENUM.batsman:
+        case CATEGORY_ENUM_BY_KEY.Batsman:
             filteredData = playersData.filter((player) => player.category === 'batsman');
             filteredData = searchAvailablePlayers(filteredData, searchString);
             break;
-        case CATEGORY_ENUM.bowler:
+        case CATEGORY_ENUM_BY_KEY.Bowler:
             filteredData = playersData.filter((player) => player.category === 'bowler');
             filteredData = searchAvailablePlayers(filteredData, searchString);
             break;
-        case CATEGORY_ENUM.ar:
+        case CATEGORY_ENUM_BY_KEY['All Rounder']:
             filteredData = playersData.filter((player) => player.category === 'ar');
             filteredData = searchAvailablePlayers(filteredData, searchString);
             break;
-        case CATEGORY_ENUM.wk:
+        case CATEGORY_ENUM_BY_KEY['Wicket Keeper']:
             filteredData = playersData.filter((player) => player.category === 'wk');
             filteredData = searchAvailablePlayers(filteredData, searchString);
             break;

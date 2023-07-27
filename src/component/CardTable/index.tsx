@@ -7,6 +7,7 @@ import { DEFAULT_AVAILABLE_PLAYERS_TABS_DATA } from './constants';
 import { CaptainInterface, PLAYERS_INTERFACE } from '../../container/CreateTeam/types';
 import Cards from '../Cards';
 import { CREATE_TEAM_FLOW } from '../../container/CreateTeam/constants';
+import { getSelectedPlayersCount } from './helper';
 interface Props {
     filter: boolean;
     availablePlayers?: PLAYERS_INTERFACE[] | [] | null;
@@ -37,25 +38,37 @@ const CardTable = (props: Props) => {
             <Grid
                 container
                 direction="row"
-                sx={{ backgroundColor: colors.primary[400] }}
+                sx={{ backgroundColor: colors.primary[400], height: '70px' }}
                 alignItems={'center'}
                 justifyContent={''}
                 spacing={0}
             >
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4} sx={{ marginRight: '10px' }}>
-                    <FantasyTextField
-                        id="searchAvailablePlayers"
-                        label="Search"
-                        onChange={onSearch}
-                        endAdornment={<SearchIcon />}
-                    />
-                </Grid>
+                {props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS && (
+                    <Grid item xs={12} sm={12} md={4} lg={4} xl={4} sx={{ marginRight: '10px' }}>
+                        <FantasyTextField
+                            required={false}
+                            id="searchAvailablePlayers"
+                            label="Search"
+                            onChange={onSearch}
+                            endAdornment={<SearchIcon />}
+                        />
+                    </Grid>
+                )}
                 {props.filter && (
-                    <Grid item xs={12} sm={12} md={7} lg={7} xl={7}>
+                    <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS ? 7 : 12}
+                        lg={props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS ? 7 : 12}
+                        xl={props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS ? 7 : 12}
+                    >
                         <FantasyTabs
+                            flow={props.flow}
                             tabsData={DEFAULT_AVAILABLE_PLAYERS_TABS_DATA}
                             onChange={handleTabsChange}
                             value={props.tabsValue ? props.tabsValue : ''}
+                            dataCount={getSelectedPlayersCount(props.allPlayers ? props.allPlayers : [])}
                         />
                     </Grid>
                 )}
