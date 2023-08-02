@@ -2,9 +2,11 @@ import { EMAIL_REGEX, PASSWORD_REGEX, VALIDATION_MESSAGES } from '../../utils/co
 import { LoginFormErrorsInterface, LoginPayloadInterface } from './types';
 
 export const validationCheck = (data: LoginPayloadInterface, errors: LoginFormErrorsInterface) => {
-    let errorData = errors;
+    let errorData = {...errors};
     if (!EMAIL_REGEX.test(data.email)) {
         errorData = { ...errorData, email: { error: true, message: VALIDATION_MESSAGES.email } };
+    } else {
+        errorData = { ...errorData, email: { error: false, message: '' } };
     }
     if (!PASSWORD_REGEX.test(data.password)) {
         errorData = {
@@ -14,6 +16,8 @@ export const validationCheck = (data: LoginPayloadInterface, errors: LoginFormEr
                 message: VALIDATION_MESSAGES.password,
             },
         };
+    } else {
+        errorData = { ...errorData, password: { error: false, message: '' } };
     }
     return errorData;
 };

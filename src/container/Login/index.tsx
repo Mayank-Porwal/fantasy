@@ -33,6 +33,7 @@ const Login = () => {
             ...data,
             [event.target.id]: event.target.value,
         };
+        debugger
         const validData = validationCheck(data, formDataErrors);
         setFormDataErrors(validData);
         setFormData(data);
@@ -66,20 +67,22 @@ const Login = () => {
                         <form>
                             <FormGroup>
                                 <FantasyTextField
-                                required
+                                    required
                                     error={formDataErrors.email}
                                     id="email"
                                     label="Email"
                                     onChange={handleFormChange}
+                                    value={formData.email}
                                 />
                                 <FantasyTextField
-                                required
+                                    required
                                     id="password"
                                     label="Password"
                                     onChange={handleFormChange}
                                     type="password"
                                     autoComplete={false}
                                     error={formDataErrors.password}
+                                    value={formData.password}
                                 />
                                 <FantasyCheckbox
                                     id="rememberMe"

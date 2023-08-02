@@ -4,6 +4,7 @@ import Home from '../container/Home/index';
 import Login from '../container/Login';
 import { checkIfLoggedIn } from './helper';
 import Register from '../container/Login/Register';
+import ManageLeague from '../container/ManageLeague';
 
 function PrivateRoute() {
     const auth = checkIfLoggedIn();
@@ -24,6 +25,7 @@ const RouteComponent = () => {
             <Route element={<PrivateRoute />}>
                 <Route path="/home" element={<Home />} />
                 <Route path="/create-team" element={<CreateTeam />} />
+                <Route path="/manage-league" element={<ManageLeague />} />
             </Route>
         </Routes>
     );

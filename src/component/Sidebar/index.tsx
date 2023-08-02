@@ -8,6 +8,8 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import img from '../../static/images/kohli.png';
 import { tokens } from '../../utils/theme';
 import { Link } from 'react-router-dom';
+import GroupsIcon from '@mui/icons-material/Groups';
+import LanIcon from '@mui/icons-material/Lan';
 interface ItemInterface {
     title: string;
     to: string;
@@ -126,19 +128,19 @@ const AppSidebar = () => {
                         </Typography>
                         <Item
                             title="Manage Leagues"
-                            to="/create-team"
-                            icon={<PeopleOutlinedIcon />}
+                            to="/manage-league"
+                            icon={<LanIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />
-                        {/* <Item
-              title="Contacts Information"
-              to="/"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
+                        <Item
+                            title="Manage Teams"
+                            to="/create-team"
+                            icon={<GroupsIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        {/*<Item
               title="Invoices Balances"
               to="/"
               icon={<ReceiptOutlinedIcon />}
