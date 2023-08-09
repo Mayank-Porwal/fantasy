@@ -21,7 +21,7 @@ const FantasyButtons = (props: Props) => {
             onClick={(e) => props.onClick(e)}
             disabled={props.disabled ? props.disabled : false}
             variant={props.buttonType ? props.buttonType : ButtonTypes.CONTAINED}
-            sx={{ ...getButtonsStyle(props.buttonType, theme), width: props.width ? props.width : '100%' }}
+            sx={{ ...getButtonsStyle(props.buttonType, theme), width: props.width ? props.width : '100%', fontWeight: 'bold' }}
         >
             {props.label}
         </Button>

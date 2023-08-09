@@ -37,8 +37,6 @@ function* register(action: actionTypes.RegisterInterFace) {
         if (response.status && response.status >= 200 && response.status <= 299) {
             yield put(actionTypes.registerSuccess(response?.data));
         } else {
-            debugger
-            console.log(response.response);
             yield put(
                 actionTypes.registerFailure(
                     response?.response?.data ? response?.response?.data : { message: MESSAGES.SOMETHING_WENT_WRONG },

@@ -33,7 +33,6 @@ const Login = () => {
             ...data,
             [event.target.id]: event.target.value,
         };
-        debugger
         const validData = validationCheck(data, formDataErrors);
         setFormDataErrors(validData);
         setFormData(data);

@@ -1,43 +1,96 @@
-import { NotificationInterface } from "./types";
+import { NotificationInterface, PopupInterface, UsersTeamsInterface } from './types'
 
 export enum APP_ACTIONS {
   SHOW_LOADER = `SHOW_LOADER`,
-  SHOW_NOTIFICATION = "SHOW_NOTIFICATION",
-  SET_LOGGED_IN_STATUS = 'SET_LOGGED_IN_STATUS'
+  SHOW_NOTIFICATION = 'SHOW_NOTIFICATION',
+  SET_LOGGED_IN_STATUS = 'SET_LOGGED_IN_STATUS',
+  SHOW_POPUP = 'SHOW_POPUP',
+  FETCH_USERS_TEAM = 'FETCH_USERS_TEAM',
+  FETCH_USERS_TEAM_SUCCESS = 'FETCH_USERS_TEAM_SUCCESS',
+  FETCH_USERS_TEAM_FAILURE = 'FETCH_USERS_TEAM_FAILURE',
 }
 export interface UpdateLoaderInterface {
-  type: APP_ACTIONS.SHOW_LOADER;
-  payload: boolean;
+  type: APP_ACTIONS.SHOW_LOADER
+  payload: boolean
 }
 export const updateLoaderState = (payload: boolean): UpdateLoaderInterface => {
   return {
     type: APP_ACTIONS.SHOW_LOADER,
     payload,
-  };
-};
-export interface UpdateToastState {
-  type: APP_ACTIONS.SHOW_NOTIFICATION;
-  payload: NotificationInterface | null;
+  }
 }
-export const updateToastState = (
+export interface UpdateToastState {
+  type: APP_ACTIONS.SHOW_NOTIFICATION
   payload: NotificationInterface | null
-): UpdateToastState => {
+}
+export const updateToastState = (payload: NotificationInterface | null): UpdateToastState => {
   return {
     type: APP_ACTIONS.SHOW_NOTIFICATION,
     payload,
-  };
-};
+  }
+}
 
 export interface UpdateLoggedInStatus {
-  type: APP_ACTIONS.SET_LOGGED_IN_STATUS;
-  payload: boolean;
-}
-export const updateLoggedInStatus = (
+  type: APP_ACTIONS.SET_LOGGED_IN_STATUS
   payload: boolean
-): UpdateLoggedInStatus => {
+}
+export const updateLoggedInStatus = (payload: boolean): UpdateLoggedInStatus => {
   return {
     type: APP_ACTIONS.SET_LOGGED_IN_STATUS,
     payload,
-  };
-};
-export type Actions = UpdateLoaderInterface | UpdateToastState | UpdateLoggedInStatus;
+  }
+}
+
+export interface UpdatePopupState {
+  type: APP_ACTIONS.SHOW_POPUP
+  payload: PopupInterface | null
+}
+
+export const updatePopupState = (payload: PopupInterface | null): UpdatePopupState => {
+  return {
+    type: APP_ACTIONS.SHOW_POPUP,
+    payload,
+  }
+}
+
+export interface FetchTeamsInterface {
+  type: APP_ACTIONS.FETCH_USERS_TEAM
+}
+
+export const getAllTeams = (): FetchTeamsInterface => {
+  return {
+    type: APP_ACTIONS.FETCH_USERS_TEAM,
+  }
+}
+
+export interface FetchTeamsInterfaceSuccess {
+  type: APP_ACTIONS.FETCH_USERS_TEAM_SUCCESS
+  payload: UsersTeamsInterface[]
+}
+
+export const getAllTeamsSuccess = (payload: UsersTeamsInterface[]): FetchTeamsInterfaceSuccess => {
+  return {
+    type: APP_ACTIONS.FETCH_USERS_TEAM_SUCCESS,
+    payload,
+  }
+}
+
+export interface FetchTeamsInterfaceFailure {
+  type: APP_ACTIONS.FETCH_USERS_TEAM_FAILURE
+  payload: any
+}
+
+export const getAllTeamsFailure = (payload: any): FetchTeamsInterfaceFailure => {
+  return {
+    type: APP_ACTIONS.FETCH_USERS_TEAM_FAILURE,
+    payload,
+  }
+}
+export type Actions =
+  | UpdateLoaderInterface
+  | UpdateToastState
+  | UpdateLoggedInStatus
+  | UpdatePopupState
+  | FetchTeamsInterface
+  | FetchTeamsInterfaceSuccess
+  | FetchTeamsInterfaceFailure
