@@ -27,8 +27,37 @@ function* makeLeague(action: actionTypes.CreateLeagueInterface) {
     console.error(e)
   }
 }
+
+function* joinLeague(action: actionTypes.JoinLeagueInterface) {
+  try {
+    const response: ResponseGenerator = yield call(_request, {
+      url: `${API_URLS.JOIN_LEAGUE}`,
+      method: REQUEST_TYPE.POST,
+      headers: HTTPS_HEADERS,
+      data: action.payload,
+    })
+    if (response.status && response.status >= 200 && response.status <= 299) {
+      yield put(actionTypes.joinLeagueActionSuccess(response?.data))
+    } else {
+      yield put(
+        actionTypes.joinLeagueActionFailure(
+          response?.response?.data.message
+            ? { message: response?.response?.data.message }
+            : { message: MESSAGES.SOMETHING_WENT_WRONG },
+        ),
+      )
+    }
+  } catch (e) {
+    yield put(actionTypes.joinLeagueActionFailure(MESSAGES.SOMETHING_WENT_WRONG))
+    console.error(e)
+  }
+}
+
 function* createLeagueSaga() {
-  yield all([takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.CREATE_LEAGUE, makeLeague)])
+  yield all([
+    takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.CREATE_LEAGUE, makeLeague),
+    takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.JOIN_LEAGUE, joinLeague),
+  ])
 }
 
 export default createLeagueSaga

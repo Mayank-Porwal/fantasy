@@ -1,55 +1,25 @@
 import CloseIcon from '@mui/icons-material/Close'
-import Dialog from '@mui/material/Dialog'
+import { Divider, Grid, Typography, useTheme } from '@mui/material'
+import Dialog, { DialogProps } from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { updatePopupState } from '../../utils/appActions/actions'
-import { RootState } from '../../utils/store/rootReducer'
 import { PopupInterface } from '../../utils/appActions/types'
-import { DialogContentText, Divider, Grid, Typography, useTheme } from '@mui/material'
-import { getPopupWidth } from './helper'
+import { RootState } from '../../utils/store/rootReducer'
 import { tokens } from '../../utils/theme'
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(2),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(1),
-  },
+const BlurryDialog = styled(Dialog)<DialogProps>(({ theme }) => ({
+  backdropFilter: 'blur(2px)',
+  // other styles here...
 }))
-
 export interface DialogTitleProps {
   id: string
   children?: React.ReactNode
   onClose: () => void
-}
-
-const BootstrapDialogTitle = (props: DialogTitleProps) => {
-  const { children, onClose, ...other } = props
-
-  return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-      {children}
-      {onClose ? (
-        <IconButton
-          aria-label='close'
-          onClick={onClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </DialogTitle>
-  )
 }
 
 export default function CustomizedDialogs() {
@@ -76,7 +46,7 @@ export default function CustomizedDialogs() {
 
   return (
     <Grid container direction={'row'}>
-      <Dialog
+      <BlurryDialog
         open={popUpData ? popUpData.open : false}
         onClose={handleClose}
         aria-labelledby='responsive-dialog-title'
@@ -102,7 +72,7 @@ export default function CustomizedDialogs() {
           sx={{ width: '100%', boxShadow: '0px 15px 10px -15px #111', border: `1px solid ${colors.greenAccent[500]}` }}
         />
         <DialogContent sx={{ margin: 0, padding: 0 }}>{popUpData ? popUpData.content : null}</DialogContent>
-      </Dialog>
+      </BlurryDialog>
     </Grid>
   )
 }

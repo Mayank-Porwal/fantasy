@@ -1,5 +1,5 @@
-import { TextField, InputAdornment, useTheme } from "@mui/material"
-import { tokens } from "../../../utils/theme"
+import { TextField, InputAdornment, useTheme } from '@mui/material'
+import { tokens } from '../../../utils/theme'
 interface Props {
   id: string
   label: string
@@ -12,35 +12,35 @@ interface Props {
   value?: any
   required: boolean
 }
-const inputStyle = { WebkitBoxShadow: "0 0 0 1000px white inset !important" }
+const inputStyle = { WebkitBoxShadow: '0 0 0 1000px white inset !important' }
 const FantasyTextField = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
     <TextField
       name={props.id}
-      type={props.type ? props.type : "text"}
+      type={props.type ? props.type : 'text'}
       fullWidth
-      value={props.value ? props.value : ""}
-      placeholder={props.placeholder ? props.placeholder : ""}
+      value={props.value ? props.value : ''}
+      placeholder={props.placeholder ? props.placeholder : ''}
       label={
         props.required ? (
           <>
             {props.label}
-            <span style={{ color: "red" }}>*</span>
+            <span style={{ color: 'red' }}>*</span>
           </>
         ) : (
           props.label
         )
       }
       id={props.id}
-      autoComplete={props.autoComplete ? "on" : "off"}
+      autoComplete={props.autoComplete ? 'on' : 'off'}
       error={props.error ? props.error.error : false}
-      helperText={props.error ? props.error.message : ""}
+      helperText={props.error ? props.error.message : ''}
       sx={{
-        margin: "8px 0px",
-        "& .MuiOutlinedInput-root": {
-          "&.Mui-focused fieldset": {
+        margin: '8px 0px',
+        '& .MuiOutlinedInput-root': {
+          '&.Mui-focused fieldset': {
             borderColor: colors.greenAccent[500],
           },
         },
@@ -48,11 +48,11 @@ const FantasyTextField = (props: Props) => {
       onChange={(e) => props.onChange(e)}
       InputLabelProps={{ style: { color: colors.primary[100] }, shrink: true }}
       InputProps={{
-        endAdornment: props.endAdornment && <InputAdornment position="start">{props.endAdornment}</InputAdornment>,
+        endAdornment: props.endAdornment && <InputAdornment position='start'>{props.endAdornment}</InputAdornment>,
         style: { ...inputStyle },
       }}
       inputProps={{
-        style: { ...inputStyle, width: "100%" },
+        style: { ...inputStyle, width: '100%' },
       }}
     />
   )

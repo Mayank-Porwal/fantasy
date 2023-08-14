@@ -20,6 +20,7 @@ export enum API_URLS {
   CREATE_TEAM = '/team',
   FETCH_TEAMS = '/my-teams',
   CREATE_LEAGUE = '/league',
+  JOIN_LEAGUE = '/join-league',
 }
 
 export interface ResponseGenerator {

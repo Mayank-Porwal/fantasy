@@ -10,8 +10,11 @@ import { RootState } from '../../utils/store/rootReducer'
 import { updatePopupState } from '../../utils/appActions/actions'
 import CreateLeague from './CreateLeague'
 import JoinLeague from './JoinLeague'
+import MUIDataTable from 'mui-datatables'
+import { getManageLeagueColumns, getTableTitle } from './helper'
 const ManageLeague = () => {
   const dispatch = useDispatch()
+  const [columns, setColumns] = useState(getManageLeagueColumns())
   const propsState = useSelector((state: RootState) => {
     return {
       popupData: state.appReducer.popUpData,
@@ -28,6 +31,8 @@ const ManageLeague = () => {
       dispatch(updatePopupState({ open: true, size: 'sm', content: <JoinLeague />, title: 'Join League' }))
     }
   }
+  const options = {}
+  const data = [{ leagueName: 'Talentica Cricket League', leagueType: 'Private', teamName: 'RCB Rocks', rank: '1/80' }]
   return (
     <Grid>
       <Grid container direction='row' sx={{ margin: '2% 0%' }}>
@@ -69,6 +74,11 @@ const ManageLeague = () => {
           value={tabsValue ? tabsValue : ''}
           flow={CREATE_TEAM_FLOW.ALL_PLAYERS}
         />
+      </Grid>
+      <Grid container direction='row' alignItems='center' justifyContent='center'>
+        <div style={{ width: '100%' }}>
+          <MUIDataTable title={getTableTitle(tabsValue)} data={data} columns={columns} options={options} />
+        </div>
       </Grid>
     </Grid>
   )

@@ -1,12 +1,15 @@
-export const LEAGUE_TABS_DATA = [{
-    id: 'private',
-    name: 'Private'
-}, {
+export const LEAGUE_TABS_DATA = [
+  {
+    id: 'myLeague',
+    name: 'My League',
+  },
+  {
     id: 'public',
-    name: 'Public'
-}]
+    name: 'Public',
+  },
+]
 
 export const LEAGUE_ACTIONS_ID = {
-    CREATE_LEAGUE: 'createLeague',
-    JOIN_LEAGUE: 'joinLeague'
+  CREATE_LEAGUE: 'createLeague',
+  JOIN_LEAGUE: 'joinLeague',
 }
