@@ -18,6 +18,8 @@ import {
 import { CaptainInterface, PLAYERS_INTERFACE } from './types'
 import { MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
 import FantasyTextField from '../../component/FormElements/TextFlied'
+import { useLocation } from 'react-router-dom'
+import FantasyDropdowns from '../../component/FormElements/FantasyDropdowns'
 const CreateTeam = () => {
   const propsState = useSelector((state: RootState) => {
     return {
@@ -33,13 +35,19 @@ const CreateTeam = () => {
   const [availableSelectedPlayers, setAvailableSelectedPlayers] = useState<PLAYERS_INTERFACE[] | []>([])
   const [tabsValue, setTabsValue] = useState<string>('all')
   const [availablePlayersSearch, setAvailablePlayersSearch] = useState<string>('')
-  const [teamName, setTeamName] = useState<string>('')
+  const [teamFormData, setTeamFormData] = useState<{ teamName: string; league: string }>({ league: '', teamName: '' })
   const [captainData, setCaptainData] = useState<CaptainInterface | null>(null)
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
+  const location = useLocation()
   useEffect(() => {
     if (propsState.allPlayer && propsState.allPlayer.length === 0) {
       dispatch(getAllPlayers())
+    }
+    console.log(location)
+    if (location && location.state) {
+      const formData = { teamName: location.state.team, league: location.state.league_name }
+      setTeamFormData(formData)
     }
   }, [])
   useEffect(() => {
@@ -55,7 +63,7 @@ const CreateTeam = () => {
   }, [propsState.allPlayerError])
   const handleActions = (data: PLAYERS_INTERFACE, flow: string) => {
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
-      if (checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamName, captainData)) {
+      if (checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData.teamName, captainData)) {
         const { allPlayers, selectedPlayers } = updatePlayerList(data, availablePlayers, propsState.selectedPlayers)
         setAvailablePlayers(allPlayers)
         const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch)
@@ -98,14 +106,18 @@ const CreateTeam = () => {
   const handleSaveTeam = () => {
     const validationCheck = minimumPlayersByCategory(availableSelectedPlayers)
     if (!validationCheck.error) {
-      const requestBody = createTeamRequestBody(availableSelectedPlayers, teamName, captainData)
+      const requestBody = createTeamRequestBody(availableSelectedPlayers, teamFormData.teamName, captainData)
       dispatch(createTeam(requestBody))
     } else {
       dispatch(updateToastState({ message: validationCheck.message, type: 'error' }))
     }
   }
   const handleTeamNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    setTeamName(event.target.value)
+    const formData = {
+      ...teamFormData,
+      [event.target.id]: event.target.value,
+    }
+    setTeamFormData(formData)
   }
   useEffect(() => {
     if (propsState.teamSuccess && propsState.teamSuccess.message) {
@@ -128,30 +140,43 @@ const CreateTeam = () => {
           Create Team
         </Typography>
       </Grid>
-      <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} justifyContent={'space-between'}>
-        <Grid item xs={12} sm={4} md={4}>
-          <FantasyTextField
-            required
-            placeholder={'Enter Team Name'}
-            id={'teamName'}
-            label={'Team Name*'}
-            value={teamName ? teamName : ''}
-            onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTeamNameChange(event)}
-          />
-        </Grid>
-        <Grid item xs={10} sm={4} md={4}>
+      <Grid container direction={'row'} sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
+        <Grid item xs={10}>
           <span>* {CREATE_TEAM_VALIDATION_MESSAGES.MINIMUM_PLAYERS_REQUIRED}</span>
         </Grid>
-        <Grid item xs={2} sm={1} md={1}>
+        <Grid item xs={2}>
           <Button
             variant='outlined'
             color='secondary'
-            disabled={checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamName, captainData)}
+            disabled={checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData.teamName, captainData)}
             onClick={handleSaveTeam}
             sx={{ fontWeight: 'bold' }}
           >
             Save Team
           </Button>
+        </Grid>
+      </Grid>
+      <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
+        <Grid item xs={12} sm={3} md={3}>
+          <FantasyDropdowns
+            options={[]}
+            required
+            placeholder={'Select League'}
+            id={'league'}
+            label={'League'}
+            value={teamFormData.league ? teamFormData.league : ''}
+            onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTeamNameChange(event)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} md={3}>
+          <FantasyTextField
+            required
+            placeholder={'Enter Team Name'}
+            id={'teamName'}
+            label={'Team Name'}
+            value={teamFormData.teamName ? teamFormData.teamName : ''}
+            onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTeamNameChange(event)}
+          />
         </Grid>
       </Grid>
       <Grid container direction='row' spacing={2} alignItems={'center'} justifyContent={'center'}>

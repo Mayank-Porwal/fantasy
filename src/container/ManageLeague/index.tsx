@@ -1,26 +1,42 @@
-import { Grid, Typography } from '@mui/material'
 import FantasyTabs from '../../component/FantasyTabs'
 import { LEAGUE_ACTIONS_ID, LEAGUE_TABS_DATA } from './constants'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CREATE_TEAM_FLOW } from '../CreateTeam/constants'
 import FantasyButtons from '../../component/FormElements/Buttons'
-import { ButtonTypes } from '../../utils/constants'
-import { useDispatch, useSelector } from 'react-redux'
+import { ButtonTypes, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../../utils/constants'
 import { RootState } from '../../utils/store/rootReducer'
 import { updatePopupState } from '../../utils/appActions/actions'
 import CreateLeague from './CreateLeague'
 import JoinLeague from './JoinLeague'
 import MUIDataTable from 'mui-datatables'
-import { getManageLeagueColumns, getTableTitle } from './helper'
+import { getGridActions, getLeaguesRequestBody, getManageLeagueColumns, getTableTitle } from './helper'
+import FantasyDataGrid from '../../component/DataGrid'
+import { Grid, Typography } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchLeagueAction, joinLeagueActionSuccess } from './actions'
+import { LeagueResponseDataInterface } from './types'
+import { useNavigate } from 'react-router-dom'
 const ManageLeague = () => {
   const dispatch = useDispatch()
-  const [columns, setColumns] = useState(getManageLeagueColumns())
+  const navigate = useNavigate()
+  const [leagueTableData, setLeagueTableData] = useState<LeagueResponseDataInterface[] | []>([])
   const propsState = useSelector((state: RootState) => {
     return {
       popupData: state.appReducer.popUpData,
+      leagueData: state.leagueReducer.leagueData,
+      leagueDataFailure: state.leagueReducer.leagueDataFailure,
     }
   })
+  useEffect(() => {
+    const requestBody = getLeaguesRequestBody(null, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE)
+    dispatch(fetchLeagueAction(requestBody))
+  }, [])
   const [tabsValue, setTabsValue] = useState(LEAGUE_TABS_DATA[0].id)
+  var handleClickActions = (link: string, data: any) => {
+    console.log(link, data)
+    navigate(link, { state: data })
+  }
+  const [columns, setColumns] = useState(getManageLeagueColumns(handleClickActions))
   const handleTabsChange = (tabsValue: string) => {
     setTabsValue(tabsValue)
   }
@@ -31,8 +47,18 @@ const ManageLeague = () => {
       dispatch(updatePopupState({ open: true, size: 'sm', content: <JoinLeague />, title: 'Join League' }))
     }
   }
-  const options = {}
-  const data = [{ leagueName: 'Talentica Cricket League', leagueType: 'Private', teamName: 'RCB Rocks', rank: '1/80' }]
+  useEffect(() => {
+    if (propsState.leagueData) {
+      setLeagueTableData(propsState.leagueData.data)
+      return () => {
+        dispatch(joinLeagueActionSuccess(null))
+      }
+    }
+  }, [propsState.leagueData])
+  const handleGridCallback = (params: any) => {
+    console.log(params)
+  }
+  const handleCellActions = (id: string) => {}
   return (
     <Grid>
       <Grid container direction='row' sx={{ margin: '2% 0%' }}>
@@ -49,7 +75,7 @@ const ManageLeague = () => {
         justifyContent={'flex-end'}
       >
         {tabsValue === LEAGUE_TABS_DATA[0].id && (
-          <Grid item xs={2}>
+          <Grid item xs={6} sm={6} md={3} lg={3} xl={2}>
             <FantasyButtons
               id='joinLeague'
               label='Join League'
@@ -58,7 +84,7 @@ const ManageLeague = () => {
             />
           </Grid>
         )}
-        <Grid item xs={2}>
+        <Grid item xs={6} sm={6} md={3} lg={3} xl={2}>
           <FantasyButtons
             id='createLeague'
             label='Create League'
@@ -77,7 +103,15 @@ const ManageLeague = () => {
       </Grid>
       <Grid container direction='row' alignItems='center' justifyContent='center'>
         <div style={{ width: '100%' }}>
-          <MUIDataTable title={getTableTitle(tabsValue)} data={data} columns={columns} options={options} />
+          <FantasyDataGrid
+            columns={columns}
+            data={leagueTableData}
+            pagination={true}
+            onCallback={handleGridCallback}
+            gridActions={getGridActions(handleCellActions)}
+            pageCount={propsState.leagueData ? parseInt(propsState.leagueData.total_pages) : 0}
+            rowCount={propsState.leagueData ? propsState.leagueData.total : 0}
+          />
         </div>
       </Grid>
     </Grid>

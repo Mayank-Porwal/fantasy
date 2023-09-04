@@ -6,46 +6,46 @@ import { ButtonTypes } from '../../../utils/constants'
 import { tokens } from '../../../utils/theme'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllTeams, updateLoaderState, updatePopupState, updateToastState } from '../../../utils/appActions/actions'
-import { getJoinLeagueRequestBody } from './helper'
+import { getJoinLeagueRequestBody, validateFormData } from './helper'
 import FantasyDropdowns from '../../../component/FormElements/FantasyDropdowns'
 import { RootState } from '../../../utils/store/rootReducer'
 import { joinLeagueAction, joinLeagueActionFailure, joinLeagueActionSuccess } from '../actions'
 import { updateUsersTeamsOptions } from '../CreateLeague/helper'
+import { useNavigate } from 'react-router-dom'
 
 const JoinLeague = () => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
   const propsState = useSelector((state: RootState) => {
     return {
       joinLeagueSuccess: state.leagueReducer.joinLeagueSuccess,
       joinLeagueFailure: state.leagueReducer.joinLeagueFailure,
-      usersTeams: state.appReducer.usersTeams,
-      usersTeamsFailure: state.appReducer.usersTeamsFailure,
     }
   })
   const [formData, setFormData] = useState({ code: '', selectedTeam: '' })
-  const [userTeamList, setUserTeamList] = useState<
-    | {
-        id: string
-        name: string
-      }[]
-    | []
-  >([])
-  useEffect(() => {
-    if (!propsState.usersTeams) {
-      fetchUsersTeams()
-    }
-  }, [])
-  const fetchUsersTeams = () => {
-    dispatch(getAllTeams())
-  }
-  useEffect(() => {
-    if (propsState.usersTeams) {
-      const updatedOptions = updateUsersTeamsOptions(propsState.usersTeams)
-      setUserTeamList(updatedOptions)
-    }
-  }, [propsState.usersTeams])
+  // const [userTeamList, setUserTeamList] = useState<
+  //   | {
+  //       id: string
+  //       name: string
+  //     }[]
+  //   | []
+  // >([])
+  // useEffect(() => {
+  //   if (!propsState.usersTeams) {
+  //     fetchUsersTeams()
+  //   }
+  // }, [])
+  // const fetchUsersTeams = () => {
+  //   dispatch(getAllTeams())
+  // }
+  // useEffect(() => {
+  //   if (propsState.usersTeams) {
+  //     const updatedOptions = updateUsersTeamsOptions(propsState.usersTeams)
+  //     setUserTeamList(updatedOptions)
+  //   }
+  // }, [propsState.usersTeams])
   const handleFormChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setFormData({ ...formData, [event.target.name]: event.target.value })
   }
@@ -64,6 +64,7 @@ const JoinLeague = () => {
       dispatch(updateToastState({ type: 'success', message: propsState.joinLeagueSuccess.message }))
       dispatch(updatePopupState({ open: false, size: 'sm', content: '', title: '' }))
       dispatch(updateLoaderState(false))
+      navigate('/teams', { state: propsState.joinLeagueSuccess })
     }
     return () => {
       dispatch(joinLeagueActionSuccess(null))
@@ -99,13 +100,12 @@ const JoinLeague = () => {
           />
         </Grid>
         <Grid xs={12} item>
-          <FantasyDropdowns
-            options={userTeamList ? userTeamList : []}
+          <FantasyTextField
             id='selectedTeam'
             label='Select Team'
             onChange={handleFormChange}
             value={formData.selectedTeam}
-            required={false}
+            required={true}
             placeholder='Select Your Team'
           />
         </Grid>
@@ -137,6 +137,7 @@ const JoinLeague = () => {
             label='Join'
             onClick={() => handleAction('save')}
             buttonType={ButtonTypes.CONTAINED}
+            disabled={validateFormData(formData)}
           />
         </Grid>
       </Grid>

@@ -9,20 +9,20 @@ import { ButtonTypes } from '../../../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllTeams, updatePopupState, updateToastState } from '../../../utils/appActions/actions'
 import { createLeagueAction, createLeagueActionFailure, createLeagueActionSuccess } from '../actions'
-import { getCreateLeagueRequestBody, updateUsersTeamsOptions } from './helper'
+import { fromValidation, getCreateLeagueRequestBody, updateUsersTeamsOptions } from './helper'
 import { RootState } from '../../../utils/store/rootReducer'
 import { UsersTeamsInterface } from '../../../utils/appActions/types'
+import { useNavigate } from 'react-router-dom'
 
 const CreateLeague = () => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
   const propsState = useSelector((state: RootState) => {
     return {
       createLeagueSuccess: state.leagueReducer.createLeagueSuccess,
       createLeagueFailure: state.leagueReducer.createLeagueFailure,
-      usersTeams: state.appReducer.usersTeams,
-      usersTeamsFailure: state.appReducer.usersTeamsFailure,
     }
   })
   const [leagueFormData, setLeagueFormData] = useState<{
@@ -37,18 +37,7 @@ const CreateLeague = () => {
       }[]
     | []
   >([])
-  useEffect(() => {
-    fetchUsersTeams()
-  }, [])
-  const fetchUsersTeams = () => {
-    dispatch(getAllTeams())
-  }
-  useEffect(() => {
-    if (propsState.usersTeams) {
-      const updatedOptions = updateUsersTeamsOptions(propsState.usersTeams)
-      setUserTeamList(updatedOptions)
-    }
-  }, [propsState.usersTeams])
+
   const handleFormChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, checked: boolean) => {
     const fromData = { ...leagueFormData }
     setLeagueFormData({
@@ -79,6 +68,7 @@ const CreateLeague = () => {
     if (propsState.createLeagueSuccess) {
       dispatch(updateToastState({ message: propsState.createLeagueSuccess.message, type: 'success' }))
       dispatch(updatePopupState({ content: null, open: false, size: 'sm', title: '' }))
+      navigate('/teams')
     }
     return () => {
       dispatch(createLeagueActionSuccess(null))
@@ -112,14 +102,13 @@ const CreateLeague = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <FantasyDropdowns
-            options={userTeamList ? userTeamList : []}
+          <FantasyTextField
             id='selectedTeam'
-            label='Select Team'
+            label='Team Name'
             onChange={handleFormChange}
             value={leagueFormData.selectedTeam}
-            required={false}
-            placeholder='Select Your Team'
+            required={true}
+            placeholder='Enter Your Team Name'
           />
         </Grid>
         <Grid item xs={12}>
@@ -155,6 +144,7 @@ const CreateLeague = () => {
         </Grid>
         <Grid item xs={3}>
           <FantasyButtons
+            disabled={fromValidation(leagueFormData)}
             id='save'
             label='Save'
             onClick={() => handleAction('save')}

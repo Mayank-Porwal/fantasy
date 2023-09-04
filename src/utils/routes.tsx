@@ -16,18 +16,20 @@ function UnProtectedRoute() {
 }
 const RouteComponent = () => {
   return (
-    <Routes>
-      <Route element={<UnProtectedRoute />}>
-        <Route path='/' element={<Login />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-      </Route>
-      <Route element={<PrivateRoute />}>
-        <Route path='/home' element={<Home />} />
-        <Route path='/create-team' element={<CreateTeam />} />
-        <Route path='/manage-league' element={<ManageLeague />} />
-      </Route>
-    </Routes>
+    <div style={{ width: '98%' }}>
+      <Routes>
+        <Route element={<UnProtectedRoute />}>
+          <Route path='/' element={<Login />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+        </Route>
+        <Route element={<PrivateRoute />}>
+          <Route path='/home' element={<Home />} />
+          <Route path='/teams' element={<CreateTeam />} />
+          <Route path='/manage-league' element={<ManageLeague />} />
+        </Route>
+      </Routes>
+    </div>
   )
 }
 

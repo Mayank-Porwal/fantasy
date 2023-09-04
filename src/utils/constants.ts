@@ -21,6 +21,7 @@ export enum API_URLS {
   FETCH_TEAMS = '/my-teams',
   CREATE_LEAGUE = '/league',
   JOIN_LEAGUE = '/join-league',
+  FETCH_MY_LEAGUES = '/my-leagues',
 }
 
 export interface ResponseGenerator {
@@ -71,3 +72,6 @@ export const VALIDATION_MESSAGES = {
   phone: 'Enter a valid Phone Number (Max Length 10)',
   confirmPassword: "Confirm Password doesn't match your Password",
 }
+
+export const DEFAULT_PAGE_NUMBER = 1
+export const DEFAULT_PAGE_SIZE = 25
