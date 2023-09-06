@@ -11,6 +11,7 @@ interface Props {
   error?: { error: boolean; message: string }
   value?: any
   required: boolean
+  disabled?: boolean
 }
 const inputStyle = { WebkitBoxShadow: '0 0 0 1000px white inset !important' }
 const FantasyTextField = (props: Props) => {
@@ -18,6 +19,7 @@ const FantasyTextField = (props: Props) => {
   const colors = tokens(theme.palette.mode)
   return (
     <TextField
+      disabled={props.disabled ? props.disabled : false}
       name={props.id}
       type={props.type ? props.type : 'text'}
       fullWidth

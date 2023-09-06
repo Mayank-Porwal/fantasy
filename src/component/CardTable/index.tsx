@@ -8,6 +8,7 @@ import { CaptainInterface, PLAYERS_INTERFACE } from '../../container/CreateTeam/
 import Cards from '../Cards'
 import { CREATE_TEAM_FLOW } from '../../container/CreateTeam/constants'
 import { getSelectedPlayersCount } from './helper'
+import { useState } from 'react'
 interface Props {
   filter: boolean
   availablePlayers?: PLAYERS_INTERFACE[] | [] | null
@@ -23,8 +24,10 @@ interface Props {
 const CardTable = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const [searchText, setSearchText] = useState('')
   const onSearch = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (props.onSearch) {
+      setSearchText(event.target.value)
       props.onSearch(props.allPlayers, props.flow, event.target.value)
     }
   }
@@ -51,6 +54,7 @@ const CardTable = (props: Props) => {
               label='Search'
               onChange={onSearch}
               endAdornment={<SearchIcon />}
+              value={searchText}
             />
           </Grid>
         )}

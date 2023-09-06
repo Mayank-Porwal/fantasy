@@ -41,7 +41,8 @@ const Cards = (props: Props) => {
               Team
             </Typography>
             <Typography variant='subtitle1' color='text.secondary' component='div'>
-              {props.player ? props.player.team : null}
+              {/* {props.player ? props.player.team : null} */}
+              {props.player?.team_img && <img src={props.player.team_img} width='25px' height='25px' />}
             </Typography>
           </Grid>
           <Grid item xs={props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS ? 2 : 3}>

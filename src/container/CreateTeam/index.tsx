@@ -2,7 +2,7 @@ import { Button, Grid, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CardTable from '../../component/CardTable'
-import { updateToastState } from '../../utils/appActions/actions'
+import { updateLoaderState, updateToastState } from '../../utils/appActions/actions'
 import { RootState } from '../../utils/store/rootReducer'
 import { createTeam, getAllPlayers, updateSelectedPlayers } from './actions'
 import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES } from './constants'
@@ -10,16 +10,24 @@ import {
   checkMaximumPlayerAllowedValidation,
   createTeamRequestBody,
   getFilteredData,
+  getUpdatedLeagueOptions,
   minimumPlayersByCategory,
   searchAvailablePlayers,
   setCaptainAndViceCaptain,
   updatePlayerList,
 } from './helper'
 import { CaptainInterface, PLAYERS_INTERFACE } from './types'
-import { MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
+import { DEFAULT_PAGE_NUMBER, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
 import FantasyTextField from '../../component/FormElements/TextFlied'
 import { useLocation } from 'react-router-dom'
 import FantasyDropdowns from '../../component/FormElements/FantasyDropdowns'
+import { getLeaguesRequestBody } from '../ManageLeague/helper'
+import {
+  fetchLeagueAction,
+  fetchLeagueDetailsAction,
+  fetchLeagueDetailsActionFailure,
+  fetchLeagueDetailsActionSuccess,
+} from '../ManageLeague/actions'
 const CreateTeam = () => {
   const propsState = useSelector((state: RootState) => {
     return {
@@ -28,6 +36,9 @@ const CreateTeam = () => {
       selectedPlayers: state.createTeamReducer.selectedPlayers,
       teamSuccess: state.createTeamReducer.createTeamSuccess,
       teamFailure: state.createTeamReducer.createTeamFailure,
+      leagueData: state.leagueReducer.leagueData,
+      leagueDetails: state.leagueReducer.leagueDetails,
+      leagueDetailsFailure: state.leagueReducer.leagueDetailsFailure,
     }
   })
   const [filteredAllPlayers, setFilteredAllPlayers] = useState<PLAYERS_INTERFACE[] | []>(propsState.allPlayer)
@@ -45,11 +56,17 @@ const CreateTeam = () => {
       dispatch(getAllPlayers())
     }
     console.log(location)
-    if (location && location.state) {
-      const formData = { teamName: location.state.team, league: location.state.league_name }
-      setTeamFormData(formData)
-    }
+    const requestBody = getLeaguesRequestBody(null, DEFAULT_PAGE_NUMBER, 1000)
+    dispatch(fetchLeagueAction(requestBody))
   }, [])
+  useEffect(() => {
+    if (propsState.leagueData) {
+      if (location && location.state) {
+        const formData = { teamName: location.state.team, league: location.state.league_id }
+        setTeamFormData(formData)
+      }
+    }
+  }, [propsState.leagueData])
   useEffect(() => {
     if (propsState.allPlayer) {
       setAvailablePlayers(propsState.allPlayer)
@@ -63,7 +80,7 @@ const CreateTeam = () => {
   }, [propsState.allPlayerError])
   const handleActions = (data: PLAYERS_INTERFACE, flow: string) => {
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
-      if (checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData.teamName, captainData)) {
+      if (checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData, captainData)) {
         const { allPlayers, selectedPlayers } = updatePlayerList(data, availablePlayers, propsState.selectedPlayers)
         setAvailablePlayers(allPlayers)
         const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch)
@@ -115,10 +132,38 @@ const CreateTeam = () => {
   const handleTeamNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const formData = {
       ...teamFormData,
-      [event.target.id]: event.target.value,
+      [event.target.id || event.target.name]: event.target.value,
+    }
+    if (event.target.name && event.target.name === 'league') {
+      if (event.target.value) {
+        dispatch(updateLoaderState(true))
+        dispatch(fetchLeagueDetailsAction({ league_id: event.target.value }))
+      } else {
+        formData.teamName = ''
+        dispatch(fetchLeagueDetailsActionSuccess(null))
+      }
     }
     setTeamFormData(formData)
   }
+  useEffect(() => {
+    if (propsState.leagueDetails) {
+      setTeamFormData({ ...teamFormData, teamName: propsState.leagueDetails[0].team_name })
+      dispatch(updateLoaderState(false))
+    }
+    return () => {
+      dispatch(fetchLeagueDetailsActionSuccess(null))
+    }
+  }, [propsState.leagueDetails])
+
+  useEffect(() => {
+    if (propsState.leagueDetailsFailure) {
+      dispatch(updateToastState({ message: propsState.leagueDetailsFailure.message, type: 'error' }))
+      dispatch(updateLoaderState(false))
+    }
+    return () => {
+      dispatch(fetchLeagueDetailsActionFailure(null))
+    }
+  }, [propsState.leagueDetailsFailure])
   useEffect(() => {
     if (propsState.teamSuccess && propsState.teamSuccess.message) {
       dispatch(updateToastState({ message: propsState.teamSuccess.message, type: 'success' }))
@@ -148,7 +193,7 @@ const CreateTeam = () => {
           <Button
             variant='outlined'
             color='secondary'
-            disabled={checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData.teamName, captainData)}
+            disabled={checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData, captainData)}
             onClick={handleSaveTeam}
             sx={{ fontWeight: 'bold' }}
           >
@@ -159,7 +204,7 @@ const CreateTeam = () => {
       <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
         <Grid item xs={12} sm={3} md={3}>
           <FantasyDropdowns
-            options={[]}
+            options={propsState.leagueData ? getUpdatedLeagueOptions(propsState.leagueData.data) : []}
             required
             placeholder={'Select League'}
             id={'league'}
@@ -176,11 +221,12 @@ const CreateTeam = () => {
             label={'Team Name'}
             value={teamFormData.teamName ? teamFormData.teamName : ''}
             onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTeamNameChange(event)}
+            disabled={true}
           />
         </Grid>
       </Grid>
       <Grid container direction='row' spacing={2} alignItems={'center'} justifyContent={'center'}>
-        <Grid item xs={12} sm={12} md={65} lg={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <CardTable
             filter={true}
             availablePlayers={filteredAllPlayers}

@@ -54,7 +54,7 @@ export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
     id: 'team',
     header: 'Team Name',
     accessorFn: (row: any) => (
-      <div onClick={() => handleLeagueActions('/teams', row)} style={{ color: 'blue', cursor: 'pointer' }}>
+      <div onClick={() => handleLeagueActions('/teams', row)} style={{ color: '#0070E0', cursor: 'pointer' }}>
         {row.team ? row.team : '-'}
       </div>
     ),

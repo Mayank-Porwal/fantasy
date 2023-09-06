@@ -1,6 +1,6 @@
 import { SuccessMessageInterface } from '../../utils/types'
 import { CREATE_LEAGUE_ACTIONS, CreateLeagueActions } from './actions'
-import { FetchLeagueResponseInterface } from './types'
+import { FetchLeagueResponseInterface, LeagueDetailsInterface } from './types'
 
 interface InitialState {
   createLeagueSuccess: SuccessMessageInterface | null
@@ -9,6 +9,8 @@ interface InitialState {
   joinLeagueFailure: any
   leagueData: FetchLeagueResponseInterface | null
   leagueDataFailure: any
+  leagueDetails: LeagueDetailsInterface[] | null
+  leagueDetailsFailure: any
 }
 const initialState = {
   createLeagueSuccess: null,
@@ -17,6 +19,8 @@ const initialState = {
   joinLeagueFailure: null,
   leagueData: null,
   leagueDataFailure: null,
+  leagueDetails: null,
+  leagueDetailsFailure: null,
 }
 
 const createLeagueReducer = (state: InitialState = initialState, action: CreateLeagueActions): InitialState => {
@@ -33,6 +37,10 @@ const createLeagueReducer = (state: InitialState = initialState, action: CreateL
       return { ...state, leagueData: action.payload }
     case CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_FAILURE:
       return { ...state, leagueDataFailure: action.payload }
+    case CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_SUCCESS:
+      return { ...state, leagueDetails: action.payload }
+    case CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_FAILURE:
+      return { ...state, leagueDetailsFailure: action.payload }
     default:
       return { ...state }
   }

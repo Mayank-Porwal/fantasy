@@ -76,11 +76,36 @@ function* getLeagueData(action: actionTypes.fetchLeagueInterface) {
     console.error(e)
   }
 }
+
+function* getLeagueDetailsData(action: actionTypes.fetchLeagueDetailsInterface) {
+  try {
+    const response: ResponseGenerator = yield call(_request, {
+      url: `${API_URLS.CREATE_LEAGUE}?league_id=${action.payload.league_id}`,
+      method: REQUEST_TYPE.GET,
+      headers: HTTPS_HEADERS,
+    })
+    if (response.status && response.status >= 200 && response.status <= 299) {
+      yield put(actionTypes.fetchLeagueDetailsActionSuccess(response?.data))
+    } else {
+      yield put(
+        actionTypes.fetchLeagueDetailsActionFailure(
+          response?.response?.data.message
+            ? { message: response?.response?.data.message }
+            : { message: MESSAGES.SOMETHING_WENT_WRONG },
+        ),
+      )
+    }
+  } catch (e) {
+    yield put(actionTypes.fetchLeagueDetailsActionFailure(MESSAGES.SOMETHING_WENT_WRONG))
+    console.error(e)
+  }
+}
 function* createLeagueSaga() {
   yield all([
     takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.CREATE_LEAGUE, makeLeague),
     takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.JOIN_LEAGUE, joinLeague),
     takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE, getLeagueData),
+    takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS, getLeagueDetailsData),
   ])
 }
 

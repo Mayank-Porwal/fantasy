@@ -30,13 +30,6 @@ const CreateLeague = () => {
     selectedTeam: string
     leagueType: boolean
   }>({ leagueName: '', selectedTeam: '', leagueType: false })
-  const [userTeamList, setUserTeamList] = useState<
-    | {
-        id: string
-        name: string
-      }[]
-    | []
-  >([])
 
   const handleFormChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, checked: boolean) => {
     const fromData = { ...leagueFormData }

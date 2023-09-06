@@ -5,6 +5,7 @@ export interface PLAYERS_INTERFACE {
   img: any
   name: string
   team: string
+  team_img: string
 }
 
 export interface CreateTeamInterface {

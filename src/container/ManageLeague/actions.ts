@@ -1,9 +1,11 @@
 import { SuccessMessageInterface } from '../../utils/types'
 import {
   CreateLeaguePayloadInterface,
+  FetchLeagueDetailsPayloadInterface,
   FetchLeaguePayloadInterface,
   FetchLeagueResponseInterface,
   JoinLeaguePayloadInterface,
+  LeagueDetailsInterface,
 } from './types'
 
 export enum CREATE_LEAGUE_ACTIONS {
@@ -16,6 +18,9 @@ export enum CREATE_LEAGUE_ACTIONS {
   FETCH_LEAGUE = 'FETCH_LEAGUE',
   FETCH_LEAGUE_SUCCESS = 'FETCH_LEAGUE_SUCCESS',
   FETCH_LEAGUE_FAILURE = 'FETCH_LEAGUE_FAILURE',
+  FETCH_LEAGUE_DETAILS = 'FETCH_LEAGUE_DETAILS',
+  FETCH_LEAGUE_DETAILS_SUCCESS = 'FETCH_LEAGUE_DETAILS_SUCCESS',
+  FETCH_LEAGUE_DETAILS_FAILURE = 'FETCH_LEAGUE_DETAILS_FAILURE',
 }
 
 export interface CreateLeagueInterface {
@@ -121,6 +126,43 @@ export const fetchLeagueActionFailure = (payload: any): fetchLeagueInterfaceFail
     payload,
   }
 }
+
+export interface fetchLeagueDetailsInterface {
+  type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS
+  payload: FetchLeagueDetailsPayloadInterface
+}
+
+export const fetchLeagueDetailsAction = (payload: FetchLeagueDetailsPayloadInterface): fetchLeagueDetailsInterface => {
+  return {
+    type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS,
+    payload,
+  }
+}
+
+export interface fetchLeagueDetailsInterfaceSuccess {
+  type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_SUCCESS
+  payload: LeagueDetailsInterface[] | null
+}
+
+export const fetchLeagueDetailsActionSuccess = (
+  payload: LeagueDetailsInterface[] | null,
+): fetchLeagueDetailsInterfaceSuccess => {
+  return {
+    type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_SUCCESS,
+    payload,
+  }
+}
+export interface fetchLeagueDetailsInterfaceFailure {
+  type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_FAILURE
+  payload: any
+}
+
+export const fetchLeagueDetailsActionFailure = (payload: any): fetchLeagueDetailsInterfaceFailure => {
+  return {
+    type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_FAILURE,
+    payload,
+  }
+}
 export type CreateLeagueActions =
   | CreateLeagueInterface
   | CreateLeagueInterfaceSuccess
@@ -131,3 +173,6 @@ export type CreateLeagueActions =
   | fetchLeagueInterface
   | fetchLeagueInterfaceSuccess
   | fetchLeagueInterfaceFailure
+  | fetchLeagueDetailsInterface
+  | fetchLeagueDetailsInterfaceSuccess
+  | fetchLeagueDetailsInterfaceFailure

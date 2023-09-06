@@ -1,4 +1,5 @@
 import { CATEGORY_ENUM, CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
+import { LeagueResponseDataInterface } from '../ManageLeague/types'
 import { C, CREATE_TEAM_VALIDATION_MESSAGES, VC } from './constants'
 import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE } from './types'
 export const updatePlayerList = (
@@ -57,10 +58,15 @@ export const getFilteredData = (playersData: PLAYERS_INTERFACE[] | [], filterVal
 
 export const checkMaximumPlayerAllowedValidation = (
   selectedPlayers: PLAYERS_INTERFACE[] | [],
-  teamName: string,
+  teamInfo: { teamName: string; league: string },
   captainData: CaptainInterface | null,
 ) => {
-  if (selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET && !teamName && !captainData) {
+  if (
+    selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET &&
+    !teamInfo.teamName &&
+    !captainData &&
+    !teamInfo.league
+  ) {
     return true
   }
   if (!captainData?.captains.id) {
@@ -127,4 +133,10 @@ export const setCaptainAndViceCaptain = (
     }
   }
   return captainData
+}
+
+export const getUpdatedLeagueOptions = (leagueData: LeagueResponseDataInterface[] | []) => {
+  return leagueData.map((x) => {
+    return { id: x.league_id, name: x.league_name }
+  })
 }
