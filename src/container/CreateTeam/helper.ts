@@ -1,7 +1,8 @@
 import { CATEGORY_ENUM, CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
 import { LeagueResponseDataInterface } from '../ManageLeague/types'
 import { C, CREATE_TEAM_VALIDATION_MESSAGES, VC } from './constants'
-import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE } from './types'
+import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE, TeamDetailsInterface, TeamInterface } from './types'
+import _ from 'lodash'
 export const updatePlayerList = (
   player: PLAYERS_INTERFACE,
   playersList: PLAYERS_INTERFACE[] | [],
@@ -55,7 +56,12 @@ export const getFilteredData = (playersData: PLAYERS_INTERFACE[] | [], filterVal
   }
   return filteredData
 }
-
+export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFACE[] | []) => {
+  if (selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET) {
+    return true
+  }
+  return false
+}
 export const checkMaximumPlayerAllowedValidation = (
   selectedPlayers: PLAYERS_INTERFACE[] | [],
   teamInfo: { teamName: string; league: string },
@@ -95,12 +101,14 @@ export const minimumPlayersByCategory = (selectedPlayers: PLAYERS_INTERFACE[] | 
 
 export const createTeamRequestBody = (
   selectedPlayers: PLAYERS_INTERFACE[],
-  teamName: string,
+  teamForm: { teamName: string; league: string; teamId: number; substitutions: number },
   captainData: CaptainInterface | null,
 ) => {
   const request: CreateTeamInterface = {
-    team_name: teamName,
+    //team_name: teamForm.teamName,
+    team_id: teamForm.teamId,
     players: getPlayersForRequestBody(selectedPlayers, captainData),
+    substitutions: teamForm.substitutions,
   }
   return request
 }
@@ -139,4 +147,63 @@ export const getUpdatedLeagueOptions = (leagueData: LeagueResponseDataInterface[
   return leagueData.map((x) => {
     return { id: x.league_id, name: x.league_name }
   })
+}
+
+export const prePopulateSelectedPlayers = (
+  selectedPlayers: TeamDetailsInterface | null,
+  allPlayers: PLAYERS_INTERFACE[] | [],
+) => {
+  if (!selectedPlayers) {
+    return {
+      playersList: allPlayers ? allPlayers : [],
+      selectedPlayers: [],
+    }
+  }
+  const cloneSelectedPlayers = _.cloneDeep(selectedPlayers)
+  const cloneAllPlayers = _.cloneDeep(allPlayers)
+  selectedPlayers.draft_team.forEach((player) => {
+    const findPlayerIndex = cloneAllPlayers.findIndex((x) => x.id === player.id)
+    if (findPlayerIndex > -1) {
+      cloneAllPlayers.splice(findPlayerIndex, 1)
+    }
+  })
+  return {
+    playersList: cloneAllPlayers,
+    selectedPlayers: cloneSelectedPlayers.draft_team,
+  }
+}
+
+export const updatedSelectedTeamByRemovingCaptainData = (selectedPlayers: TeamInterface[] | []) => {
+  if (!selectedPlayers) {
+    return []
+  }
+  let updatedTeam: PLAYERS_INTERFACE[] = []
+  selectedPlayers.forEach((player) => {
+    updatedTeam.push({
+      cap: player.cap,
+      category: player.category,
+      id: player.id,
+      img: player.img,
+      name: player.name,
+      team: player.team,
+      team_img: '',
+    })
+  })
+  console.log(updatedTeam)
+  return updatedTeam
+}
+
+export const getCaptainDataFromSelectedTeam = (selectedPlayers: TeamInterface[] | []) => {
+  if (!selectedPlayers) {
+    return null
+  }
+  const captain = selectedPlayers.find((player) => player.captain)
+  const viceCaptain = selectedPlayers.find((player) => player.vice_captain)
+  if (captain && viceCaptain) {
+    return {
+      captains: { name: captain.name, id: captain.id },
+      viceCaptains: { name: viceCaptain.name, id: viceCaptain.id },
+    }
+  }
+  return null
 }

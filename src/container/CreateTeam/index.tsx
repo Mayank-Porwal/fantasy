@@ -4,17 +4,27 @@ import { useDispatch, useSelector } from 'react-redux'
 import CardTable from '../../component/CardTable'
 import { updateLoaderState, updateToastState } from '../../utils/appActions/actions'
 import { RootState } from '../../utils/store/rootReducer'
-import { createTeam, getAllPlayers, updateSelectedPlayers } from './actions'
+import {
+  createTeam,
+  getAllPlayers,
+  getTeamByIdAction,
+  getTeamByIdActionFailure,
+  updateSelectedPlayers,
+} from './actions'
 import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES } from './constants'
 import {
   checkMaximumPlayerAllowedValidation,
   createTeamRequestBody,
+  getCaptainDataFromSelectedTeam,
   getFilteredData,
   getUpdatedLeagueOptions,
+  maximumPlayerAllowedValidation,
   minimumPlayersByCategory,
+  prePopulateSelectedPlayers,
   searchAvailablePlayers,
   setCaptainAndViceCaptain,
   updatePlayerList,
+  updatedSelectedTeamByRemovingCaptainData,
 } from './helper'
 import { CaptainInterface, PLAYERS_INTERFACE } from './types'
 import { DEFAULT_PAGE_NUMBER, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
@@ -39,6 +49,8 @@ const CreateTeam = () => {
       leagueData: state.leagueReducer.leagueData,
       leagueDetails: state.leagueReducer.leagueDetails,
       leagueDetailsFailure: state.leagueReducer.leagueDetailsFailure,
+      selectedTeam: state.createTeamReducer.selectedTeam,
+      selectedTeamFailure: state.createTeamReducer.selectedTeamFailure,
     }
   })
   const [filteredAllPlayers, setFilteredAllPlayers] = useState<PLAYERS_INTERFACE[] | []>(propsState.allPlayer)
@@ -46,7 +58,17 @@ const CreateTeam = () => {
   const [availableSelectedPlayers, setAvailableSelectedPlayers] = useState<PLAYERS_INTERFACE[] | []>([])
   const [tabsValue, setTabsValue] = useState<string>('all')
   const [availablePlayersSearch, setAvailablePlayersSearch] = useState<string>('')
-  const [teamFormData, setTeamFormData] = useState<{ teamName: string; league: string }>({ league: '', teamName: '' })
+  const [teamFormData, setTeamFormData] = useState<{
+    teamName: string
+    league: string
+    teamId: number
+    substitutions: number
+  }>({
+    league: '',
+    teamName: '',
+    teamId: 0,
+    substitutions: -1,
+  })
   const [captainData, setCaptainData] = useState<CaptainInterface | null>(null)
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
@@ -55,14 +77,18 @@ const CreateTeam = () => {
     if (propsState.allPlayer && propsState.allPlayer.length === 0) {
       dispatch(getAllPlayers())
     }
-    console.log(location)
     const requestBody = getLeaguesRequestBody(null, DEFAULT_PAGE_NUMBER, 1000)
     dispatch(fetchLeagueAction(requestBody))
   }, [])
   useEffect(() => {
     if (propsState.leagueData) {
       if (location && location.state) {
-        const formData = { teamName: location.state.team, league: location.state.league_id }
+        const formData = {
+          teamName: location.state.team,
+          league: location.state.league_id,
+          teamId: location.state.team_id,
+          substitutions: -1,
+        }
         setTeamFormData(formData)
       }
     }
@@ -80,7 +106,7 @@ const CreateTeam = () => {
   }, [propsState.allPlayerError])
   const handleActions = (data: PLAYERS_INTERFACE, flow: string) => {
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
-      if (checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData, captainData)) {
+      if (maximumPlayerAllowedValidation(availableSelectedPlayers)) {
         const { allPlayers, selectedPlayers } = updatePlayerList(data, availablePlayers, propsState.selectedPlayers)
         setAvailablePlayers(allPlayers)
         const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch)
@@ -123,7 +149,7 @@ const CreateTeam = () => {
   const handleSaveTeam = () => {
     const validationCheck = minimumPlayersByCategory(availableSelectedPlayers)
     if (!validationCheck.error) {
-      const requestBody = createTeamRequestBody(availableSelectedPlayers, teamFormData.teamName, captainData)
+      const requestBody = createTeamRequestBody(availableSelectedPlayers, teamFormData, captainData)
       dispatch(createTeam(requestBody))
     } else {
       dispatch(updateToastState({ message: validationCheck.message, type: 'error' }))
@@ -147,8 +173,17 @@ const CreateTeam = () => {
   }
   useEffect(() => {
     if (propsState.leagueDetails) {
-      setTeamFormData({ ...teamFormData, teamName: propsState.leagueDetails[0].team_name })
-      dispatch(updateLoaderState(false))
+      setTeamFormData({
+        ...teamFormData,
+        teamName: propsState.leagueDetails[0].team_name,
+        teamId: propsState.leagueDetails[0].team_id,
+        substitutions: propsState.leagueDetails[0].remaining_subs,
+      })
+      if (propsState.leagueDetails[0].team_id) {
+        dispatch(getTeamByIdAction(propsState.leagueDetails[0].team_id))
+      } else {
+        dispatch(updateLoaderState(false))
+      }
     }
     return () => {
       dispatch(fetchLeagueDetailsActionSuccess(null))
@@ -164,6 +199,28 @@ const CreateTeam = () => {
       dispatch(fetchLeagueDetailsActionFailure(null))
     }
   }, [propsState.leagueDetailsFailure])
+  useEffect(() => {
+    if (propsState.selectedTeam) {
+      const { playersList, selectedPlayers } = prePopulateSelectedPlayers(propsState.selectedTeam, propsState.allPlayer)
+      const updatedSelectedPlayers = updatedSelectedTeamByRemovingCaptainData(selectedPlayers)
+      const updatedCaptainData = getCaptainDataFromSelectedTeam(selectedPlayers)
+      setCaptainData(updatedCaptainData)
+      setAvailablePlayers(playersList)
+      setFilteredAllPlayers(playersList)
+      dispatch(updateSelectedPlayers(updatedSelectedPlayers))
+      setAvailableSelectedPlayers(updatedSelectedPlayers)
+      dispatch(updateLoaderState(false))
+    }
+  }, [propsState.selectedTeam])
+  useEffect(() => {
+    if (propsState.selectedTeamFailure) {
+      dispatch(updateToastState({ message: propsState.selectedTeamFailure.message, type: 'error' }))
+      dispatch(updateLoaderState(false))
+    }
+    return () => {
+      dispatch(getTeamByIdActionFailure(null))
+    }
+  }, [propsState.selectedTeamFailure])
   useEffect(() => {
     if (propsState.teamSuccess && propsState.teamSuccess.message) {
       dispatch(updateToastState({ message: propsState.teamSuccess.message, type: 'success' }))
@@ -182,7 +239,7 @@ const CreateTeam = () => {
     <>
       <Grid container direction='row' sx={{ margin: '2% 0%' }}>
         <Typography variant='h2' sx={{ fontWeight: 'bold' }}>
-          Create Team
+          Manage Teams
         </Typography>
       </Grid>
       <Grid container direction={'row'} sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
