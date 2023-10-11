@@ -56,12 +56,25 @@ export const getFilteredData = (playersData: PLAYERS_INTERFACE[] | [], filterVal
   }
   return filteredData
 }
-export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFACE[] | []) => {
-  if (selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET) {
-    return true
+export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFACE[] | null, capData: number) => {
+  if (!selectedPlayers) {
+    return { flag: true, message: '' }
   }
-  return false
+  if (selectedPlayers.length > MAXIMUM_ALLOWED_PLAYERS.CRICKET) {
+    return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_ALLOWED_PLAYERS }
+  }
+  const cap =
+    selectedPlayers.length > 0
+      ? selectedPlayers.reduce((accumulator: number, player: PLAYERS_INTERFACE) => {
+          return accumulator + player.cap
+        }, 0)
+      : 0
+  if (capData + cap < 100) {
+    return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_CAP }
+  }
+  return { flag: true, message: '' }
 }
+
 export const checkMaximumPlayerAllowedValidation = (
   selectedPlayers: PLAYERS_INTERFACE[] | [],
   teamInfo: { teamName: string; league: string },
@@ -103,12 +116,13 @@ export const createTeamRequestBody = (
   selectedPlayers: PLAYERS_INTERFACE[],
   teamForm: { teamName: string; league: string; teamId: number; substitutions: number },
   captainData: CaptainInterface | null,
+  subs: number,
 ) => {
   const request: CreateTeamInterface = {
     //team_name: teamForm.teamName,
     team_id: teamForm.teamId,
     players: getPlayersForRequestBody(selectedPlayers, captainData),
-    substitutions: teamForm.substitutions,
+    substitutions: subs,
   }
   return request
 }
@@ -189,7 +203,6 @@ export const updatedSelectedTeamByRemovingCaptainData = (selectedPlayers: TeamIn
       team_img: '',
     })
   })
-  console.log(updatedTeam)
   return updatedTeam
 }
 
@@ -206,4 +219,56 @@ export const getCaptainDataFromSelectedTeam = (selectedPlayers: TeamInterface[] 
     }
   }
   return null
+}
+
+export const getSubsDataAfterDelete = (subs: number, selectedPlayerData: PLAYERS_INTERFACE) => {
+  if (!selectedPlayerData) {
+    return subs
+  }
+  return subs - 1
+}
+
+export const getSubsAfterAddPlayer = (
+  subs: number,
+  selectedPlayerData: PLAYERS_INTERFACE,
+  lastSubmittedTeam: TeamInterface[] | null,
+) => {
+  if (!selectedPlayerData) {
+    return subs
+  }
+  if (!lastSubmittedTeam) {
+    return subs
+  }
+  let cloneSubs = subs
+  const findData = lastSubmittedTeam.find((team) => team.id === selectedPlayerData.id)
+  if (findData) {
+    cloneSubs++
+  }
+
+  return cloneSubs
+}
+
+export const getCapData = (selectedPlayersList: PLAYERS_INTERFACE[] | null) => {
+  if (!selectedPlayersList) {
+    return 0
+  }
+
+  const updateCapData = selectedPlayersList.reduce((accumulator, player) => {
+    return accumulator + player.cap
+  }, 0)
+  return updateCapData
+}
+
+export const getUpdatedCapDataAfterDelete = (totalCap: number, selectedPlayerData: PLAYERS_INTERFACE) => {
+  if (!selectedPlayerData) {
+    return totalCap
+  }
+  return totalCap - selectedPlayerData.cap
+}
+
+export const getUpdatedCapDataAfterAddPlayer = (totalCap: number, selectedPlayerData: PLAYERS_INTERFACE) => {
+  if (!selectedPlayerData) {
+    return totalCap
+  }
+  return totalCap + selectedPlayerData.cap
 }

@@ -5,7 +5,6 @@ import Cookies from 'js-cookie'
 export const BASE_URL = 'https://iplfantasy-refactor.onrender.com'
 export const _request = async (config: AxiosRequestConfig) => {
   let authHeaders = config?.headers ? config.headers : HTTPS_HEADERS
-  console.log(authHeaders)
   authHeaders = { ...authHeaders, Authorization: `Bearer ${Cookies.get('jwtToken')}` }
   try {
     const options: AxiosRequestConfig = {

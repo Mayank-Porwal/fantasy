@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material'
+import { Button, Grid, Typography, useTheme } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CardTable from '../../component/CardTable'
@@ -9,14 +9,20 @@ import {
   getAllPlayers,
   getTeamByIdAction,
   getTeamByIdActionFailure,
+  getTeamByIdActionSuccess,
   updateSelectedPlayers,
 } from './actions'
-import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES } from './constants'
+import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES, DEFAULT_SUBS_DATA } from './constants'
 import {
   checkMaximumPlayerAllowedValidation,
   createTeamRequestBody,
+  getCapData,
   getCaptainDataFromSelectedTeam,
   getFilteredData,
+  getSubsAfterAddPlayer,
+  getSubsDataAfterDelete,
+  getUpdatedCapDataAfterAddPlayer,
+  getUpdatedCapDataAfterDelete,
   getUpdatedLeagueOptions,
   maximumPlayerAllowedValidation,
   minimumPlayersByCategory,
@@ -38,7 +44,10 @@ import {
   fetchLeagueDetailsActionFailure,
   fetchLeagueDetailsActionSuccess,
 } from '../ManageLeague/actions'
+import { tokens } from '../../utils/theme'
 const CreateTeam = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   const propsState = useSelector((state: RootState) => {
     return {
       allPlayer: state.createTeamReducer.allPlayers,
@@ -69,16 +78,24 @@ const CreateTeam = () => {
     teamId: 0,
     substitutions: -1,
   })
+  const [subs, setSubs] = useState<number>(DEFAULT_SUBS_DATA)
   const [captainData, setCaptainData] = useState<CaptainInterface | null>(null)
+  const [capData, setCapData] = useState(0)
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
   const location = useLocation()
   useEffect(() => {
     if (propsState.allPlayer && propsState.allPlayer.length === 0) {
+      dispatch(updateLoaderState(true))
       dispatch(getAllPlayers())
     }
     const requestBody = getLeaguesRequestBody(null, DEFAULT_PAGE_NUMBER, 1000)
     dispatch(fetchLeagueAction(requestBody))
+    return () => {
+      setSubs(DEFAULT_SUBS_DATA)
+      dispatch(getTeamByIdActionSuccess(null))
+      dispatch(fetchLeagueDetailsActionSuccess(null))
+    }
   }, [])
   useEffect(() => {
     if (propsState.leagueData) {
@@ -89,14 +106,19 @@ const CreateTeam = () => {
           teamId: location.state.team_id,
           substitutions: -1,
         }
+        dispatch(updateLoaderState(true))
+        dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
         setTeamFormData(formData)
       }
     }
   }, [propsState.leagueData])
   useEffect(() => {
     if (propsState.allPlayer) {
-      setAvailablePlayers(propsState.allPlayer)
-      setFilteredAllPlayers(propsState.allPlayer)
+      if (propsState.allPlayer.length > 0) {
+        setAvailablePlayers(propsState.allPlayer)
+        setFilteredAllPlayers(propsState.allPlayer)
+        dispatch(updateLoaderState(false))
+      }
     }
   }, [propsState.allPlayer])
   useEffect(() => {
@@ -106,17 +128,26 @@ const CreateTeam = () => {
   }, [propsState.allPlayerError])
   const handleActions = (data: PLAYERS_INTERFACE, flow: string) => {
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
-      if (maximumPlayerAllowedValidation(availableSelectedPlayers)) {
+      const validationData = maximumPlayerAllowedValidation(availableSelectedPlayers, capData)
+      if (validationData.flag) {
         const { allPlayers, selectedPlayers } = updatePlayerList(data, availablePlayers, propsState.selectedPlayers)
         setAvailablePlayers(allPlayers)
         const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch)
         setFilteredAllPlayers(filteredData)
         dispatch(updateSelectedPlayers(selectedPlayers))
         setAvailableSelectedPlayers(selectedPlayers)
+        const updatedSubs = getSubsAfterAddPlayer(
+          subs,
+          data,
+          propsState.selectedTeam ? propsState.selectedTeam.last_submitted_team : null,
+        )
+        setSubs(updatedSubs)
+        const updatedCapData = getUpdatedCapDataAfterAddPlayer(capData, data)
+        setCapData(updatedCapData)
       } else {
         dispatch(
           updateToastState({
-            message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_ALLOWED_PLAYERS,
+            message: validationData.message,
             type: 'error',
           }),
         )
@@ -127,6 +158,10 @@ const CreateTeam = () => {
       setFilteredAllPlayers(selectedPlayers)
       dispatch(updateSelectedPlayers(allPlayers))
       setAvailableSelectedPlayers(allPlayers)
+      const updatedSubs = getSubsDataAfterDelete(subs, data)
+      setSubs(updatedSubs)
+      const updatedCapData = getUpdatedCapDataAfterDelete(capData, data)
+      setCapData(updatedCapData)
     }
   }
   const handleOnSearch = (availPlayers: PLAYERS_INTERFACE[] | [], flow: string, searchString: string) => {
@@ -149,7 +184,7 @@ const CreateTeam = () => {
   const handleSaveTeam = () => {
     const validationCheck = minimumPlayersByCategory(availableSelectedPlayers)
     if (!validationCheck.error) {
-      const requestBody = createTeamRequestBody(availableSelectedPlayers, teamFormData, captainData)
+      const requestBody = createTeamRequestBody(availableSelectedPlayers, teamFormData, captainData, subs)
       dispatch(createTeam(requestBody))
     } else {
       dispatch(updateToastState({ message: validationCheck.message, type: 'error' }))
@@ -166,6 +201,7 @@ const CreateTeam = () => {
         dispatch(fetchLeagueDetailsAction({ league_id: event.target.value }))
       } else {
         formData.teamName = ''
+        dispatch(getTeamByIdActionSuccess(null))
         dispatch(fetchLeagueDetailsActionSuccess(null))
       }
     }
@@ -179,14 +215,15 @@ const CreateTeam = () => {
         teamId: propsState.leagueDetails[0].team_id,
         substitutions: propsState.leagueDetails[0].remaining_subs,
       })
+      setSubs(propsState.leagueDetails[0].remaining_subs)
       if (propsState.leagueDetails[0].team_id) {
         dispatch(getTeamByIdAction(propsState.leagueDetails[0].team_id))
       } else {
         dispatch(updateLoaderState(false))
       }
-    }
-    return () => {
-      dispatch(fetchLeagueDetailsActionSuccess(null))
+      return () => {
+        dispatch(fetchLeagueDetailsActionSuccess(null))
+      }
     }
   }, [propsState.leagueDetails])
 
@@ -210,6 +247,15 @@ const CreateTeam = () => {
       dispatch(updateSelectedPlayers(updatedSelectedPlayers))
       setAvailableSelectedPlayers(updatedSelectedPlayers)
       dispatch(updateLoaderState(false))
+      const updatedCapData = getCapData(updatedSelectedPlayers)
+      setCapData(updatedCapData)
+    } else {
+      setCaptainData(null)
+      setAvailablePlayers(propsState.allPlayer)
+      setFilteredAllPlayers(propsState.allPlayer)
+      dispatch(updateSelectedPlayers([]))
+      setAvailableSelectedPlayers([])
+      setCapData(0)
     }
   }, [propsState.selectedTeam])
   useEffect(() => {
@@ -242,11 +288,11 @@ const CreateTeam = () => {
           Manage Teams
         </Typography>
       </Grid>
-      <Grid container direction={'row'} sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
-        <Grid item xs={10}>
+      <div style={{ margin: '2% 0%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
           <span>* {CREATE_TEAM_VALIDATION_MESSAGES.MINIMUM_PLAYERS_REQUIRED}</span>
-        </Grid>
-        <Grid item xs={2}>
+        </div>
+        <div>
           <Button
             variant='outlined'
             color='secondary'
@@ -256,8 +302,8 @@ const CreateTeam = () => {
           >
             Save Team
           </Button>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
       <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
         <Grid item xs={12} sm={3} md={3}>
           <FantasyDropdowns
@@ -280,6 +326,14 @@ const CreateTeam = () => {
             onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTeamNameChange(event)}
             disabled={true}
           />
+        </Grid>
+
+        <Grid item xs={12} sm={3} md={3}>
+          Remaining Substitutions:{' '}
+          <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{subs ? subs : 0}</span>
+        </Grid>
+        <Grid item xs={12} sm={3} md={3}>
+          Cap: <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{capData ? capData : 0}</span>
         </Grid>
       </Grid>
       <Grid container direction='row' spacing={2} alignItems={'center'} justifyContent={'center'}>

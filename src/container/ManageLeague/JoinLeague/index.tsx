@@ -50,7 +50,6 @@ const JoinLeague = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value })
   }
   const handleAction = (id: string) => {
-    console.log(id)
     if (id === 'cancel') {
       dispatch(updatePopupState({ open: false, size: 'sm', content: '', title: '' }))
     } else {

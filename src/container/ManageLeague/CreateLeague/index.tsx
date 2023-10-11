@@ -44,10 +44,6 @@ const CreateLeague = () => {
       ...formData,
       leagueType: !formData.leagueType,
     })
-    console.log({
-      ...formData,
-      leagueType: !formData.leagueType,
-    })
   }
   const handleAction = (id: string) => {
     if (id === 'cancel') {

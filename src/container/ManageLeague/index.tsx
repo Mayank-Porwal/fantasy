@@ -33,7 +33,6 @@ const ManageLeague = () => {
   }, [])
   const [tabsValue, setTabsValue] = useState(LEAGUE_TABS_DATA[0].id)
   var handleClickActions = (link: string, data: any) => {
-    console.log(link, data)
     navigate(link, { state: data })
   }
   const [columns, setColumns] = useState(getManageLeagueColumns(handleClickActions))

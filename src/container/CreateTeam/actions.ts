@@ -99,9 +99,9 @@ export const getTeamByIdAction = (payload: number): FetchTeamByIdInterface => {
 
 export interface FetchTeamByIdInterfaceSuccess {
   type: CREATE_TEAM_ACTIONS.GET_SELECTED_TEAM_SUCCESS
-  payload: TeamDetailsInterface
+  payload: TeamDetailsInterface | null
 }
-export const getTeamByIdActionSuccess = (payload: TeamDetailsInterface): FetchTeamByIdInterfaceSuccess => {
+export const getTeamByIdActionSuccess = (payload: TeamDetailsInterface | null): FetchTeamByIdInterfaceSuccess => {
   return {
     type: CREATE_TEAM_ACTIONS.GET_SELECTED_TEAM_SUCCESS,
     payload,

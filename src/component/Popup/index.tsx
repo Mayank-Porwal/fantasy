@@ -34,7 +34,6 @@ export default function CustomizedDialogs() {
   const [popUpData, setPopupData] = useState<PopupInterface | null>(null)
   useEffect(() => {
     if (propsState.popupData) {
-      console.log(propsState.popupData)
       setPopupData(propsState.popupData)
     }
   }, [propsState.popupData])
