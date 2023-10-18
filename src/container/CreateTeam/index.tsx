@@ -100,16 +100,17 @@ const CreateTeam = () => {
   }, [])
   useEffect(() => {
     if (propsState.leagueData) {
-      debugger
       if (location && location.state) {
         const formData = {
-          teamName: location.state.team,
+          teamName: location.state.team_name,
           league: location.state.league_id,
           teamId: location.state.team_id,
-          substitutions: -1,
+          substitutions: location.state.remaining_subs,
         }
+        setSubs(location.state.remaining_subs)
         dispatch(updateLoaderState(true))
-        dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
+        dispatch(getTeamByIdAction(location.state.team_id))
+        //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
         setTeamFormData(formData)
       }
     }
