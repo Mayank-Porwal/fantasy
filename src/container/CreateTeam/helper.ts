@@ -60,7 +60,7 @@ export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFAC
   if (!selectedPlayers) {
     return { flag: true, message: '' }
   }
-  if (selectedPlayers.length > MAXIMUM_ALLOWED_PLAYERS.CRICKET) {
+  if (selectedPlayers.length > MAXIMUM_ALLOWED_PLAYERS.CRICKET - 1) {
     return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_ALLOWED_PLAYERS }
   }
   const cap =
@@ -69,7 +69,7 @@ export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFAC
           return accumulator + player.cap
         }, 0)
       : 0
-  if (capData + cap > 100) {
+  if (cap > 100) {
     return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_CAP }
   }
   return { flag: true, message: '' }

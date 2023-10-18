@@ -1,6 +1,10 @@
 import { Grid } from '@mui/material'
 import React from 'react'
-const LeaguePlayers = () => {
+import { FetchLeagueResponseInterface } from '../../types'
+interface Props {
+  leagueData: FetchLeagueResponseInterface | null
+}
+const LeaguePlayers = (props: Props) => {
   return <Grid>Hello</Grid>
 }
 

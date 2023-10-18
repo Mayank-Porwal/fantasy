@@ -57,7 +57,7 @@ const CreateLeague = () => {
     if (propsState.createLeagueSuccess) {
       dispatch(updateToastState({ message: propsState.createLeagueSuccess.message, type: 'success' }))
       dispatch(updatePopupState({ content: null, open: false, size: 'sm', title: '' }))
-      navigate('/teams')
+      navigate('/teams', { state: propsState.createLeagueSuccess })
     }
     return () => {
       dispatch(createLeagueActionSuccess(null))

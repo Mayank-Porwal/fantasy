@@ -105,9 +105,9 @@ const CreateTeam = () => {
           teamName: location.state.team_name,
           league: location.state.league_id,
           teamId: location.state.team_id,
-          substitutions: location.state.remaining_subs,
+          substitutions: location.state.remaining_subs ? location.state.remaining_subs : 150,
         }
-        setSubs(location.state.remaining_subs)
+        setSubs(location.state.remaining_subs ? location.state.remaining_subs : 150)
         dispatch(updateLoaderState(true))
         dispatch(getTeamByIdAction(location.state.team_id))
         //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
