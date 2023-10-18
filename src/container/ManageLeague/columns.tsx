@@ -4,6 +4,16 @@ import FantasyTextField from '../../component/FormElements/TextFlied'
 import { useNavigate } from 'react-router-dom'
 export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
   {
+    accessorFn: (row: any) => (
+      <div
+        onClick={() =>
+          handleLeagueActions(`/league-details?league=${row.league_id}&leagueName=${row.league_name}`, row)
+        }
+        style={{ color: '#0070E0', cursor: 'pointer' }}
+      >
+        {row.league_name ? row.league_name : '-'}
+      </div>
+    ),
     accessorKey: 'league_name',
     id: 'league_name',
     header: 'League Name',
@@ -55,7 +65,7 @@ export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
     header: 'Team Name',
     accessorFn: (row: any) => (
       <div onClick={() => handleLeagueActions('/teams', row)} style={{ color: '#0070E0', cursor: 'pointer' }}>
-        {row.team ? row.team : '-'}
+        {row.team_name ? row.team_name : '-'}
       </div>
     ),
     size: 150,

@@ -4,7 +4,7 @@ import { tokens } from '../../../utils/theme'
 import { getDropdownCss } from './helper'
 import { Grid } from '@mui/material'
 interface OptionsInterface {
-  id: string
+  id: string | number
   name: string
 }
 interface Props {

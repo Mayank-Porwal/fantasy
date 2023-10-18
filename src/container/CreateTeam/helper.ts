@@ -1,5 +1,5 @@
 import { CATEGORY_ENUM, CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
-import { LeagueResponseDataInterface } from '../ManageLeague/types'
+import { FetchLeagueResponseInterface, LeagueResponseDataInterface } from '../ManageLeague/types'
 import { C, CREATE_TEAM_VALIDATION_MESSAGES, VC } from './constants'
 import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE, TeamDetailsInterface, TeamInterface } from './types'
 import _ from 'lodash'
@@ -69,7 +69,7 @@ export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFAC
           return accumulator + player.cap
         }, 0)
       : 0
-  if (capData + cap < 100) {
+  if (capData + cap > 100) {
     return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_CAP }
   }
   return { flag: true, message: '' }
@@ -271,4 +271,12 @@ export const getUpdatedCapDataAfterAddPlayer = (totalCap: number, selectedPlayer
     return totalCap
   }
   return totalCap + selectedPlayerData.cap
+}
+
+export const findLeagueById = (leagueData: FetchLeagueResponseInterface | null, leagueId: number) => {
+  if (!leagueData) {
+    return null
+  }
+  const findLeague = leagueData.data.find((league) => league.league_id === leagueId)
+  return findLeague ? findLeague : null
 }

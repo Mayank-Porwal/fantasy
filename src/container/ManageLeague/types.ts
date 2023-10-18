@@ -28,13 +28,16 @@ export interface FetchLeagueResponseInterface {
 }
 
 export interface LeagueResponseDataInterface {
-  league_id: string
+  league_id: number
   active: boolean
   league_name: string
   type: string
-  team: string
+  team_name: string
+  team_id: number
   rank: number
   owner: boolean
+  remaining_subs: number
+  points: number
 }
 
 export interface FetchLeagueDetailsPayloadInterface {

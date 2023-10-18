@@ -16,6 +16,7 @@ import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES, DEFAULT_SUBS_DATA } 
 import {
   checkMaximumPlayerAllowedValidation,
   createTeamRequestBody,
+  findLeagueById,
   getCapData,
   getCaptainDataFromSelectedTeam,
   getFilteredData,
@@ -35,7 +36,7 @@ import {
 import { CaptainInterface, PLAYERS_INTERFACE } from './types'
 import { DEFAULT_PAGE_NUMBER, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
 import FantasyTextField from '../../component/FormElements/TextFlied'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import FantasyDropdowns from '../../component/FormElements/FantasyDropdowns'
 import { getLeaguesRequestBody } from '../ManageLeague/helper'
 import {
@@ -48,6 +49,8 @@ import { tokens } from '../../utils/theme'
 const CreateTeam = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const navigate = useNavigate()
+  window.history.replaceState({}, document.title)
   const propsState = useSelector((state: RootState) => {
     return {
       allPlayer: state.createTeamReducer.allPlayers,
@@ -56,8 +59,6 @@ const CreateTeam = () => {
       teamSuccess: state.createTeamReducer.createTeamSuccess,
       teamFailure: state.createTeamReducer.createTeamFailure,
       leagueData: state.leagueReducer.leagueData,
-      leagueDetails: state.leagueReducer.leagueDetails,
-      leagueDetailsFailure: state.leagueReducer.leagueDetailsFailure,
       selectedTeam: state.createTeamReducer.selectedTeam,
       selectedTeamFailure: state.createTeamReducer.selectedTeamFailure,
     }
@@ -99,6 +100,7 @@ const CreateTeam = () => {
   }, [])
   useEffect(() => {
     if (propsState.leagueData) {
+      debugger
       if (location && location.state) {
         const formData = {
           teamName: location.state.team,
@@ -198,44 +200,28 @@ const CreateTeam = () => {
     if (event.target.name && event.target.name === 'league') {
       if (event.target.value) {
         dispatch(updateLoaderState(true))
-        dispatch(fetchLeagueDetailsAction({ league_id: event.target.value }))
+        const findSelectedLeague = findLeagueById(propsState.leagueData, parseInt(event.target.value))
+        setTeamFormData({
+          ...teamFormData,
+          teamName: findSelectedLeague ? findSelectedLeague.team_name : '',
+          teamId: findSelectedLeague ? findSelectedLeague.team_id : NaN,
+          substitutions: findSelectedLeague ? findSelectedLeague.remaining_subs : 0,
+          [event.target.id || event.target.name]: event.target.value,
+        })
+        setSubs(findSelectedLeague ? findSelectedLeague.remaining_subs : 0)
+        if (findSelectedLeague && findSelectedLeague.team_id) {
+          dispatch(getTeamByIdAction(findSelectedLeague.team_id))
+        } else {
+          dispatch(updateLoaderState(false))
+        }
       } else {
         formData.teamName = ''
         dispatch(getTeamByIdActionSuccess(null))
-        dispatch(fetchLeagueDetailsActionSuccess(null))
       }
+    } else {
+      setTeamFormData(formData)
     }
-    setTeamFormData(formData)
   }
-  useEffect(() => {
-    if (propsState.leagueDetails) {
-      setTeamFormData({
-        ...teamFormData,
-        teamName: propsState.leagueDetails[0].team_name,
-        teamId: propsState.leagueDetails[0].team_id,
-        substitutions: propsState.leagueDetails[0].remaining_subs,
-      })
-      setSubs(propsState.leagueDetails[0].remaining_subs)
-      if (propsState.leagueDetails[0].team_id) {
-        dispatch(getTeamByIdAction(propsState.leagueDetails[0].team_id))
-      } else {
-        dispatch(updateLoaderState(false))
-      }
-      return () => {
-        dispatch(fetchLeagueDetailsActionSuccess(null))
-      }
-    }
-  }, [propsState.leagueDetails])
-
-  useEffect(() => {
-    if (propsState.leagueDetailsFailure) {
-      dispatch(updateToastState({ message: propsState.leagueDetailsFailure.message, type: 'error' }))
-      dispatch(updateLoaderState(false))
-    }
-    return () => {
-      dispatch(fetchLeagueDetailsActionFailure(null))
-    }
-  }, [propsState.leagueDetailsFailure])
   useEffect(() => {
     if (propsState.selectedTeam) {
       const { playersList, selectedPlayers } = prePopulateSelectedPlayers(propsState.selectedTeam, propsState.allPlayer)
