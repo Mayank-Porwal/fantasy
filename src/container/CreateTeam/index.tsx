@@ -65,6 +65,9 @@ const CreateTeam = () => {
   })
   const [filteredAllPlayers, setFilteredAllPlayers] = useState<PLAYERS_INTERFACE[] | []>(propsState.allPlayer)
   const [availablePlayers, setAvailablePlayers] = useState<PLAYERS_INTERFACE[] | []>(propsState.allPlayer)
+  const [filteredSelectedPlayers, setFilteredSelectedPlayers] = useState<PLAYERS_INTERFACE[] | []>(
+    propsState.selectedPlayers,
+  )
   const [availableSelectedPlayers, setAvailableSelectedPlayers] = useState<PLAYERS_INTERFACE[] | []>([])
   const [tabsValue, setTabsValue] = useState<string>('all')
   const [availablePlayersSearch, setAvailablePlayersSearch] = useState<string>('')
@@ -98,6 +101,11 @@ const CreateTeam = () => {
       dispatch(fetchLeagueDetailsActionSuccess(null))
     }
   }, [])
+  useEffect(() => {
+    if (propsState.selectedPlayers) {
+      setFilteredSelectedPlayers(propsState.selectedPlayers)
+    }
+  }, [propsState.selectedPlayers])
   useEffect(() => {
     if (propsState.leagueData) {
       if (location && location.state) {
@@ -178,10 +186,16 @@ const CreateTeam = () => {
       //setSearchSelectedPlayers(searchString);
     }
   }
-  const handleTabsChange = (tabsValue: string) => {
+  const handleTabsChange = (tabsValue: string, players: PLAYERS_INTERFACE[] | [], flow: string) => {
     setTabsValue(tabsValue)
-    const availableData = getFilteredData(availablePlayers, tabsValue, availablePlayersSearch)
-    setFilteredAllPlayers(availableData)
+
+    const availableData = getFilteredData(players, tabsValue, availablePlayersSearch)
+    if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
+      setFilteredAllPlayers(availableData)
+    } else {
+      setFilteredSelectedPlayers(availableData)
+    }
+
     //setAvailablePlayers(availableData);
   }
   const handleSaveTeam = () => {
@@ -339,13 +353,14 @@ const CreateTeam = () => {
         <Grid item xs={12} sm={12} md={6} lg={6}>
           <CardTable
             filter={true}
-            availablePlayers={propsState.selectedPlayers}
+            availablePlayers={filteredSelectedPlayers}
             handleActions={handleActions}
             flow={CREATE_TEAM_FLOW.SELECTED_PLAYERS}
             allPlayers={availableSelectedPlayers}
             onSearch={handleOnSearch}
             captainData={captainData}
             handleChipSelection={handleChipSelection}
+            onTabsChange={handleTabsChange}
           />
         </Grid>
       </Grid>

@@ -20,7 +20,7 @@ export default function FantasyTabs(props: Props) {
     <Tabs
       value={value}
       onChange={(event, newValue) => {
-        if (props.flow && props.flow !== CREATE_TEAM_FLOW.SELECTED_PLAYERS) {
+        if (props.flow) {
           handleChange(event, newValue)
         }
       }}

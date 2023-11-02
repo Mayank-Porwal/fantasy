@@ -33,7 +33,7 @@ const CardTable = (props: Props) => {
   }
   const handleTabsChange = (tabsValue: string) => {
     if (props.onTabsChange) {
-      props.onTabsChange(tabsValue)
+      props.onTabsChange(tabsValue, props.allPlayers, props.flow)
     }
   }
   return (

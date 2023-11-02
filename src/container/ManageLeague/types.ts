@@ -45,10 +45,18 @@ export interface FetchLeagueDetailsPayloadInterface {
 }
 
 export interface LeagueDetailsInterface {
-  rank: string
+  owner: number
+  league_id: number
+  league_name: string
+  league_players: LeaguePlayersInterface[]
+  code: string
+}
+
+export interface LeaguePlayersInterface {
+  points: number
+  rank: number
+  remaining_subs: number
   team_id: number
   team_name: string
   team_owner: string
-  remaining_subs: number
-  points: number
 }

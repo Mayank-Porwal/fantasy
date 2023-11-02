@@ -53,7 +53,7 @@ const LeagueDetails = (props: Props) => {
       </div>
       <Grid container direction={'row'} spacing='2'>
         <Grid item xs={12} sm={12} md={6}>
-          {/* <LeaguePlayers leagueData={propsState.leagueDetailData} /> */}
+          <LeaguePlayers leagueData={propsState.leagueDetailData} />
         </Grid>
       </Grid>
     </>
