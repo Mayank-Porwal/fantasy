@@ -44,6 +44,7 @@ const LeagueDetails = (props: Props) => {
   const getLeagueData = (leagueId: string) => {
     dispatch(fetchLeagueDetailsAction({ league_id: leagueId }))
   }
+  console.log(propsState.leagueDetailData)
   return (
     <>
       <div>

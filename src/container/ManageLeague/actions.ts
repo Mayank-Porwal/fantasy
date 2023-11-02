@@ -141,11 +141,11 @@ export const fetchLeagueDetailsAction = (payload: FetchLeagueDetailsPayloadInter
 
 export interface fetchLeagueDetailsInterfaceSuccess {
   type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_SUCCESS
-  payload: LeagueDetailsInterface[] | null
+  payload: LeagueDetailsInterface | null
 }
 
 export const fetchLeagueDetailsActionSuccess = (
-  payload: LeagueDetailsInterface[] | null,
+  payload: LeagueDetailsInterface | null,
 ): fetchLeagueDetailsInterfaceSuccess => {
   return {
     type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS_SUCCESS,

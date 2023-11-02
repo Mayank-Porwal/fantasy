@@ -9,7 +9,7 @@ interface InitialState {
   joinLeagueFailure: any
   leagueData: FetchLeagueResponseInterface | null
   leagueDataFailure: any
-  leagueDetails: LeagueDetailsInterface[] | null
+  leagueDetails: LeagueDetailsInterface | null
   leagueDetailsFailure: any
 }
 const initialState = {
