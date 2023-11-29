@@ -1,10 +1,10 @@
-import { Button, useTheme } from '@mui/material'
+import { Button, SvgIconProps, useTheme } from '@mui/material'
 import { ButtonTypes } from '../../../utils/constants'
 import { tokens } from '../../../utils/theme'
 import { getButtonsStyle } from './helper'
 interface Props {
   id: string
-  label: string
+  label?: string | React.ReactElement<SvgIconProps>
   onClick: Function
   disabled?: boolean
   buttonType?: 'text' | 'outlined' | 'contained' | undefined
@@ -27,7 +27,7 @@ const FantasyButtons = (props: Props) => {
         fontWeight: 'bold',
       }}
     >
-      {props.label}
+      <b>{props.label}</b>
     </Button>
   )
 }

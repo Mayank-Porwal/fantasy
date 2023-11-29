@@ -1,18 +1,32 @@
-import { Grid } from '@mui/material'
-import React from 'react'
+import { Grid, useTheme } from '@mui/material'
+import React, { useState } from 'react'
 import { LeagueDetailsInterface } from '../../types'
+import { tokens } from '../../../../utils/theme'
+import { getManageLeaguesDetailsColumns } from './columns'
+import FantasyDataGrid from '../../../../component/DataGrid'
+import { getGridActions } from './helper'
 interface Props {
   leagueData: LeagueDetailsInterface | null
 }
 const LeaguePlayers = (props: Props) => {
-  console.log(props.leagueData)
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const handleClickActions = () => {}
+  const [columns, setColumns] = useState(getManageLeaguesDetailsColumns(handleClickActions))
+  const handleCellActions = () => {}
+  const handleGridCallback = () => {}
   return (
-    <Grid container direction='column'>
-      {props.leagueData &&
-        props.leagueData.league_players.map((player) => {
-          return <>{player.team_name}</>
-        })}
-    </Grid>
+    <div style={{ width: '100%' }}>
+      <FantasyDataGrid
+        columns={columns}
+        data={props.leagueData ? props.leagueData.league_players : []}
+        pagination={true}
+        onCallback={handleGridCallback}
+        gridActions={getGridActions(handleCellActions)}
+        pageCount={props.leagueData ? Math.ceil(props.leagueData.league_players.length / 20) : 0}
+        rowCount={props.leagueData ? props.leagueData.league_players.length : 0}
+      />
+    </div>
   )
 }
 

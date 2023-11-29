@@ -50,6 +50,11 @@ const FantasyDataGrid = (props: Props) => {
         enablePagination
         pageCount={props.pageCount ? props.pageCount : 0}
         rowCount={props.rowCount ? props.rowCount : 0}
+        muiTablePaginationProps={{
+          rowsPerPageOptions: [5, 10],
+          showFirstButton: true,
+          showLastButton: true,
+        }}
         renderTopToolbarCustomActions={({ table }) => {
           return (
             <div style={{ display: 'flex', gap: '0.5rem' }}>

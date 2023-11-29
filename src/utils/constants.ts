@@ -22,6 +22,7 @@ export enum API_URLS {
   CREATE_LEAGUE = '/league',
   JOIN_LEAGUE = '/join-league',
   FETCH_MY_LEAGUES = '/my-leagues',
+  FETCH_RULES_BY_LEAGUE_ID = '/league-rules',
 }
 
 export interface ResponseGenerator {
@@ -75,3 +76,10 @@ export const VALIDATION_MESSAGES = {
 
 export const DEFAULT_PAGE_NUMBER = 1
 export const DEFAULT_PAGE_SIZE = 25
+
+export enum RULES_TYPES {
+  BATTING = 'batting',
+  BOWLING = 'bowling',
+  FIELDING = 'fielding',
+  AWARDS = 'awards',
+}

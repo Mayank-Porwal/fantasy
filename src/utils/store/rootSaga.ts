@@ -3,7 +3,8 @@ import applicationSaga from '../appActions/saga'
 import createTeamSaga from '../../container/CreateTeam/saga'
 import loginSaga from '../../container/Login/saga'
 import createLeagueSaga from '../../container/ManageLeague/saga'
+import leagueDetailsSaga from '../../container/ManageLeague/LeagueDetails/saga'
 
 export default function* rootSaga() {
-  yield all([applicationSaga(), createTeamSaga(), loginSaga(), createLeagueSaga()])
+  yield all([applicationSaga(), createTeamSaga(), loginSaga(), createLeagueSaga(), leagueDetailsSaga()])
 }
