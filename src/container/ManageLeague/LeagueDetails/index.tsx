@@ -13,10 +13,8 @@ import LeagueRules, { Transition } from './LeagueRules'
 import { RulesDataInterface } from './types'
 import { getUpdateRulesRequestBody } from './helper'
 import { updateRules, updateRulesFailure, updateRulesSuccess } from './actions'
-interface Props {
-  [name: string]: any
-}
-const LeagueDetails = (props: Props) => {
+
+const LeagueDetails = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
@@ -70,7 +68,6 @@ const LeagueDetails = (props: Props) => {
     setOpen(false)
   }
   const handleSaveRule = () => {
-    console.log(updatedRulesData)
     const requestBody = getUpdateRulesRequestBody(updatedRulesData, leagueId)
     if (!requestBody) {
       dispatch(updateToastState({ type: 'error', message: 'Rules Details are missing, please try again' }))
@@ -146,7 +143,11 @@ const LeagueDetails = (props: Props) => {
               </Button>
             </Toolbar>
           </AppBar>
-          <LeagueRules leagueId={leagueId} handleRulesUpdate={handleRulesUpdate} />
+          <LeagueRules
+            leagueId={leagueId}
+            handleRulesUpdate={handleRulesUpdate}
+            leagueOwner={propsState.leagueDetailData?.owner}
+          />
         </Dialog>
       </Grid>
     </>

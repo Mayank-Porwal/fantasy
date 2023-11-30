@@ -12,8 +12,8 @@ import { RootState } from '../../utils/store/rootReducer'
 import { tokens } from '../../utils/theme'
 import { signIn } from './actions'
 import { DEFAULT_LOGIN_ERRORS, DEFAULT_LOGIN_FORM_DATA } from './constants'
-import { validationCheck, validationCheckDisabled } from './helper'
-
+import { setUserDataToCookies, validationCheck, validationCheckDisabled } from './helper'
+import { jwtDecode } from 'jwt-decode'
 const Login = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -45,6 +45,7 @@ const Login = () => {
   useEffect(() => {
     if (propsState.signInSuccess) {
       Cookies.set('jwtToken', propsState.signInSuccess.access_token)
+      setUserDataToCookies(propsState.signInSuccess.access_token)
       navigate('/teams')
       dispatch(updateLoggedInStatus(true))
     }

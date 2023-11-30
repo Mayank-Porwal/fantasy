@@ -11,9 +11,11 @@ import { RulesDataInterface } from '../types'
 import { RULES_TYPES } from '../../../../utils/constants'
 import { IS_ACTIVE, RULE_VALUE } from './constants'
 import { updateRulesData } from './helper'
+import { checkLeagueOwnerOrNot } from '../helper'
 interface Props {
   leagueId: string | null
   handleRulesUpdate: Function
+  leagueOwner: number | undefined
   [key: string]: any
 }
 const LeagueRules = (props: Props) => {
@@ -97,6 +99,7 @@ const LeagueRules = (props: Props) => {
                         handleRuleChange(event, RULE_VALUE, rule)
                       }
                       value={rule.value}
+                      disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                     />
                   </div>
                 </Grid>
@@ -108,6 +111,7 @@ const LeagueRules = (props: Props) => {
                       handleRuleChange(event, IS_ACTIVE, rule)
                     }
                     value={rule.is_active}
+                    disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                   />
                 </Grid>
               </Grid>
@@ -143,6 +147,7 @@ const LeagueRules = (props: Props) => {
                         handleRuleChange(event, RULE_VALUE, rule)
                       }
                       value={rule.value}
+                      disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                     />
                   </div>
                 </Grid>
@@ -154,6 +159,7 @@ const LeagueRules = (props: Props) => {
                       handleRuleChange(event, IS_ACTIVE, rule)
                     }
                     value={rule.is_active}
+                    disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                   />
                 </Grid>
               </Grid>
@@ -189,6 +195,7 @@ const LeagueRules = (props: Props) => {
                         handleRuleChange(event, RULE_VALUE, rule)
                       }
                       value={rule.value}
+                      disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                     />
                   </div>
                 </Grid>
@@ -200,6 +207,7 @@ const LeagueRules = (props: Props) => {
                       handleRuleChange(event, IS_ACTIVE, rule)
                     }
                     value={rule.is_active}
+                    disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                   />
                 </Grid>
               </Grid>
@@ -235,6 +243,7 @@ const LeagueRules = (props: Props) => {
                         handleRuleChange(event, RULE_VALUE, rule)
                       }
                       value={rule.value}
+                      disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                     />
                   </div>
                 </Grid>
@@ -246,6 +255,7 @@ const LeagueRules = (props: Props) => {
                       handleRuleChange(event, IS_ACTIVE, rule)
                     }
                     value={rule.is_active}
+                    disabled={checkLeagueOwnerOrNot(props.leagueOwner)}
                   />
                 </Grid>
               </Grid>
