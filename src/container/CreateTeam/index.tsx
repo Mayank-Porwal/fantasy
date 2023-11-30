@@ -223,7 +223,7 @@ const CreateTeam = () => {
           substitutions: findSelectedLeague ? findSelectedLeague.remaining_subs : 0,
           [event.target.id || event.target.name]: event.target.value,
         })
-        setSubs(findSelectedLeague ? findSelectedLeague.remaining_subs : 0)
+        //setSubs(findSelectedLeague ? findSelectedLeague.remaining_subs : 0)
         if (findSelectedLeague && findSelectedLeague.team_id) {
           dispatch(getTeamByIdAction(findSelectedLeague.team_id))
         } else {
@@ -250,6 +250,7 @@ const CreateTeam = () => {
       dispatch(updateLoaderState(false))
       const updatedCapData = getCapData(updatedSelectedPlayers)
       setCapData(updatedCapData)
+      setSubs(propsState.selectedTeam.substitutions)
     } else {
       setCaptainData(null)
       setAvailablePlayers(propsState.allPlayer)
@@ -257,6 +258,7 @@ const CreateTeam = () => {
       dispatch(updateSelectedPlayers([]))
       setAvailableSelectedPlayers([])
       setCapData(0)
+      setSubs(0)
     }
   }, [propsState.selectedTeam])
   useEffect(() => {

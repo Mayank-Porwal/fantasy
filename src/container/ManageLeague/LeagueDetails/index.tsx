@@ -11,7 +11,7 @@ import FantasyButtons from '../../../component/FormElements/Buttons'
 import CloseIcon from '@mui/icons-material/Close'
 import LeagueRules, { Transition } from './LeagueRules'
 import { RulesDataInterface } from './types'
-import { getUpdateRulesRequestBody } from './helper'
+import { checkLeagueOwnerOrNot, getUpdateRulesRequestBody } from './helper'
 import { updateRules, updateRulesFailure, updateRulesSuccess } from './actions'
 
 const LeagueDetails = () => {
@@ -138,9 +138,11 @@ const LeagueDetails = () => {
               <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
                 League Rules
               </Typography>
-              <Button autoFocus color='inherit' onClick={handleSaveRule}>
-                save
-              </Button>
+              {!checkLeagueOwnerOrNot(propsState.leagueDetailData?.owner) && (
+                <Button autoFocus color='inherit' onClick={handleSaveRule}>
+                  save
+                </Button>
+              )}
             </Toolbar>
           </AppBar>
           <LeagueRules
