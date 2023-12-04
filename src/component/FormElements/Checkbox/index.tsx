@@ -1,4 +1,5 @@
-import { Checkbox, FormControlLabel } from '@mui/material'
+import { Checkbox, FormControlLabel, checkboxClasses, useTheme } from '@mui/material'
+import { tokens } from '../../../utils/theme'
 interface Props {
   id: string
   label: string
@@ -7,6 +8,8 @@ interface Props {
   disabled?: boolean
 }
 const FantasyCheckbox = (props: Props) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   return (
     <FormControlLabel
       control={
@@ -14,6 +17,11 @@ const FantasyCheckbox = (props: Props) => {
           onChange={(event) => props.onChange(event)}
           checked={props.value}
           disabled={props.disabled ? props.disabled : false}
+          sx={{
+            [`&, &.${checkboxClasses.checked}`]: {
+              color: colors.greenAccent[500],
+            },
+          }}
         />
       }
       label={props.label}

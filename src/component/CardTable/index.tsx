@@ -20,6 +20,7 @@ interface Props {
   tabsValue?: string
   handleChipSelection?: Function
   captainData?: CaptainInterface | null
+  handleCardClick?: Function
 }
 const CardTable = (props: Props) => {
   const theme = useTheme()
@@ -97,6 +98,7 @@ const CardTable = (props: Props) => {
                 }}
               >
                 <Cards
+                  handleCardClick={props.handleCardClick}
                   flow={props.flow ? props.flow : CREATE_TEAM_FLOW.ALL_PLAYERS}
                   keyItem={`${player.id}`}
                   player={player}

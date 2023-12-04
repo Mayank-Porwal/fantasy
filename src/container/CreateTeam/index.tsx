@@ -45,6 +45,7 @@ import {
   fetchLeagueDetailsActionFailure,
   fetchLeagueDetailsActionSuccess,
 } from '../ManageLeague/actions'
+import PlayersStats from './PlayerStats/index'
 import { tokens } from '../../utils/theme'
 const CreateTeam = () => {
   const theme = useTheme()
@@ -85,6 +86,7 @@ const CreateTeam = () => {
   const [subs, setSubs] = useState<number>(DEFAULT_SUBS_DATA)
   const [captainData, setCaptainData] = useState<CaptainInterface | null>(null)
   const [capData, setCapData] = useState(0)
+  const [selectedPlayer, setSelectedPlayer] = useState<PLAYERS_INTERFACE | null>(null)
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
   const location = useLocation()
@@ -284,6 +286,12 @@ const CreateTeam = () => {
     const data = setCaptainAndViceCaptain(type, player, captainData)
     setCaptainData(data)
   }
+  const handleCardClick = (selectedPlayerData: PLAYERS_INTERFACE | null) => {
+    setSelectedPlayer(selectedPlayerData)
+  }
+  const handleCloseStats = () => {
+    setSelectedPlayer(null)
+  }
   return (
     <>
       <Grid container direction='row' sx={{ margin: '2% 0%' }}>
@@ -339,6 +347,11 @@ const CreateTeam = () => {
           Cap: <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{capData ? capData : 0}</span>
         </Grid>
       </Grid>
+      {selectedPlayer && (
+        <Grid container direction='row' spacing={2} alignItems={'center'}>
+          <PlayersStats selectedPlayer={selectedPlayer} closeStats={handleCloseStats} />
+        </Grid>
+      )}
       <Grid container direction='row' spacing={2} alignItems={'center'} justifyContent={'center'}>
         <Grid item xs={12} sm={12} md={6} lg={6}>
           <CardTable
@@ -350,6 +363,7 @@ const CreateTeam = () => {
             onTabsChange={handleTabsChange}
             allPlayers={availablePlayers}
             tabsValue={tabsValue}
+            handleCardClick={handleCardClick}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -363,6 +377,7 @@ const CreateTeam = () => {
             captainData={captainData}
             handleChipSelection={handleChipSelection}
             onTabsChange={handleTabsChange}
+            handleCardClick={handleCardClick}
           />
         </Grid>
       </Grid>

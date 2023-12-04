@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
-import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table'
-import { Button } from '@mui/material'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { MaterialReactTable, MRT_RowSelectionState, type MRT_ColumnDef } from 'material-react-table'
+import { Button, checkboxClasses } from '@mui/material'
 import FantasyButtons from '../FormElements/Buttons'
+import FantasyCheckbox from '../FormElements/Checkbox'
 interface ColumnsInterface {
   id: string
   header: string
@@ -30,7 +31,7 @@ interface Props {
 const FantasyDataGrid = (props: Props) => {
   const columns = useMemo<MRT_ColumnDef[] | []>(() => {
     return props.columns
-  }, [])
+  }, [props.columns])
   return (
     <div>
       <MaterialReactTable

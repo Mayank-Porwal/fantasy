@@ -100,12 +100,39 @@ function* getLeagueDetailsData(action: actionTypes.fetchLeagueDetailsInterface) 
     console.error(e)
   }
 }
+
+function* getPublicLeagueData(action: actionTypes.FetchPublicLeagueInterface) {
+  try {
+    const response: ResponseGenerator = yield call(_request, {
+      url: `${API_URLS.FETCH_PUBLIC_LEAGUES}?page=${action.payload.page}&size=${action.payload.size}`,
+      method: REQUEST_TYPE.POST,
+      headers: HTTPS_HEADERS,
+      data: { filter_data: action.payload.filter_data },
+    })
+    if (response.status && response.status >= 200 && response.status <= 299) {
+      yield put(actionTypes.fetchPublicLeaguesSuccess(response?.data))
+    } else {
+      yield put(
+        actionTypes.fetchPublicLeaguesFailure(
+          response?.response?.data.message
+            ? { message: response?.response?.data.message }
+            : { message: MESSAGES.SOMETHING_WENT_WRONG },
+        ),
+      )
+    }
+  } catch (e) {
+    yield put(actionTypes.fetchPublicLeaguesFailure(MESSAGES.SOMETHING_WENT_WRONG))
+    console.error(e)
+  }
+}
+
 function* createLeagueSaga() {
   yield all([
     takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.CREATE_LEAGUE, makeLeague),
     takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.JOIN_LEAGUE, joinLeague),
     takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE, getLeagueData),
     takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_DETAILS, getLeagueDetailsData),
+    takeLatest(actionTypes.CREATE_LEAGUE_ACTIONS.FETCH_PUBLIC_LEAGUES, getPublicLeagueData),
   ])
 }
 

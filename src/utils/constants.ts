@@ -23,6 +23,7 @@ export enum API_URLS {
   JOIN_LEAGUE = '/join-league',
   FETCH_MY_LEAGUES = '/my-leagues',
   FETCH_RULES_BY_LEAGUE_ID = '/league-rules',
+  FETCH_PUBLIC_LEAGUES = '/public-leagues',
 }
 
 export interface ResponseGenerator {

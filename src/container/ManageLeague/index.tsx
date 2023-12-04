@@ -13,31 +13,57 @@ import { getGridActions, getLeaguesRequestBody, getManageLeagueColumns, getTable
 import FantasyDataGrid from '../../component/DataGrid'
 import { Grid, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchLeagueAction, joinLeagueActionSuccess } from './actions'
-import { LeagueResponseDataInterface } from './types'
-import { useNavigate } from 'react-router-dom'
+import { fetchLeagueAction, fetchLeagueActionSuccess, fetchPublicLeagues, joinLeagueActionSuccess } from './actions'
+import { LeagueResponseDataInterface, PublicLeagueDataInterface } from './types'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { getPublicLeaguesColumns } from './columns'
 const ManageLeague = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [leagueTableData, setLeagueTableData] = useState<LeagueResponseDataInterface[] | []>([])
+  const location = useLocation()
+  const [leagueTableData, setLeagueTableData] = useState<
+    LeagueResponseDataInterface[] | PublicLeagueDataInterface[] | []
+  >([])
   const propsState = useSelector((state: RootState) => {
     return {
       popupData: state.appReducer.popUpData,
       leagueData: state.leagueReducer.leagueData,
       leagueDataFailure: state.leagueReducer.leagueDataFailure,
+      publicLeaguesData: state.leagueReducer.publicLeagues,
+      publicLeaguesDataFailure: state.leagueReducer.publicLeaguesFailure,
     }
   })
+  const [tabsValue, setTabsValue] = useState('myLeague')
   useEffect(() => {
+    const urlParams = new URLSearchParams(location.search)
+    const leagueType = urlParams.get('type')
     const requestBody = getLeaguesRequestBody(null, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE)
-    dispatch(fetchLeagueAction(requestBody))
+    if (leagueType === 'all-leagues') {
+      setTabsValue(LEAGUE_TABS_DATA[1].id)
+      dispatch(fetchPublicLeagues(requestBody))
+      setColumns(getPublicLeaguesColumns(handleClickActions))
+    } else {
+      setTabsValue(LEAGUE_TABS_DATA[0].id)
+      dispatch(fetchLeagueAction(requestBody))
+      setColumns(getManageLeagueColumns(handleClickActions))
+    }
   }, [])
-  const [tabsValue, setTabsValue] = useState(LEAGUE_TABS_DATA[0].id)
   var handleClickActions = (link: string, data: any) => {
     navigate(link, { state: data })
   }
   const [columns, setColumns] = useState(getManageLeagueColumns(handleClickActions))
   const handleTabsChange = (tabsValue: string) => {
-    setTabsValue(tabsValue)
+    const requestBody = getLeaguesRequestBody(null, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE)
+    navigate(`../manage-league?type=${tabsValue === 'public' ? 'all-leagues' : 'my-leagues'}`, { replace: true })
+    if (tabsValue === LEAGUE_TABS_DATA[0].id) {
+      dispatch(fetchLeagueAction(requestBody))
+      setTabsValue(LEAGUE_TABS_DATA[0].id)
+      setColumns(getManageLeagueColumns(handleClickActions))
+    } else {
+      setTabsValue(LEAGUE_TABS_DATA[1].id)
+      dispatch(fetchPublicLeagues(requestBody))
+      setColumns(getPublicLeaguesColumns(handleClickActions))
+    }
   }
   const handleLeagueActionsOnClick = (id: string) => {
     if (id === LEAGUE_ACTIONS_ID.CREATE_LEAGUE) {
@@ -54,10 +80,19 @@ const ManageLeague = () => {
       }
     }
   }, [propsState.leagueData])
+  useEffect(() => {
+    if (propsState.publicLeaguesData) {
+      setLeagueTableData(propsState.publicLeaguesData.data)
+      return () => {
+        dispatch(fetchLeagueActionSuccess(null))
+      }
+    }
+  }, [propsState.publicLeaguesData])
   const handleGridCallback = (params: any) => {
     console.log(params)
   }
   const handleCellActions = (id: string) => {}
+  console.log(columns)
   return (
     <Grid>
       <Grid container direction='row' sx={{ margin: '2% 0%' }}>

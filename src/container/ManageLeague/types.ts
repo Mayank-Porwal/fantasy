@@ -60,3 +60,21 @@ export interface LeaguePlayersInterface {
   team_name: string
   team_owner: string
 }
+
+export interface PublicLeagueResponseInterface {
+  page: number
+  size: number
+  total: number
+  total_pages: number
+  data: PublicLeagueDataInterface[] | []
+}
+
+export interface PublicLeagueDataInterface {
+  active: boolean
+  league_id: number
+  league_name: string
+  owner_id: number
+  owner_first_name: string
+  owner_last_name: string
+  type: string
+}

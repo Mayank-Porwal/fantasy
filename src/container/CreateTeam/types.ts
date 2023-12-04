@@ -46,3 +46,16 @@ export interface TeamInterface {
   captain: boolean
   vice_captain: boolean
 }
+
+export interface StatsInterface {
+  runs_scored: number
+  balls_faced: number
+  strike_rate: number
+  wickets: number
+  economy: number
+  total_overs_bowled: number
+  runs_conceded: number
+  catches: number
+  stumping: number
+  run_outs: number
+}

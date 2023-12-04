@@ -6,6 +6,7 @@ import {
   FetchLeagueResponseInterface,
   JoinLeaguePayloadInterface,
   LeagueDetailsInterface,
+  PublicLeagueResponseInterface,
 } from './types'
 
 export enum CREATE_LEAGUE_ACTIONS {
@@ -21,6 +22,9 @@ export enum CREATE_LEAGUE_ACTIONS {
   FETCH_LEAGUE_DETAILS = 'FETCH_LEAGUE_DETAILS',
   FETCH_LEAGUE_DETAILS_SUCCESS = 'FETCH_LEAGUE_DETAILS_SUCCESS',
   FETCH_LEAGUE_DETAILS_FAILURE = 'FETCH_LEAGUE_DETAILS_FAILURE',
+  FETCH_PUBLIC_LEAGUES = 'FETCH_PUBLIC_LEAGUES',
+  FETCH_PUBLIC_LEAGUES_SUCCESS = 'FETCH_PUBLIC_LEAGUES_SUCCESS',
+  FETCH_PUBLIC_LEAGUES_FAILURE = 'FETCH_PUBLIC_LEAGUES_FAILURE',
 }
 
 export interface CreateLeagueInterface {
@@ -106,10 +110,10 @@ export const fetchLeagueAction = (payload: FetchLeaguePayloadInterface): fetchLe
 
 export interface fetchLeagueInterfaceSuccess {
   type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_SUCCESS
-  payload: FetchLeagueResponseInterface
+  payload: FetchLeagueResponseInterface | null
 }
 
-export const fetchLeagueActionSuccess = (payload: FetchLeagueResponseInterface): fetchLeagueInterfaceSuccess => {
+export const fetchLeagueActionSuccess = (payload: FetchLeagueResponseInterface | null): fetchLeagueInterfaceSuccess => {
   return {
     type: CREATE_LEAGUE_ACTIONS.FETCH_LEAGUE_SUCCESS,
     payload,
@@ -163,6 +167,40 @@ export const fetchLeagueDetailsActionFailure = (payload: any): fetchLeagueDetail
     payload,
   }
 }
+export interface FetchPublicLeagueInterface {
+  type: CREATE_LEAGUE_ACTIONS.FETCH_PUBLIC_LEAGUES
+  payload: FetchLeaguePayloadInterface
+}
+export const fetchPublicLeagues = (payload: FetchLeaguePayloadInterface): FetchPublicLeagueInterface => {
+  return {
+    type: CREATE_LEAGUE_ACTIONS.FETCH_PUBLIC_LEAGUES,
+    payload,
+  }
+}
+
+export interface FetchPublicLeagueInterfaceSuccess {
+  type: CREATE_LEAGUE_ACTIONS.FETCH_PUBLIC_LEAGUES_SUCCESS
+  payload: PublicLeagueResponseInterface
+}
+export const fetchPublicLeaguesSuccess = (
+  payload: PublicLeagueResponseInterface,
+): FetchPublicLeagueInterfaceSuccess => {
+  return {
+    type: CREATE_LEAGUE_ACTIONS.FETCH_PUBLIC_LEAGUES_SUCCESS,
+    payload,
+  }
+}
+export interface FetchPublicLeagueInterfaceFailure {
+  type: CREATE_LEAGUE_ACTIONS.FETCH_PUBLIC_LEAGUES_FAILURE
+  payload: any
+}
+export const fetchPublicLeaguesFailure = (payload: any): FetchPublicLeagueInterfaceFailure => {
+  return {
+    type: CREATE_LEAGUE_ACTIONS.FETCH_PUBLIC_LEAGUES_FAILURE,
+    payload,
+  }
+}
+
 export type CreateLeagueActions =
   | CreateLeagueInterface
   | CreateLeagueInterfaceSuccess
@@ -176,3 +214,6 @@ export type CreateLeagueActions =
   | fetchLeagueDetailsInterface
   | fetchLeagueDetailsInterfaceSuccess
   | fetchLeagueDetailsInterfaceFailure
+  | FetchPublicLeagueInterface
+  | FetchPublicLeagueInterfaceSuccess
+  | FetchPublicLeagueInterfaceFailure

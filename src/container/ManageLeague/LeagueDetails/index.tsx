@@ -80,7 +80,6 @@ const LeagueDetails = () => {
   }
   useEffect(() => {
     if (propsState.updateRulesSuccess) {
-      debugger
       setOpen(false)
       dispatch(updateToastState({ type: 'success', message: propsState.updateRulesSuccess.message }))
     }

@@ -14,12 +14,21 @@ interface Props {
   flow?: string
   handleChipSelection?: Function
   captainData?: CaptainInterface | null
+  handleCardClick?: Function
 }
 const Cards = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
-    <Card key={props.keyItem ? props.keyItem : ''} sx={{ display: 'flex', width: '100%', height: '85px' }}>
+    <Card
+      key={props.keyItem ? props.keyItem : ''}
+      sx={{ display: 'flex', width: '100%', height: '85px', cursor: props.handleCardClick ? 'pointer' : '' }}
+      onClick={() => {
+        if (props.handleCardClick) {
+          props.handleCardClick(props.player ? props.player : null)
+        }
+      }}
+    >
       <CardMedia
         component='img'
         sx={{ width: 85, height: 85, color: 'white' }}

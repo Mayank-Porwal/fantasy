@@ -120,3 +120,76 @@ export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
     },
   },
 ]
+
+export const getPublicLeaguesColumns = (handleLeagueActions: Function) => [
+  {
+    accessorFn: (row: any) => (
+      <div
+        onClick={() =>
+          handleLeagueActions(`/league-details?league=${row.league_id}&leagueName=${row.league_name}`, row)
+        }
+        style={{ color: '#0070E0', cursor: 'pointer' }}
+      >
+        {row.league_name ? row.league_name : '-'}
+      </div>
+    ),
+    accessorKey: 'league_name',
+    id: 'league_name',
+    header: 'League Name',
+    size: 150,
+    Filter: ({ column }: any) => {
+      return (
+        <FantasyTextField
+          id={'leagueName'}
+          label=''
+          value={column.getFilterValue()}
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            column.setFilterValue(event.target.value)
+          }}
+          required={false}
+          placeholder={'Filter by League Name'}
+        />
+      )
+    },
+  },
+  {
+    accessorKey: 'owner_first_name',
+    id: 'firstName',
+    header: 'Owner First Name',
+    size: 150,
+    Filter: ({ column }: any) => {
+      return (
+        <FantasyTextField
+          id={'firstName'}
+          label=''
+          value={column.getFilterValue()}
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            column.setFilterValue(event.target.value)
+          }}
+          required={false}
+          placeholder={'Filter by Owner First Name'}
+        />
+      )
+    },
+  },
+  {
+    accessorKey: 'owner_last_name',
+    id: 'lastName',
+    header: 'Owner Last Name',
+    size: 150,
+    Filter: ({ column }: any) => {
+      return (
+        <FantasyTextField
+          id={'lastName'}
+          label=''
+          value={column.getFilterValue()}
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            column.setFilterValue(event.target.value)
+          }}
+          required={false}
+          placeholder={'Filter by Owner Last Name'}
+        />
+      )
+    },
+  },
+]

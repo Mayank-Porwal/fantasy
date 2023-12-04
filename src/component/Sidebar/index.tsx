@@ -123,7 +123,7 @@ const AppSidebar = () => {
             </Typography>
             <Item
               title='Manage Leagues'
-              to='/manage-league'
+              to='/manage-league?type=my-leagues'
               icon={<LanIcon />}
               selected={selected}
               setSelected={setSelected}

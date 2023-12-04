@@ -24,7 +24,6 @@ const FantasyGlobalComponent = () => {
   })
   useEffect(() => {
     if (propsState.notification && propsState.notification?.message) {
-      debugger
       switch (propsState.notification?.type) {
         case 'success':
           toast.success(propsState.notification?.message)

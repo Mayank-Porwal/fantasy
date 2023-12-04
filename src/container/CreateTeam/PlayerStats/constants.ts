@@ -1,0 +1,52 @@
+export const NUMBER_OF_PREVIOUS_MATCHES = 3
+
+export const STATS_COLUMNS = [
+  { id: 'runs_scored', name: 'Runs Scored' },
+  { id: 'balls_faced', name: 'Balls Faced' },
+  { id: 'strike_rate', name: 'Strike Rate' },
+  { id: 'wickets', name: 'Wickets' },
+  { id: 'economy', name: 'Economy' },
+  { id: 'total_overs_bowled', name: 'Overs' },
+  { id: 'runs_conceded', name: 'Runs Conceded' },
+  { id: 'catches', name: 'Catches' },
+  { id: 'stumping', name: 'Stumping' },
+  { id: 'run_outs', name: 'Run Outs' },
+]
+export const TEMP_DATA = [
+  {
+    runs_scored: 12,
+    balls_faced: 100,
+    strike_rate: 12,
+    wickets: 0,
+    economy: 0,
+    total_overs_bowled: 0,
+    runs_conceded: 0,
+    catches: 0,
+    stumping: 0,
+    run_outs: 0,
+  },
+  {
+    runs_scored: 12,
+    balls_faced: 100,
+    strike_rate: 12,
+    wickets: 0,
+    economy: 0,
+    total_overs_bowled: 0,
+    runs_conceded: 0,
+    catches: 0,
+    stumping: 0,
+    run_outs: 0,
+  },
+  {
+    runs_scored: 12,
+    balls_faced: 100,
+    strike_rate: 12,
+    wickets: 0,
+    economy: 0,
+    total_overs_bowled: 0,
+    runs_conceded: 0,
+    catches: 0,
+    stumping: 0,
+    run_outs: 0,
+  },
+]
