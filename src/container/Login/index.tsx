@@ -37,10 +37,8 @@ const Login = () => {
     setFormDataErrors(validData)
     setFormData(data)
   }
-  const handleActions = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    if (event.target.id === 'submit') {
-      dispatch(signIn(formData))
-    }
+  const handleActions = () => {
+    dispatch(signIn(formData))
   }
   useEffect(() => {
     if (propsState.signInSuccess) {
