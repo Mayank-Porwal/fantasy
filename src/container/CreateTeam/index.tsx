@@ -171,7 +171,11 @@ const CreateTeam = () => {
       setFilteredAllPlayers(selectedPlayers)
       dispatch(updateSelectedPlayers(allPlayers))
       setAvailableSelectedPlayers(allPlayers)
-      const updatedSubs = getSubsDataAfterDelete(subs, data)
+      const updatedSubs = getSubsDataAfterDelete(
+        subs,
+        data,
+        propsState.selectedTeam ? propsState.selectedTeam.last_submitted_team : null,
+      )
       setSubs(updatedSubs)
       const updatedCapData = getUpdatedCapDataAfterDelete(capData, data)
       setCapData(updatedCapData)

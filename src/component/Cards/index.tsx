@@ -7,6 +7,7 @@ import img from '../../static/images/account-icon.png'
 import { CATEGORY_ENUM } from '../../utils/constants'
 import { getEnumValueByKey } from '../../utils/helper'
 import { tokens } from '../../utils/theme'
+import { MouseEvent, MouseEventHandler } from 'react'
 interface Props {
   keyItem?: string
   player?: PLAYERS_INTERFACE
@@ -19,6 +20,16 @@ interface Props {
 const Cards = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const handleClickActions = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation()
+    props.handleActions(props.player, props.flow ? props.flow : CREATE_TEAM_FLOW.ALL_PLAYERS)
+  }
+  const handleCaptainChipSelection = (event: React.MouseEvent<HTMLElement>, captainViceCaptain: string) => {
+    event.stopPropagation()
+    if (props.handleChipSelection) {
+      props.handleChipSelection(captainViceCaptain, props.player)
+    }
+  }
   return (
     <Card
       key={props.keyItem ? props.keyItem : ''}
@@ -68,9 +79,9 @@ const Cards = (props: Props) => {
                 Game Changers
               </Typography>
               <span
-                onClick={() => {
+                onClick={(event) => {
                   if (props.handleChipSelection) {
-                    props.handleChipSelection(C, props.player)
+                    handleCaptainChipSelection(event, C)
                   }
                 }}
                 style={{
@@ -93,9 +104,9 @@ const Cards = (props: Props) => {
                 C
               </span>
               <span
-                onClick={() => {
+                onClick={(event) => {
                   if (props.handleChipSelection) {
-                    props.handleChipSelection(VC, props.player)
+                    handleCaptainChipSelection(event, VC)
                   }
                 }}
                 style={{
@@ -136,7 +147,7 @@ const Cards = (props: Props) => {
               variant='subtitle1'
               color={'text.secondary'}
               component='div'
-              onClick={() => props.handleActions(props.player, props.flow ? props.flow : CREATE_TEAM_FLOW.ALL_PLAYERS)}
+              onClick={(event) => handleClickActions(event)}
             >
               {props.flow && props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS ? <DeleteIcon /> : <AddCircleIcon />}
             </Typography>

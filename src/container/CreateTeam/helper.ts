@@ -221,8 +221,15 @@ export const getCaptainDataFromSelectedTeam = (selectedPlayers: TeamInterface[] 
   return null
 }
 
-export const getSubsDataAfterDelete = (subs: number, selectedPlayerData: PLAYERS_INTERFACE) => {
+export const getSubsDataAfterDelete = (
+  subs: number,
+  selectedPlayerData: PLAYERS_INTERFACE,
+  lastSubmittedTeam: TeamInterface[] | null,
+) => {
   if (!selectedPlayerData) {
+    return subs
+  }
+  if (!lastSubmittedTeam || (Array.isArray(lastSubmittedTeam) && lastSubmittedTeam.length === 0)) {
     return subs
   }
   return subs - 1
@@ -236,7 +243,7 @@ export const getSubsAfterAddPlayer = (
   if (!selectedPlayerData) {
     return subs
   }
-  if (!lastSubmittedTeam) {
+  if (!lastSubmittedTeam || (Array.isArray(lastSubmittedTeam) && lastSubmittedTeam.length === 0)) {
     return subs
   }
   let cloneSubs = subs
