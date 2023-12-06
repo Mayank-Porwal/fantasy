@@ -88,7 +88,7 @@ const Cards = (props: Props) => {
                   margin: '2px 5%',
                   cursor: 'pointer',
                   backgroundColor:
-                    props.player && props.captainData && props.captainData.captains.id === props.player.id
+                    props.player && props.captainData && props.captainData?.captains?.id === props.player.id
                       ? colors.greenAccent[500]
                       : 'transparent',
                   fontSize: '8px',
@@ -114,12 +114,12 @@ const Cards = (props: Props) => {
                   cursor: 'pointer',
                   color: 'white',
                   backgroundColor:
-                    props.player && props.captainData && props.captainData.viceCaptains.id === props.player.id
+                    props.player && props.captainData && props.captainData.viceCaptains?.id === props.player.id
                       ? colors.blueAccent[500]
                       : 'transparent',
 
                   borderRadius:
-                    props.player && props.captainData && props.captainData.viceCaptains.id === props.player.id
+                    props.player && props.captainData && props.captainData.viceCaptains?.id === props.player.id
                       ? '50%'
                       : '50%',
                   padding: '4px',

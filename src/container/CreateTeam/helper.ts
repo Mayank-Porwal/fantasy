@@ -81,17 +81,17 @@ export const checkMaximumPlayerAllowedValidation = (
   captainData: CaptainInterface | null,
 ) => {
   if (
-    selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET &&
-    !teamInfo.teamName &&
-    !captainData &&
+    selectedPlayers.length < MAXIMUM_ALLOWED_PLAYERS.CRICKET ||
+    !teamInfo.teamName ||
+    !captainData ||
     !teamInfo.league
   ) {
     return true
   }
-  if (!captainData?.captains.id) {
+  if (!captainData?.captains?.id) {
     return true
   }
-  if (!captainData?.viceCaptains.id) {
+  if (!captainData?.viceCaptains?.id) {
     return true
   }
   return false
@@ -131,8 +131,8 @@ const getPlayersForRequestBody = (players: PLAYERS_INTERFACE[], captainData: Cap
   return players.map((player) => {
     return {
       id: player.id,
-      captain: captainData?.captains.id === player.id ? true : false,
-      vice_captain: captainData?.viceCaptains.id === player.id ? true : false,
+      captain: captainData?.captains?.id === player.id ? true : false,
+      vice_captain: captainData?.viceCaptains?.id === player.id ? true : false,
     }
   })
 }
@@ -146,11 +146,19 @@ export const setCaptainAndViceCaptain = (
     ? captainsData
     : { captains: { name: '', id: NaN }, viceCaptains: { name: '', id: NaN } }
   if (type === C) {
-    if (captainData.viceCaptains.id !== player.id) {
+    if (captainData.viceCaptains) {
+      if (captainData.viceCaptains.id !== player.id) {
+        captainData = { ...captainData, captains: { name: player.name, id: player.id } }
+      }
+    } else {
       captainData = { ...captainData, captains: { name: player.name, id: player.id } }
     }
   } else if (type === VC) {
-    if (captainData.captains.id !== player.id) {
+    if (captainData.captains) {
+      if (captainData.captains.id !== player.id) {
+        captainData = { ...captainData, viceCaptains: { name: player.name, id: player.id } }
+      }
+    } else {
       captainData = { ...captainData, viceCaptains: { name: player.name, id: player.id } }
     }
   }
@@ -286,4 +294,19 @@ export const findLeagueById = (leagueData: FetchLeagueResponseInterface | null, 
   }
   const findLeague = leagueData.data.find((league) => league.league_id === leagueId)
   return findLeague ? findLeague : null
+}
+
+export const getUpdatedCaptainData = (captainData: CaptainInterface | null, selectedPlayerData: PLAYERS_INTERFACE) => {
+  if (!captainData) {
+    return null
+  }
+  console.log(selectedPlayerData, captainData)
+  let updatedCaptainData = _.cloneDeep(captainData)
+  if (selectedPlayerData.id === captainData.captains?.id) {
+    updatedCaptainData.captains = null
+  }
+  if (selectedPlayerData.id === captainData.viceCaptains?.id) {
+    updatedCaptainData.viceCaptains = null
+  }
+  return updatedCaptainData
 }

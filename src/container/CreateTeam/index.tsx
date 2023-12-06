@@ -24,6 +24,7 @@ import {
   getSubsDataAfterDelete,
   getUpdatedCapDataAfterAddPlayer,
   getUpdatedCapDataAfterDelete,
+  getUpdatedCaptainData,
   getUpdatedLeagueOptions,
   maximumPlayerAllowedValidation,
   minimumPlayersByCategory,
@@ -179,6 +180,8 @@ const CreateTeam = () => {
       setSubs(updatedSubs)
       const updatedCapData = getUpdatedCapDataAfterDelete(capData, data)
       setCapData(updatedCapData)
+      const updatedCaptainData = getUpdatedCaptainData(captainData, data)
+      setCaptainData(updatedCaptainData)
     }
   }
   const handleOnSearch = (availPlayers: PLAYERS_INTERFACE[] | [], flow: string, searchString: string) => {

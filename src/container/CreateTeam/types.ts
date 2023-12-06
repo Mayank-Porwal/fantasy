@@ -22,8 +22,8 @@ export interface CreateTeamPlayers {
 }
 
 export interface CaptainInterface {
-  captains: { name: string; id: number }
-  viceCaptains: { name: string; id: number }
+  captains: { name: string; id: number } | null
+  viceCaptains: { name: string; id: number } | null
 }
 
 export interface TeamDetailsInterface {
