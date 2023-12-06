@@ -11,16 +11,19 @@ import JoinLeague from './JoinLeague'
 import MUIDataTable from 'mui-datatables'
 import { getGridActions, getLeaguesRequestBody, getManageLeagueColumns, getTableTitle } from './helper'
 import FantasyDataGrid from '../../component/DataGrid'
-import { Grid, Typography } from '@mui/material'
+import { Grid, Typography, useTheme } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLeagueAction, fetchLeagueActionSuccess, fetchPublicLeagues, joinLeagueActionSuccess } from './actions'
 import { LeagueResponseDataInterface, PublicLeagueDataInterface } from './types'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getPublicLeaguesColumns } from './columns'
+import { tokens } from '../../utils/theme'
 const ManageLeague = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   const [leagueTableData, setLeagueTableData] = useState<
     LeagueResponseDataInterface[] | PublicLeagueDataInterface[] | []
   >([])
@@ -41,7 +44,7 @@ const ManageLeague = () => {
     if (leagueType === 'all-leagues') {
       setTabsValue(LEAGUE_TABS_DATA[1].id)
       dispatch(fetchPublicLeagues(requestBody))
-      setColumns(getPublicLeaguesColumns(handleClickActions))
+      setColumns(getPublicLeaguesColumns(handlePublicLeagueActions, colors))
     } else {
       setTabsValue(LEAGUE_TABS_DATA[0].id)
       dispatch(fetchLeagueAction(requestBody))
@@ -50,6 +53,16 @@ const ManageLeague = () => {
   }, [])
   var handleClickActions = (link: string, data: any) => {
     navigate(link, { state: data })
+  }
+  var handlePublicLeagueActions = (row: any) => {
+    dispatch(
+      updatePopupState({
+        open: true,
+        size: 'sm',
+        content: <JoinLeague flow='public' selectedRow={row} />,
+        title: 'Join League',
+      }),
+    )
   }
   const [columns, setColumns] = useState(getManageLeagueColumns(handleClickActions))
   const handleTabsChange = (tabsValue: string) => {
@@ -62,14 +75,16 @@ const ManageLeague = () => {
     } else {
       setTabsValue(LEAGUE_TABS_DATA[1].id)
       dispatch(fetchPublicLeagues(requestBody))
-      setColumns(getPublicLeaguesColumns(handleClickActions))
+      setColumns(getPublicLeaguesColumns(handlePublicLeagueActions, colors))
     }
   }
   const handleLeagueActionsOnClick = (id: string) => {
     if (id === LEAGUE_ACTIONS_ID.CREATE_LEAGUE) {
       dispatch(updatePopupState({ open: true, size: 'sm', content: <CreateLeague />, title: 'Create League' }))
     } else {
-      dispatch(updatePopupState({ open: true, size: 'sm', content: <JoinLeague />, title: 'Join League' }))
+      dispatch(
+        updatePopupState({ open: true, size: 'sm', content: <JoinLeague flow='private' />, title: 'Join League' }),
+      )
     }
   }
   useEffect(() => {
@@ -92,7 +107,6 @@ const ManageLeague = () => {
     console.log(params)
   }
   const handleCellActions = (id: string) => {}
-  console.log(columns)
   return (
     <Grid>
       <Grid container direction='row' sx={{ margin: '2% 0%' }}>

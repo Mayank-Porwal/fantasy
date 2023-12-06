@@ -12,8 +12,12 @@ import { RootState } from '../../../utils/store/rootReducer'
 import { joinLeagueAction, joinLeagueActionFailure, joinLeagueActionSuccess } from '../actions'
 import { updateUsersTeamsOptions } from '../CreateLeague/helper'
 import { useNavigate } from 'react-router-dom'
-
-const JoinLeague = () => {
+import { PublicLeagueDataInterface } from '../types'
+interface Props {
+  flow: string
+  selectedRow?: PublicLeagueDataInterface | null
+}
+const JoinLeague = (props: Props) => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -54,7 +58,7 @@ const JoinLeague = () => {
       dispatch(updatePopupState({ open: false, size: 'sm', content: '', title: '' }))
     } else {
       dispatch(updateLoaderState(true))
-      const requestBody = getJoinLeagueRequestBody(formData)
+      const requestBody = getJoinLeagueRequestBody(formData, props.flow, props.selectedRow ? props.selectedRow : null)
       dispatch(joinLeagueAction(requestBody))
     }
   }
@@ -88,24 +92,26 @@ const JoinLeague = () => {
         justifyContent={'flex-start'}
         sx={{ padding: '2%' }}
       >
-        <Grid xs={12} item>
-          <FantasyTextField
-            placeholder='Enter League Code'
-            id='code'
-            label='League Code'
-            onChange={handleFormChange}
-            required
-            value={formData.code}
-          />
-        </Grid>
+        {props.flow === 'private' && (
+          <Grid xs={12} item>
+            <FantasyTextField
+              placeholder='Enter League Code'
+              id='code'
+              label='League Code'
+              onChange={handleFormChange}
+              required
+              value={formData.code}
+            />
+          </Grid>
+        )}
         <Grid xs={12} item>
           <FantasyTextField
             id='selectedTeam'
-            label='Select Team'
+            label='Team Name'
             onChange={handleFormChange}
             value={formData.selectedTeam}
             required={true}
-            placeholder='Select Your Team'
+            placeholder='Enter Your Team Name'
           />
         </Grid>
       </Grid>
@@ -136,7 +142,7 @@ const JoinLeague = () => {
             label='Join'
             onClick={() => handleAction('save')}
             buttonType={ButtonTypes.CONTAINED}
-            disabled={validateFormData(formData)}
+            disabled={validateFormData(formData, props.flow)}
           />
         </Grid>
       </Grid>

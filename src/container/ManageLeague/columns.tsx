@@ -1,7 +1,8 @@
-import { Badge } from '@mui/material'
+import { Badge, Typography } from '@mui/material'
 import FantasyDropdowns from '../../component/FormElements/FantasyDropdowns'
 import FantasyTextField from '../../component/FormElements/TextFlied'
 import { useNavigate } from 'react-router-dom'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
   {
     accessorFn: (row: any) => (
@@ -121,18 +122,8 @@ export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
   },
 ]
 
-export const getPublicLeaguesColumns = (handleLeagueActions: Function) => [
+export const getPublicLeaguesColumns = (handlePublicLeagueActions: Function, colors: any) => [
   {
-    accessorFn: (row: any) => (
-      <div
-        onClick={() =>
-          handleLeagueActions(`/league-details?league=${row.league_id}&leagueName=${row.league_name}`, row)
-        }
-        style={{ color: '#0070E0', cursor: 'pointer' }}
-      >
-        {row.league_name ? row.league_name : '-'}
-      </div>
-    ),
     accessorKey: 'league_name',
     id: 'league_name',
     header: 'League Name',
@@ -190,6 +181,41 @@ export const getPublicLeaguesColumns = (handleLeagueActions: Function) => [
           placeholder={'Filter by Owner Last Name'}
         />
       )
+    },
+  },
+  {
+    accessorFn: (row: any) => (
+      <div onClick={() => handlePublicLeagueActions(row)} style={{ cursor: 'pointer' }}>
+        <Typography
+          sx={{
+            cursor: 'pointer',
+            color: colors.greenAccent[500],
+          }}
+          variant='subtitle1'
+          color={'text.secondary'}
+          component='div'
+          onClick={() => {}}
+        >
+          <AddCircleIcon />
+        </Typography>
+      </div>
+    ),
+    accessorKey: 'action',
+    id: 'action',
+    header: 'Join League',
+    size: 150,
+    muiTableHeadCellProps: {
+      align: 'center',
+    },
+    muiTableBodyCellProps: {
+      align: 'center',
+    },
+    enableColumnActions: false,
+    enableColumnFilter: false,
+    enableColumnFilterModes: false,
+    renderColumnFilterModeMenuItems: false,
+    Filter: () => {
+      return
     },
   },
 ]

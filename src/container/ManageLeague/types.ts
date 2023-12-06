@@ -4,7 +4,8 @@ export interface CreateLeaguePayloadInterface {
 
 export interface JoinLeaguePayloadInterface {
   team_name: string
-  code: string
+  code?: string
+  league_id?: number | string | null
 }
 
 export interface FetchLeaguePayloadInterface {
