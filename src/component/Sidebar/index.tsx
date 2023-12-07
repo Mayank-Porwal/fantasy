@@ -10,6 +10,8 @@ import { tokens } from '../../utils/theme'
 import { Link } from 'react-router-dom'
 import GroupsIcon from '@mui/icons-material/Groups'
 import LanIcon from '@mui/icons-material/Lan'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import Cookies from 'js-cookie'
 interface ItemInterface {
   title: string
   to: string
@@ -90,20 +92,26 @@ const AppSidebar = () => {
           {!isCollapsed && (
             <Box mb='25px'>
               <Box display='flex' justifyContent='center' alignItems='center'>
-                <img
-                  alt='profile-user'
-                  width='100px'
-                  height='100px'
-                  src={img}
-                  style={{ cursor: 'pointer', borderRadius: '50%' }}
+                <AccountCircleIcon
+                  sx={{
+                    width: '100px',
+                    height: '100px',
+                  }}
                 />
               </Box>
               <Box textAlign='center'>
-                <Typography variant='h2' color={colors.grey[100]} fontWeight='bold' sx={{ m: '10px 0 0 0' }}>
-                  Virat Kohli
+                <Typography
+                  variant='h2'
+                  color={colors.grey[100]}
+                  fontWeight='bold'
+                  sx={{ fontSize: '20px', m: '10px 0 0 0' }}
+                >
+                  {Cookies.get('first_name')
+                    ? `${Cookies.get('first_name')} ${Cookies.get('last_name') ? Cookies.get('last_name') : ''}`
+                    : ''}
                 </Typography>
                 <Typography variant='h5' color={colors.greenAccent[500]}>
-                  RCB Captain
+                  {Cookies.get('email') ? Cookies.get('email') : ''}
                 </Typography>
               </Box>
             </Box>

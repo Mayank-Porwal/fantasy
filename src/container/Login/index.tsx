@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom'
 import FantasyButtons from '../../component/FormElements/Buttons'
 import FantasyCheckbox from '../../component/FormElements/Checkbox'
 import FantasyTextField from '../../component/FormElements/TextFlied'
-import { updateLoggedInStatus } from '../../utils/appActions/actions'
+import { updateLoaderState, updateLoggedInStatus, updateToastState } from '../../utils/appActions/actions'
 import { ButtonTypes } from '../../utils/constants'
 import { RootState } from '../../utils/store/rootReducer'
 import { tokens } from '../../utils/theme'
-import { signIn } from './actions'
+import { signIn, signInFailure, signInSuccess } from './actions'
 import { DEFAULT_LOGIN_ERRORS, DEFAULT_LOGIN_FORM_DATA } from './constants'
-import { setUserDataToCookies, validationCheck, validationCheckDisabled } from './helper'
+import { requiredFieldsCheck, setUserDataToCookies, validationCheck, validationCheckDisabled } from './helper'
 import { jwtDecode } from 'jwt-decode'
 const Login = () => {
   const theme = useTheme()
@@ -38,16 +38,31 @@ const Login = () => {
     setFormData(data)
   }
   const handleActions = () => {
+    dispatch(updateLoaderState(true))
     dispatch(signIn(formData))
   }
   useEffect(() => {
     if (propsState.signInSuccess) {
+      dispatch(updateLoaderState(false))
       Cookies.set('jwtToken', propsState.signInSuccess.access_token)
+      Cookies.set('refreshToken', propsState.signInSuccess.refresh_token)
       setUserDataToCookies(propsState.signInSuccess.access_token)
-      navigate('/teams')
+      navigate('/manage-league?type=my-leagues')
       dispatch(updateLoggedInStatus(true))
     }
+    return () => {
+      dispatch(signInSuccess(null))
+    }
   }, [propsState.signInSuccess])
+  useEffect(() => {
+    if (propsState.signInFailure) {
+      dispatch(updateLoaderState(false))
+      dispatch(updateToastState({ type: 'error', message: propsState.signInFailure.message }))
+    }
+    return () => {
+      dispatch(signInFailure(null))
+    }
+  }, [propsState.signInFailure])
   const handleFooterActions = (id: string) => {
     if (id === 'forgotPassword') {
     } else {
@@ -90,7 +105,7 @@ const Login = () => {
                 id='submit'
                 label='Sign In'
                 onClick={handleActions}
-                disabled={validationCheckDisabled(formDataErrors)}
+                disabled={validationCheckDisabled(formDataErrors) || requiredFieldsCheck(formData)}
                 buttonType={ButtonTypes.CONTAINED}
                 width={'50%'}
               />
@@ -104,7 +119,12 @@ const Login = () => {
             >
               <Grid item xs={6} sm={6} md={6}>
                 <span
-                  style={{ display: 'flex', justifyContent: 'start', color: colors.greenAccent[500] }}
+                  style={{
+                    cursor: 'pointer',
+                    display: 'flex',
+                    justifyContent: 'start',
+                    color: colors.greenAccent[500],
+                  }}
                   id='forgotPassword'
                   onClick={() => handleFooterActions('forgotPassword')}
                 >
@@ -113,7 +133,7 @@ const Login = () => {
               </Grid>
               <Grid item xs={6} sm={6} md={6}>
                 <span
-                  style={{ display: 'flex', justifyContent: 'end', color: colors.greenAccent[500] }}
+                  style={{ cursor: 'pointer', display: 'flex', justifyContent: 'end', color: colors.greenAccent[500] }}
                   id='signUp'
                   onClick={() => handleFooterActions('signUp')}
                 >

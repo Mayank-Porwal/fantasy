@@ -1,9 +1,9 @@
 export const DEFAULT_LOGIN_FORM_DATA = {
-    email: '',
-    password: '',
-};
+  email: '',
+  password: '',
+}
 
 export const DEFAULT_LOGIN_ERRORS = {
-    email: { error: false, message: '' },
-    password: { error: false, message: '' },
-};
+  email: { error: false, message: '' },
+  password: { error: false, message: '' },
+}

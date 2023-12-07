@@ -47,3 +47,10 @@ export const setUserDataToCookies = (token: string) => {
     }
   }
 }
+
+export const requiredFieldsCheck = (formData: LoginPayloadInterface) => {
+  if (!formData.email || !formData.password) {
+    return true
+  }
+  return false
+}

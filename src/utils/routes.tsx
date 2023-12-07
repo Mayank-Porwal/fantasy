@@ -13,7 +13,7 @@ function PrivateRoute() {
 }
 function UnProtectedRoute() {
   const auth = !checkIfLoggedIn()
-  return auth ? <Outlet /> : <Navigate to='/home' />
+  return auth ? <Outlet /> : <Navigate to='/manage-league?type=my-leagues' />
 }
 const RouteComponent = () => {
   return (

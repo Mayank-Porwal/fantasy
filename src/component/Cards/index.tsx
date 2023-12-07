@@ -1,6 +1,6 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Card, CardContent, CardMedia, Chip, Grid, Typography, useTheme } from '@mui/material'
+import { Avatar, Card, CardContent, CardMedia, Chip, Grid, Stack, Typography, useTheme } from '@mui/material'
 import { C, CREATE_TEAM_FLOW, VC } from '../../container/CreateTeam/constants'
 import { CaptainInterface, PLAYERS_INTERFACE } from '../../container/CreateTeam/types'
 import img from '../../static/images/account-icon.png'
@@ -78,7 +78,49 @@ const Cards = (props: Props) => {
               <Typography component='div' variant='h5'>
                 Game Changers
               </Typography>
-              <span
+              <Stack direction='row' spacing={2}>
+                <Avatar
+                  onClick={(event) => {
+                    if (props.handleChipSelection) {
+                      handleCaptainChipSelection(event, C)
+                    }
+                  }}
+                  sx={{
+                    width: 15,
+                    height: 15,
+                    fontSize: '9px',
+                    bgcolor:
+                      props.player && props.captainData && props.captainData?.captains?.id === props.player.id
+                        ? colors.greenAccent[500]
+                        : colors.grey[500],
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  C
+                </Avatar>
+                <Avatar
+                  onClick={(event) => {
+                    if (props.handleChipSelection) {
+                      handleCaptainChipSelection(event, C)
+                    }
+                  }}
+                  sx={{
+                    width: 15,
+                    height: 15,
+                    fontSize: '9px',
+                    bgcolor:
+                      props.player && props.captainData && props.captainData.viceCaptains?.id === props.player.id
+                        ? colors.blueAccent[500]
+                        : colors.grey[500],
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  VC
+                </Avatar>
+              </Stack>
+              {/* <span
                 onClick={(event) => {
                   if (props.handleChipSelection) {
                     handleCaptainChipSelection(event, C)
@@ -102,8 +144,8 @@ const Cards = (props: Props) => {
                 }}
               >
                 C
-              </span>
-              <span
+              </span> */}
+              {/* <span
                 onClick={(event) => {
                   if (props.handleChipSelection) {
                     handleCaptainChipSelection(event, VC)
@@ -132,7 +174,7 @@ const Cards = (props: Props) => {
                 }}
               >
                 VC
-              </span>
+              </span> */}
             </Grid>
           )}
           <Grid item xs={1}>
