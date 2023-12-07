@@ -205,6 +205,7 @@ const CreateTeam = () => {
   const handleSaveTeam = () => {
     const validationCheck = minimumPlayersByCategory(availableSelectedPlayers)
     if (!validationCheck.error) {
+      dispatch(updateLoaderState(true))
       const requestBody = createTeamRequestBody(availableSelectedPlayers, teamFormData, captainData, subs)
       dispatch(createTeam(requestBody))
     } else {
@@ -276,11 +277,13 @@ const CreateTeam = () => {
   }, [propsState.selectedTeamFailure])
   useEffect(() => {
     if (propsState.teamSuccess && propsState.teamSuccess.message) {
+      dispatch(updateLoaderState(false))
       dispatch(updateToastState({ message: propsState.teamSuccess.message, type: 'success' }))
     }
   }, [propsState.teamSuccess])
   useEffect(() => {
     if (propsState.teamFailure) {
+      dispatch(updateLoaderState(false))
       dispatch(updateToastState({ message: propsState.teamFailure.message, type: 'error' }))
     }
   }, [propsState.teamFailure])

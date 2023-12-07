@@ -101,7 +101,7 @@ const Cards = (props: Props) => {
                 <Avatar
                   onClick={(event) => {
                     if (props.handleChipSelection) {
-                      handleCaptainChipSelection(event, C)
+                      handleCaptainChipSelection(event, VC)
                     }
                   }}
                   sx={{
