@@ -45,6 +45,7 @@ export interface TeamInterface {
   img: string
   captain: boolean
   vice_captain: boolean
+  team_img: string
 }
 
 export interface StatsInterface {

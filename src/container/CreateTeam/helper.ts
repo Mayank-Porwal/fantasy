@@ -208,7 +208,7 @@ export const updatedSelectedTeamByRemovingCaptainData = (selectedPlayers: TeamIn
       img: player.img,
       name: player.name,
       team: player.team,
-      team_img: '',
+      team_img: player.team_img ? player.team_img : '',
     })
   })
   return updatedTeam
