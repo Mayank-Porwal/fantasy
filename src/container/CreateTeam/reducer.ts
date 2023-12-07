@@ -1,5 +1,5 @@
 import { SuccessMessageInterface } from '../../utils/types'
-import { CREATE_TEAM_ACTIONS, CreateTeamActions, createTeamSuccess } from './actions'
+import { CREATE_TEAM_ACTIONS, CreateTeamActions } from './actions'
 import { PLAYERS_INTERFACE, TeamDetailsInterface } from './types'
 interface InitialState {
   allPlayers: PLAYERS_INTERFACE[] | []

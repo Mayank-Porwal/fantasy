@@ -13,7 +13,6 @@ import { tokens } from '../../utils/theme'
 import { signIn, signInFailure, signInSuccess } from './actions'
 import { DEFAULT_LOGIN_ERRORS, DEFAULT_LOGIN_FORM_DATA } from './constants'
 import { requiredFieldsCheck, setUserDataToCookies, validationCheck, validationCheckDisabled } from './helper'
-import { jwtDecode } from 'jwt-decode'
 const Login = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)

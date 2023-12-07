@@ -1,4 +1,4 @@
-import { CATEGORY_ENUM, CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
+import { CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
 import { FetchLeagueResponseInterface, LeagueResponseDataInterface } from '../ManageLeague/types'
 import { C, CREATE_TEAM_VALIDATION_MESSAGES, VC } from './constants'
 import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE, TeamDetailsInterface, TeamInterface } from './types'

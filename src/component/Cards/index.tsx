@@ -7,7 +7,6 @@ import img from '../../static/images/account-icon.png'
 import { CATEGORY_ENUM } from '../../utils/constants'
 import { getEnumValueByKey } from '../../utils/helper'
 import { tokens } from '../../utils/theme'
-import { MouseEvent, MouseEventHandler } from 'react'
 interface Props {
   keyItem?: string
   player?: PLAYERS_INTERFACE
@@ -120,61 +119,6 @@ const Cards = (props: Props) => {
                   VC
                 </Avatar>
               </Stack>
-              {/* <span
-                onClick={(event) => {
-                  if (props.handleChipSelection) {
-                    handleCaptainChipSelection(event, C)
-                  }
-                }}
-                style={{
-                  margin: '2px 5%',
-                  cursor: 'pointer',
-                  backgroundColor:
-                    props.player && props.captainData && props.captainData?.captains?.id === props.player.id
-                      ? colors.greenAccent[500]
-                      : 'transparent',
-                  fontSize: '8px',
-                  border: '1px solid',
-                  width: '15%',
-                  height: '15%',
-                  display: 'inline-flex',
-                  borderRadius: '50%',
-                  padding: '4px',
-                  textAlign: 'center',
-                }}
-              >
-                C
-              </span> */}
-              {/* <span
-                onClick={(event) => {
-                  if (props.handleChipSelection) {
-                    handleCaptainChipSelection(event, VC)
-                  }
-                }}
-                style={{
-                  margin: '2px 5%',
-                  cursor: 'pointer',
-                  color: 'white',
-                  backgroundColor:
-                    props.player && props.captainData && props.captainData.viceCaptains?.id === props.player.id
-                      ? colors.blueAccent[500]
-                      : 'transparent',
-
-                  borderRadius:
-                    props.player && props.captainData && props.captainData.viceCaptains?.id === props.player.id
-                      ? '50%'
-                      : '50%',
-                  padding: '4px',
-                  fontSize: '8px',
-                  border: '1px solid',
-                  width: '15%',
-                  height: '15%',
-                  display: 'inline-flex',
-                  textAlign: 'center',
-                }}
-              >
-                VC
-              </span> */}
             </Grid>
           )}
           <Grid item xs={1}>

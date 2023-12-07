@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog, Grid, IconButton, Toolbar, Typography, useTheme } from '@mui/material'
+import { AppBar, Button, Dialog, Grid, IconButton, Toolbar, Typography } from '@mui/material'
 import LeaguePlayers from './LeaguePlayers'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,7 +6,6 @@ import { fetchLeagueDetailsAction, fetchLeagueDetailsActionFailure } from '../ac
 import { useLocation, useNavigate } from 'react-router-dom'
 import { RootState } from '../../../utils/store/rootReducer'
 import { updateToastState } from '../../../utils/appActions/actions'
-import { tokens } from '../../../utils/theme'
 import FantasyButtons from '../../../component/FormElements/Buttons'
 import CloseIcon from '@mui/icons-material/Close'
 import LeagueRules, { Transition } from './LeagueRules'
@@ -15,8 +14,6 @@ import { checkLeagueOwnerOrNot, getUpdateRulesRequestBody } from './helper'
 import { updateRules, updateRulesFailure, updateRulesSuccess } from './actions'
 
 const LeagueDetails = () => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate()

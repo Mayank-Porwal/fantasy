@@ -1,6 +1,5 @@
-import { FormControlLabel, useTheme } from '@mui/material'
+import { FormControlLabel } from '@mui/material'
 import Switch from '@mui/material/Switch'
-import { tokens } from '../../../utils/theme'
 
 interface Props {
   value: boolean
@@ -10,8 +9,6 @@ interface Props {
   id: string
 }
 const FantasySwitch = (props: Props) => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
   return (
     <FormControlLabel
       control={

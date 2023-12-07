@@ -1,4 +1,4 @@
-import { Grid, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
 import React, { useState } from 'react'
 import { LeagueDetailsInterface } from '../../types'
 import { tokens } from '../../../../utils/theme'

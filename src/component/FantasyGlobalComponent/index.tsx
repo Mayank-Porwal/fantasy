@@ -2,16 +2,8 @@ import { useSelector } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify'
 import { RootState } from '../../utils/store/rootReducer'
 import React, { useEffect } from 'react'
-import { tokens, useMode } from '../../utils/theme'
-import {
-  CircularProgress,
-  CircularProgressProps,
-  LinearProgress,
-  LinearProgressProps,
-  Stack,
-  styled,
-  useTheme,
-} from '@mui/material'
+import { tokens } from '../../utils/theme'
+import { CircularProgress, Stack, useTheme } from '@mui/material'
 
 const FantasyGlobalComponent = () => {
   const theme = useTheme()

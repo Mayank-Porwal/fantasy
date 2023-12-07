@@ -7,11 +7,10 @@ import { tokens } from '../../../utils/theme'
 import FantasyButtons from '../../../component/FormElements/Buttons'
 import { ButtonTypes } from '../../../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllTeams, updatePopupState, updateToastState } from '../../../utils/appActions/actions'
+import { updatePopupState, updateToastState } from '../../../utils/appActions/actions'
 import { createLeagueAction, createLeagueActionFailure, createLeagueActionSuccess } from '../actions'
-import { fromValidation, getCreateLeagueRequestBody, updateUsersTeamsOptions } from './helper'
+import { fromValidation, getCreateLeagueRequestBody } from './helper'
 import { RootState } from '../../../utils/store/rootReducer'
-import { UsersTeamsInterface } from '../../../utils/appActions/types'
 import { useNavigate } from 'react-router-dom'
 
 const CreateLeague = () => {

@@ -35,17 +35,12 @@ import {
   updatedSelectedTeamByRemovingCaptainData,
 } from './helper'
 import { CaptainInterface, PLAYERS_INTERFACE } from './types'
-import { DEFAULT_PAGE_NUMBER, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
+import { DEFAULT_PAGE_NUMBER } from '../../utils/constants'
 import FantasyTextField from '../../component/FormElements/TextFlied'
 import { useLocation, useNavigate } from 'react-router-dom'
 import FantasyDropdowns from '../../component/FormElements/FantasyDropdowns'
 import { getLeaguesRequestBody } from '../ManageLeague/helper'
-import {
-  fetchLeagueAction,
-  fetchLeagueDetailsAction,
-  fetchLeagueDetailsActionFailure,
-  fetchLeagueDetailsActionSuccess,
-} from '../ManageLeague/actions'
+import { fetchLeagueAction, fetchLeagueDetailsActionSuccess } from '../ManageLeague/actions'
 import PlayersStats from './PlayerStats/index'
 import { tokens } from '../../utils/theme'
 const CreateTeam = () => {

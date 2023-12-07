@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { MaterialReactTable, MRT_RowSelectionState, type MRT_ColumnDef } from 'material-react-table'
-import { Button, checkboxClasses } from '@mui/material'
+import React, { useMemo } from 'react'
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table'
 import FantasyButtons from '../FormElements/Buttons'
-import FantasyCheckbox from '../FormElements/Checkbox'
+
 interface ColumnsInterface {
   id: string
   header: string
@@ -56,7 +55,7 @@ const FantasyDataGrid = (props: Props) => {
           showFirstButton: true,
           showLastButton: true,
         }}
-        renderTopToolbarCustomActions={({ table }) => {
+        renderTopToolbarCustomActions={({ table }: any) => {
           return (
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               {props.gridActions &&

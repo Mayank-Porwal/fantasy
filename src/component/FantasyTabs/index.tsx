@@ -1,7 +1,6 @@
 import { Tab, Tabs } from '@mui/material'
 import { DEFAULT_AVAILABLE_PLAYERS_TABS_DATA, PlayersCountInterface } from '../CardTable/constants'
 import { CREATE_TEAM_FLOW } from '../../container/CreateTeam/constants'
-import { PLAYERS_INTERFACE } from '../../container/CreateTeam/types'
 import React, { useEffect } from 'react'
 interface Props {
   tabsData: { id: string; name: string }[] | []

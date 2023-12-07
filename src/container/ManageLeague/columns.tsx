@@ -1,7 +1,6 @@
 import { Badge, Typography } from '@mui/material'
 import FantasyDropdowns from '../../component/FormElements/FantasyDropdowns'
 import FantasyTextField from '../../component/FormElements/TextFlied'
-import { useNavigate } from 'react-router-dom'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
   {
