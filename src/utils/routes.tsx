@@ -6,6 +6,8 @@ import { checkIfLoggedIn } from './helper'
 import Register from '../container/Login/Register'
 import ManageLeague from '../container/ManageLeague'
 import LeagueDetails from '../container/ManageLeague/LeagueDetails'
+import ForgotPassword from '../container/Login/ForgotPassword'
+import UpdatePassword from '../container/Login/ForgotPassword/UpdatePassword'
 
 function PrivateRoute() {
   const auth = checkIfLoggedIn()
@@ -15,6 +17,7 @@ function UnProtectedRoute() {
   const auth = !checkIfLoggedIn()
   return auth ? <Outlet /> : <Navigate to='/manage-league?type=my-leagues' />
 }
+
 const RouteComponent = () => {
   return (
     <div style={{ width: '98%' }}>
@@ -23,6 +26,8 @@ const RouteComponent = () => {
           <Route path='/' element={<Login />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/update-password' element={<UpdatePassword />} />
         </Route>
         <Route element={<PrivateRoute />}>
           <Route path='/home' element={<Home />} />

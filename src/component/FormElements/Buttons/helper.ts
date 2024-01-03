@@ -7,6 +7,7 @@ export const getButtonsStyle = (type: string | undefined, theme: Theme) => {
     color: colors.primary[100],
     backgroundColor: colors.greenAccent[500],
     border: `1px solid ${colors.greenAccent[500]}`,
+    textTransform: 'none',
   }
   if (!type) {
     return

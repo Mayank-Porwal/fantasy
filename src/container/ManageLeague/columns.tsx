@@ -32,6 +32,7 @@ export const getManageLeaguesColumns = (handleLeagueActions: Function) => [
         />
       )
     },
+    flex: 1,
   },
   {
     accessorKey: 'type',

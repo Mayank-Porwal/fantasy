@@ -43,7 +43,10 @@ import { getLeaguesRequestBody } from '../ManageLeague/helper'
 import { fetchLeagueAction, fetchLeagueDetailsActionSuccess } from '../ManageLeague/actions'
 import PlayersStats from './PlayerStats/index'
 import { tokens } from '../../utils/theme'
-const CreateTeam = () => {
+interface Props {
+  [key: string]: any
+}
+const CreateTeam = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const navigate = useNavigate()

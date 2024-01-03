@@ -27,7 +27,7 @@ const FantasyButtons = (props: Props) => {
         fontWeight: 'bold',
       }}
     >
-      <span style={{ color: props.buttonType === ButtonTypes.CONTAINED ? colors.grey[500] : colors.greenAccent[500] }}>
+      <span style={{ color: props.buttonType === ButtonTypes.CONTAINED ? colors.grey[600] : colors.greenAccent[500] }}>
         <b>{props.label}</b>
       </span>
     </Button>

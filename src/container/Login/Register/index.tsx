@@ -68,7 +68,7 @@ const Register = () => {
       <Grid item xs={12} md={4}>
         <Card>
           <CardActionArea>
-            <CardContent>
+            <CardContent sx={{ cursor: 'default' }}>
               <Typography gutterBottom variant='h3' component='div' sx={{ textAlign: 'center' }}>
                 Register
               </Typography>

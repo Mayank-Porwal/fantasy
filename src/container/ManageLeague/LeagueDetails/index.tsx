@@ -12,6 +12,7 @@ import LeagueRules, { Transition } from './LeagueRules'
 import { RulesDataInterface } from './types'
 import { checkLeagueOwnerOrNot, getUpdateRulesRequestBody } from './helper'
 import { updateRules, updateRulesFailure, updateRulesSuccess } from './actions'
+import { socket } from '../../../utils/sockets'
 
 const LeagueDetails = () => {
   const dispatch = useDispatch()
@@ -86,11 +87,17 @@ const LeagueDetails = () => {
       dispatch(updateToastState({ type: 'error', message: propsState.updateRulesFailure }))
     }
   }, [propsState.updateRulesFailure])
+  const handleSocket = () => {
+    socket.connect()
+  }
+  const handleSocketDisconnect = () => {
+    socket.disconnect()
+  }
   return (
     <>
       <div>
         <Grid container direction={'row'} alignItems={'center'}>
-          <Grid item md={9}>
+          <Grid item md={7}>
             <Typography variant='h4' component={'h2'}>
               {leagueName}
             </Typography>
@@ -106,6 +113,22 @@ const LeagueDetails = () => {
               label={'Rules'}
               onClick={handleConfiguration}
               id='configurations'
+            ></FantasyButtons>
+          </Grid>
+          <Grid item md={1}>
+            <FantasyButtons
+              buttonType='contained'
+              label={'Web Socket'}
+              onClick={handleSocket}
+              id='socket'
+            ></FantasyButtons>
+          </Grid>
+          <Grid item md={1}>
+            <FantasyButtons
+              buttonType='contained'
+              label={'Disconnect'}
+              onClick={handleSocketDisconnect}
+              id='socketDisconnect'
             ></FantasyButtons>
           </Grid>
         </Grid>

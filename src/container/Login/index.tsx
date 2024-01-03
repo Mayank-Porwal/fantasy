@@ -64,6 +64,7 @@ const Login = () => {
   }, [propsState.signInFailure])
   const handleFooterActions = (id: string) => {
     if (id === 'forgotPassword') {
+      navigate('/forgot-password')
     } else {
       navigate('/register')
     }
@@ -72,7 +73,7 @@ const Login = () => {
     <Grid container direction='row' alignItems={'center'} justifyContent={'center'} sx={{ height: '80vh' }}>
       <Grid item xs={12} md={4}>
         <Card>
-          <CardContent>
+          <CardContent sx={{ cursor: 'default' }}>
             <Typography gutterBottom variant='h3' component='div' sx={{ textAlign: 'center' }}>
               Login
             </Typography>

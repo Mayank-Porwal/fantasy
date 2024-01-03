@@ -20,3 +20,9 @@ export interface PlayersInterface {
   vice_captain: boolean
   id: number
 }
+
+export interface ToggleData {
+  toggled: boolean
+  isCollapsed: boolean
+  isMobile: boolean
+}

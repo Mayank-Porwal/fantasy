@@ -24,6 +24,8 @@ export enum API_URLS {
   FETCH_MY_LEAGUES = '/my-leagues',
   FETCH_RULES_BY_LEAGUE_ID = '/league-rules',
   FETCH_PUBLIC_LEAGUES = '/public-leagues',
+  SEND_OTP = '/forgot-password',
+  VERIFY_OTP = 'validate-otp',
 }
 
 export interface ResponseGenerator {
@@ -73,6 +75,7 @@ export const VALIDATION_MESSAGES = {
   password: 'Enter a valid Password (Min 8 characters, 1 Uppercase letter, 1 Lowercase letter, 1 Special Character)',
   phone: 'Enter a valid Phone Number (Max Length 10)',
   confirmPassword: "Confirm Password doesn't match your Password",
+  OTP_LENGTH_MESSAGE: 'OTP should be of 6 digits',
 }
 
 export const DEFAULT_PAGE_NUMBER = 1

@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import './App.css'
 //import { HTTPS_HEADERS, REQUEST_TYPE } from './utils/constants';
 import { CssBaseline, ThemeProvider } from '@mui/material'
@@ -15,6 +15,7 @@ import { RootState } from './utils/store/rootReducer'
 import { store } from './utils/store/store'
 import { ColorModeContext, useMode } from './utils/theme'
 import CustomizedDialogs from './component/Popup'
+import { socket } from './utils/sockets'
 function App() {
   return (
     <Provider store={store}>

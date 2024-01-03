@@ -1,5 +1,5 @@
 import { APP_ACTIONS, Actions } from './actions'
-import { NotificationInterface, PopupInterface, UsersTeamsInterface } from './types'
+import { NotificationInterface, PopupInterface, ToggleData, UsersTeamsInterface } from './types'
 interface InitialStateInterface {
   showLoader: boolean
   notification: NotificationInterface | null
@@ -7,6 +7,7 @@ interface InitialStateInterface {
   popUpData: PopupInterface | null
   usersTeams: UsersTeamsInterface[] | null
   usersTeamsFailure: any
+  toggleData: ToggleData
 }
 const initialState = {
   showLoader: false,
@@ -15,6 +16,7 @@ const initialState = {
   popUpData: null,
   usersTeams: null,
   usersTeamsFailure: null,
+  toggleData: { toggled: false, isCollapsed: false, isMobile: window.innerWidth < 768 ? true : false },
 }
 const appReducer = (state: InitialStateInterface = initialState, action: Actions): InitialStateInterface => {
   switch (action.type) {
@@ -30,6 +32,8 @@ const appReducer = (state: InitialStateInterface = initialState, action: Actions
       return { ...state, usersTeams: action.payload }
     case APP_ACTIONS.FETCH_USERS_TEAM_FAILURE:
       return { ...state, usersTeamsFailure: action.payload }
+    case APP_ACTIONS.SIDEBAR_TOGGLE_DATA:
+      return { ...state, toggleData: action.payload }
     default:
       return state
   }

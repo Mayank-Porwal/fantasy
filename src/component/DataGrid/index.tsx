@@ -40,7 +40,7 @@ const FantasyDataGrid = (props: Props) => {
         enableColumnOrdering
         enableGrouping={false}
         enablePinning={false}
-        enableRowActions={false}
+        enableRowActions={true}
         enableRowSelection
         enableSorting={false}
         initialState={{ showColumnFilters: true }}

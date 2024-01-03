@@ -1,4 +1,4 @@
-import { NotificationInterface, PopupInterface, UsersTeamsInterface } from './types'
+import { NotificationInterface, PopupInterface, ToggleData, UsersTeamsInterface } from './types'
 
 export enum APP_ACTIONS {
   SHOW_LOADER = `SHOW_LOADER`,
@@ -8,6 +8,7 @@ export enum APP_ACTIONS {
   FETCH_USERS_TEAM = 'FETCH_USERS_TEAM',
   FETCH_USERS_TEAM_SUCCESS = 'FETCH_USERS_TEAM_SUCCESS',
   FETCH_USERS_TEAM_FAILURE = 'FETCH_USERS_TEAM_FAILURE',
+  SIDEBAR_TOGGLE_DATA = 'SIDEBAR_TOGGLE_DATA',
 }
 export interface UpdateLoaderInterface {
   type: APP_ACTIONS.SHOW_LOADER
@@ -86,6 +87,18 @@ export const getAllTeamsFailure = (payload: any): FetchTeamsInterfaceFailure => 
     payload,
   }
 }
+
+export interface UpdateToggleData {
+  type: APP_ACTIONS.SIDEBAR_TOGGLE_DATA
+  payload: ToggleData
+}
+export const updateToggleData = (payload: ToggleData): UpdateToggleData => {
+  return {
+    type: APP_ACTIONS.SIDEBAR_TOGGLE_DATA,
+    payload,
+  }
+}
+
 export type Actions =
   | UpdateLoaderInterface
   | UpdateToastState
@@ -94,3 +107,4 @@ export type Actions =
   | FetchTeamsInterface
   | FetchTeamsInterfaceSuccess
   | FetchTeamsInterfaceFailure
+  | UpdateToggleData

@@ -17,6 +17,7 @@ import { LeagueResponseDataInterface, PublicLeagueDataInterface } from './types'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getPublicLeaguesColumns } from './columns'
 import { tokens } from '../../utils/theme'
+
 const ManageLeague = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
