@@ -7,6 +7,9 @@ body,
     width: 100vw;
     font-family: 'Source Sans Pro', sans-serif;
     overflow: hidden;
+    /* background-image: url("./static//images/app-back.jpg");
+    background-repeat: no-repeat, repeat;
+    background-color: #cccccc; */
 }
 .App {
     text-align: center;
@@ -14,7 +17,13 @@ body,
 .app {
     display: flex;
     position: relative;
-    width: 100vw
+    width: 100vw;  
+}
+.background-app-image {
+    background-image: url("./static/images/app-back.jpg");
+    background-repeat: no-repeat;
+    background-color: #cccccc;
+    background-size: cover;
 }
 .App-logo {
     height: 40vmin;

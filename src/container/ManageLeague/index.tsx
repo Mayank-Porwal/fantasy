@@ -109,19 +109,17 @@ const ManageLeague = () => {
   const handleCellActions = (id: string) => {}
   return (
     <Grid>
-      <Grid container direction='row' sx={{ margin: '2% 0%' }}>
+      {/* <Grid container direction='row' sx={{ margin: '2% 0%' }}>
         <Typography variant='h2' sx={{ fontWeight: 'bold' }}>
           Manage Leagues
         </Typography>
-      </Grid>
-      <Grid
-        container
-        direction='row'
-        spacing={2}
-        sx={{ margin: '2% 0%' }}
-        alignItems={'center'}
-        justifyContent={'flex-end'}
-      >
+      </Grid> */}
+      <Grid container direction='row' spacing={2} alignItems={'center'} justifyContent={'space-between'}>
+        <Grid item xs={12} md={6} lg={6}>
+          <Typography variant='h2' sx={{ fontWeight: 'bold', textAlign: 'left' }}>
+            Manage Leagues
+          </Typography>
+        </Grid>
         {tabsValue === LEAGUE_TABS_DATA[0].id && (
           <Grid item xs={6} sm={6} md={3} lg={3} xl={2}>
             <FantasyButtons

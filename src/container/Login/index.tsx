@@ -13,6 +13,7 @@ import { tokens } from '../../utils/theme'
 import { signIn, signInFailure, signInSuccess } from './actions'
 import { DEFAULT_LOGIN_ERRORS, DEFAULT_LOGIN_FORM_DATA } from './constants'
 import { requiredFieldsCheck, setUserDataToCookies, validationCheck, validationCheckDisabled } from './helper'
+import './styles.css'
 const Login = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -97,7 +98,7 @@ const Login = () => {
                   error={formDataErrors.password}
                   value={formData.password}
                 />
-                <FantasyCheckbox id='rememberMe' label='Remember Me' onChange={handleFormChange} value={false} />
+                {/* <FantasyCheckbox id='rememberMe' label='Remember Me' onChange={handleFormChange} value={false} /> */}
               </FormGroup>
             </form>
             <Grid container direction={'row'} alignItems={'center'} justifyContent={'center'} sx={{ margin: '2%' }}>

@@ -87,3 +87,5 @@ export enum RULES_TYPES {
   FIELDING = 'fielding',
   AWARDS = 'awards',
 }
+
+export const BACKGROUND_PAGES = ['/login', '/register']

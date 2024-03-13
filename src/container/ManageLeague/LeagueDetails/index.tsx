@@ -87,48 +87,27 @@ const LeagueDetails = () => {
       dispatch(updateToastState({ type: 'error', message: propsState.updateRulesFailure }))
     }
   }, [propsState.updateRulesFailure])
-  const handleSocket = () => {
-    socket.connect()
-  }
-  const handleSocketDisconnect = () => {
-    socket.disconnect()
-  }
+
   return (
     <>
       <div>
-        <Grid container direction={'row'} alignItems={'center'}>
-          <Grid item md={7}>
+        <Grid container direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+          <Grid item md={9}>
             <Typography variant='h4' component={'h2'}>
               {leagueName}
             </Typography>
           </Grid>
-          <Grid item md={2}>
+          <Grid item md={1}>
             <div>
               <b>Code: {propsState.leagueDetailData ? propsState.leagueDetailData.code : ''}</b>
             </div>
           </Grid>
-          <Grid item md={1}>
+          <Grid item md={2}>
             <FantasyButtons
               buttonType='contained'
               label={'Rules'}
               onClick={handleConfiguration}
               id='configurations'
-            ></FantasyButtons>
-          </Grid>
-          <Grid item md={1}>
-            <FantasyButtons
-              buttonType='contained'
-              label={'Web Socket'}
-              onClick={handleSocket}
-              id='socket'
-            ></FantasyButtons>
-          </Grid>
-          <Grid item md={1}>
-            <FantasyButtons
-              buttonType='contained'
-              label={'Disconnect'}
-              onClick={handleSocketDisconnect}
-              id='socketDisconnect'
             ></FantasyButtons>
           </Grid>
         </Grid>

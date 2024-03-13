@@ -1,0 +1,6 @@
+.background {
+    width:100%;
+    background-image: url("../../static/images/app-back.jpg");
+    background-repeat: no-repeat, repeat;
+    background-color: #cccccc;
+}

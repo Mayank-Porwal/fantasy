@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import './App.css'
 //import { HTTPS_HEADERS, REQUEST_TYPE } from './utils/constants';
 import { CssBaseline, ThemeProvider } from '@mui/material'
@@ -16,6 +16,8 @@ import { store } from './utils/store/store'
 import { ColorModeContext, useMode } from './utils/theme'
 import CustomizedDialogs from './component/Popup'
 import { socket } from './utils/sockets'
+import { BACKGROUND_PAGES } from './utils/constants'
+import clsx from 'clsx'
 function App() {
   return (
     <Provider store={store}>
@@ -26,6 +28,13 @@ function App() {
 const Application = () => {
   const [theme, colorMode] = useMode()
   const dispatch = useDispatch()
+  const page = useMemo(() => {
+    if (window.location) {
+      return window.location.pathname
+    } else {
+      return ''
+    }
+  }, [window.location.pathname])
   const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   const propsState = useSelector((state: RootState) => {
     return {
@@ -39,20 +48,12 @@ const Application = () => {
   useEffect(() => {
     setIsLoggedIn(propsState.isLoggedIn)
   }, [propsState.isLoggedIn])
+  console.log(page)
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div
-          className='app'
-          /* style={{
-            backdropFilter: 'blur(5px) !important',
-            filter: 'blur(5px)',
-            pointerEvents: 'none',
-            opacity: '0.8',
-            zIndex: 1400,
-          }} */
-        >
+        <div className={BACKGROUND_PAGES.includes(page) ? clsx('app', 'background-app-image') : 'app'}>
           <BrowserRouter>
             {isLoggedIn && <AppSidebar />}
             <main className='content'>

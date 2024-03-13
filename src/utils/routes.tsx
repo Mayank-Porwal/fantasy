@@ -8,7 +8,7 @@ import ManageLeague from '../container/ManageLeague'
 import LeagueDetails from '../container/ManageLeague/LeagueDetails'
 import ForgotPassword from '../container/Login/ForgotPassword'
 import UpdatePassword from '../container/Login/ForgotPassword/UpdatePassword'
-
+import '../container/Login/styles.css'
 function PrivateRoute() {
   const auth = checkIfLoggedIn()
   return auth ? <Outlet /> : <Navigate to='/login' />
@@ -24,7 +24,14 @@ const RouteComponent = () => {
       <Routes>
         <Route element={<UnProtectedRoute />}>
           <Route path='/' element={<Login />} />
-          <Route path='/login' element={<Login />} />
+          <Route
+            path='/login'
+            element={
+              <div>
+                <Login />
+              </div>
+            }
+          />
           <Route path='/register' element={<Register />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/update-password' element={<UpdatePassword />} />

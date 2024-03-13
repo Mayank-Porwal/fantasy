@@ -115,7 +115,7 @@ const AppSidebar = () => {
                 {!isCollapsed && (
                   <Box display='flex' justifyContent='space-between' alignItems='center' ml='15px'>
                     <Typography variant='h3' color={colors.greenAccent[500]}>
-                      Fantasy
+                      Fantasy Baazi
                     </Typography>
                     <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                       <CloseIcon />

@@ -135,6 +135,7 @@ const CreateTeam = (props: Props) => {
   }, [propsState.allPlayer])
   useEffect(() => {
     if (propsState.allPlayerError) {
+      dispatch(updateLoaderState(false))
       dispatch(updateToastState({ message: propsState.allPlayerError, type: 'error' }))
     }
   }, [propsState.allPlayerError])
