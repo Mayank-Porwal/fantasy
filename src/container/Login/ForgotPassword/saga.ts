@@ -14,7 +14,6 @@ function* sendOtp(action: actionTypes.SendOtpInterface) {
     if (response.status && response.status >= 200 && response.status <= 299) {
       yield put(actionTypes.sendOtpSuccess(response?.data))
     } else {
-      console.log(response)
       yield put(
         actionTypes.sendOtpFailure(
           response?.response?.data.message

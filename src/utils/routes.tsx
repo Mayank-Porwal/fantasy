@@ -37,7 +37,7 @@ const RouteComponent = () => {
           <Route path='/update-password' element={<UpdatePassword />} />
         </Route>
         <Route element={<PrivateRoute />}>
-          <Route path='/home' element={<Home />} />
+          {/* <Route path='/home' element={<Home />} /> */}
           <Route path='/teams' element={<CreateTeam />} />
           <Route path='/manage-league' element={<ManageLeague />} />
           <Route path='/league-details' element={<LeagueDetails />} />

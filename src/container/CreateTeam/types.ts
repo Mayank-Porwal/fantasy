@@ -60,3 +60,18 @@ export interface StatsInterface {
   stumping: number
   run_outs: number
 }
+
+export interface PredictWinnerRequestBody {
+  predicted_team: string | null
+  league_id: number | null
+  team_id: number | null
+}
+
+export interface PreviousPredictionRequestBody {
+  league_id: number | null
+  team_id: number | null
+}
+
+export interface PreviousPredictedTeam {
+  name: string | null
+}

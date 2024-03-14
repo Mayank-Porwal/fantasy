@@ -1,7 +1,15 @@
+import { CurrentMatch } from '../../utils/appActions/types'
 import { CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
 import { FetchLeagueResponseInterface, LeagueResponseDataInterface } from '../ManageLeague/types'
-import { C, CREATE_TEAM_VALIDATION_MESSAGES, VC } from './constants'
-import { CaptainInterface, CreateTeamInterface, PLAYERS_INTERFACE, TeamDetailsInterface, TeamInterface } from './types'
+import { C, CREATE_TEAM_VALIDATION_MESSAGES, PREDICTION_SKIP, VC } from './constants'
+import {
+  CaptainInterface,
+  CreateTeamInterface,
+  PLAYERS_INTERFACE,
+  PreviousPredictedTeam,
+  TeamDetailsInterface,
+  TeamInterface,
+} from './types'
 import _ from 'lodash'
 export const updatePlayerList = (
   player: PLAYERS_INTERFACE,
@@ -31,7 +39,12 @@ export const searchAvailablePlayers = (availablePlayers: PLAYERS_INTERFACE[] | [
   return filterPlayers
 }
 
-export const getFilteredData = (playersData: PLAYERS_INTERFACE[] | [], filterValue: string, searchString: string) => {
+export const getFilteredData = (
+  playersData: PLAYERS_INTERFACE[] | [],
+  filterValue: string,
+  searchString: string,
+  currentMatch: CurrentMatch | null,
+) => {
   let filteredData: PLAYERS_INTERFACE[] | [] = []
   switch (filterValue) {
     case CATEGORY_ENUM_BY_KEY.Batsman:
@@ -49,6 +62,16 @@ export const getFilteredData = (playersData: PLAYERS_INTERFACE[] | [], filterVal
     case CATEGORY_ENUM_BY_KEY['Wicket Keeper']:
       filteredData = playersData.filter((player) => player.category === 'wk')
       filteredData = searchAvailablePlayers(filteredData, searchString)
+      break
+    case CATEGORY_ENUM_BY_KEY['Current Match']:
+      if (currentMatch) {
+        filteredData = playersData.filter((player) => {
+          if (player.team === currentMatch.teamA.name || player.team === currentMatch.teamB.name) {
+            return player
+          }
+        })
+        filteredData = searchAvailablePlayers(filteredData, searchString)
+      }
       break
     default:
       filteredData = [...playersData]
@@ -300,7 +323,6 @@ export const getUpdatedCaptainData = (captainData: CaptainInterface | null, sele
   if (!captainData) {
     return null
   }
-  console.log(selectedPlayerData, captainData)
   let updatedCaptainData = _.cloneDeep(captainData)
   if (selectedPlayerData.id === captainData.captains?.id) {
     updatedCaptainData.captains = null
@@ -309,4 +331,61 @@ export const getUpdatedCaptainData = (captainData: CaptainInterface | null, sele
     updatedCaptainData.viceCaptains = null
   }
   return updatedCaptainData
+}
+
+export const getPredictionRequestBody = (
+  predictedTeam: string,
+  leagueData: {
+    teamName: string
+    league: string
+    teamId: number
+    substitutions: number
+  },
+  availableLeagues: LeagueResponseDataInterface[] | [],
+) => {
+  const selectedLeague = availableLeagues.find((x) => x.league_id === parseInt(leagueData.league))
+  return {
+    predicted_team: predictedTeam === PREDICTION_SKIP ? null : predictedTeam,
+    league_id: selectedLeague ? selectedLeague.league_id : null,
+    team_id: leagueData.teamId ? leagueData.teamId : null,
+  }
+}
+
+export const getPreviousPredictionRequestBody = (
+  leagueData: {
+    teamName: string
+    league: string
+    teamId: number
+    substitutions: number
+  },
+  availableLeagues: LeagueResponseDataInterface[] | [],
+) => {
+  const selectedLeague = availableLeagues.find((x) => x.league_id === parseInt(leagueData.league))
+  return {
+    league_id: selectedLeague ? selectedLeague.league_id : null,
+    team_id: leagueData.teamId ? leagueData.teamId : null,
+  }
+}
+
+export const getPreviousPredictionBorder = (
+  previousPrediction: PreviousPredictedTeam | null,
+  currentMatch: CurrentMatch | null,
+  team: string,
+) => {
+  if (!previousPrediction) {
+    return false
+  }
+  if (!currentMatch) {
+    return false
+  }
+  if (team === 'teamA') {
+    if (previousPrediction.name && previousPrediction.name === currentMatch.teamA.name) {
+      return true
+    }
+  }
+  if (team === 'teamB') {
+    if (previousPrediction.name && previousPrediction.name === currentMatch.teamB.name) {
+      return true
+    }
+  }
 }

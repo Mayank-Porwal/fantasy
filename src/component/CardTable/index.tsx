@@ -3,12 +3,17 @@ import FantasyTextField from '../FormElements/TextFlied'
 import { tokens } from '../../utils/theme'
 import SearchIcon from '@mui/icons-material/Search'
 import FantasyTabs from '../FantasyTabs'
-import { DEFAULT_AVAILABLE_PLAYERS_TABS_DATA } from './constants'
+import {
+  DEFAULT_AVAILABLE_PLAYERS_TABS_DATA,
+  NON_PLAYING_ELEVEN_BOX_SHADOW,
+  PLAYING_ELEVEN_BOX_SHADOW,
+} from './constants'
 import { CaptainInterface, PLAYERS_INTERFACE } from '../../container/CreateTeam/types'
 import Cards from '../Cards'
 import { CREATE_TEAM_FLOW } from '../../container/CreateTeam/constants'
-import { getSelectedPlayersCount } from './helper'
+import { getPlayingEleven, getSelectedPlayersCount, getTabsDataByCurrentMatch } from './helper'
 import { useState } from 'react'
+import { CurrentMatch } from '../../utils/appActions/types'
 interface Props {
   filter: boolean
   availablePlayers?: PLAYERS_INTERFACE[] | [] | null
@@ -21,6 +26,7 @@ interface Props {
   handleChipSelection?: Function
   captainData?: CaptainInterface | null
   handleCardClick?: Function
+  currentMatch?: CurrentMatch | null
 }
 const CardTable = (props: Props) => {
   const theme = useTheme()
@@ -42,7 +48,7 @@ const CardTable = (props: Props) => {
       <Grid
         container
         direction='row'
-        sx={{ backgroundColor: colors.primary[400], height: '70px' }}
+        sx={{ backgroundColor: colors.primary[400], height: props.flow !== CREATE_TEAM_FLOW.ALL_PLAYERS ? '70px' : '' }}
         alignItems={'center'}
         justifyContent={''}
         spacing={0}
@@ -70,7 +76,7 @@ const CardTable = (props: Props) => {
           >
             <FantasyTabs
               flow={props.flow}
-              tabsData={DEFAULT_AVAILABLE_PLAYERS_TABS_DATA}
+              tabsData={getTabsDataByCurrentMatch(props.currentMatch ? true : true, props.flow)}
               onChange={handleTabsChange}
               value={props.tabsValue ? props.tabsValue : ''}
               dataCount={getSelectedPlayersCount(props.allPlayers ? props.allPlayers : [])}
@@ -94,7 +100,12 @@ const CardTable = (props: Props) => {
                 style={{
                   width: '100%',
                   padding: '2px',
-                  boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
+                  boxShadow: getPlayingEleven(player, props.currentMatch)
+                    ? PLAYING_ELEVEN_BOX_SHADOW
+                    : NON_PLAYING_ELEVEN_BOX_SHADOW,
+                  borderLeft: getPlayingEleven(player, props.currentMatch)
+                    ? `4px solid${colors.greenAccent[400]}`
+                    : 'none',
                 }}
               >
                 <Cards

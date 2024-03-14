@@ -22,7 +22,7 @@ const LeaguePlayers = (props: Props) => {
         data={props.leagueData ? props.leagueData.league_players : []}
         pagination={true}
         onCallback={handleGridCallback}
-        gridActions={getGridActions(handleCellActions)}
+        //gridActions={getGridActions(handleCellActions)}
         pageCount={props.leagueData ? Math.ceil(props.leagueData.league_players.length / 20) : 0}
         rowCount={props.leagueData ? props.leagueData.league_players.length : 0}
       />

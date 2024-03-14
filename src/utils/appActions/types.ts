@@ -26,3 +26,14 @@ export interface ToggleData {
   isCollapsed: boolean
   isMobile: boolean
 }
+
+export interface CurrentMatch {
+  teamA: CurrentMatchTeam
+  teamB: CurrentMatchTeam
+}
+
+interface CurrentMatchTeam {
+  name: string
+  players: number[]
+  image: string
+}

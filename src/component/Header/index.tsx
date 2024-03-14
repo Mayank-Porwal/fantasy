@@ -60,10 +60,10 @@ const Header = () => {
           borderRadius: '3px',
         }}
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder='Search' />
+        {/* <InputBase sx={{ ml: 2, flex: 1 }} placeholder='Search' />
         <IconButton type='button' sx={{ p: 1 }}>
           <SearchIcon />
-        </IconButton>
+        </IconButton> */}
       </Box>
 
       {/* ICONS */}
@@ -71,7 +71,7 @@ const Header = () => {
         {/* <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode === 'dark' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
                 </IconButton> */}
-        <IconButton>
+        {/* <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>
         <IconButton>
@@ -79,7 +79,7 @@ const Header = () => {
         </IconButton>
         <IconButton>
           <PersonOutlinedIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton onClick={() => handleLogout()}>
           <LogoutIcon />
         </IconButton>

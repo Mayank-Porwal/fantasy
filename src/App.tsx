@@ -48,7 +48,6 @@ const Application = () => {
   useEffect(() => {
     setIsLoggedIn(propsState.isLoggedIn)
   }, [propsState.isLoggedIn])
-  console.log(page)
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>

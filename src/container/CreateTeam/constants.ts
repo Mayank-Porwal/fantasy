@@ -14,3 +14,5 @@ export const C = 'Captain'
 export const VC = 'ViceCaptain'
 
 export const DEFAULT_SUBS_DATA = 0
+
+export const PREDICTION_SKIP = 'No Prediction'

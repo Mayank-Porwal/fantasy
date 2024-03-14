@@ -1,18 +1,30 @@
-import { Button, Grid, Typography, useTheme } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Typography,
+  useTheme,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CardTable from '../../component/CardTable'
-import { updateLoaderState, updateToastState } from '../../utils/appActions/actions'
+import { getCurrentMatch, updateLoaderState, updateToastState } from '../../utils/appActions/actions'
 import { RootState } from '../../utils/store/rootReducer'
 import {
   createTeam,
+  fetchPreviousPrediction,
   getAllPlayers,
   getTeamByIdAction,
   getTeamByIdActionFailure,
   getTeamByIdActionSuccess,
+  predictWinnerAction,
   updateSelectedPlayers,
 } from './actions'
-import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES, DEFAULT_SUBS_DATA } from './constants'
+import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES, DEFAULT_SUBS_DATA, PREDICTION_SKIP } from './constants'
 import {
   checkMaximumPlayerAllowedValidation,
   createTeamRequestBody,
@@ -20,6 +32,9 @@ import {
   getCapData,
   getCaptainDataFromSelectedTeam,
   getFilteredData,
+  getPredictionRequestBody,
+  getPreviousPredictionBorder,
+  getPreviousPredictionRequestBody,
   getSubsAfterAddPlayer,
   getSubsDataAfterDelete,
   getUpdatedCapDataAfterAddPlayer,
@@ -43,6 +58,7 @@ import { getLeaguesRequestBody } from '../ManageLeague/helper'
 import { fetchLeagueAction, fetchLeagueDetailsActionSuccess } from '../ManageLeague/actions'
 import PlayersStats from './PlayerStats/index'
 import { tokens } from '../../utils/theme'
+import { Transition } from '../ManageLeague/LeagueDetails/LeagueRules'
 interface Props {
   [key: string]: any
 }
@@ -61,6 +77,12 @@ const CreateTeam = (props: Props) => {
       leagueData: state.leagueReducer.leagueData,
       selectedTeam: state.createTeamReducer.selectedTeam,
       selectedTeamFailure: state.createTeamReducer.selectedTeamFailure,
+      currentMatch: state.appReducer.currentMatch,
+      currentMatchFailure: state.appReducer.currentMatchFailure,
+      predictedResult: state.createTeamReducer.prediction,
+      predictedResultFailure: state.createTeamReducer.predictionFailure,
+      previousPrediction: state.createTeamReducer.previousPrediction,
+      previousPredictionFailure: state.createTeamReducer.previousPredictionFailure,
     }
   })
   const [filteredAllPlayers, setFilteredAllPlayers] = useState<PLAYERS_INTERFACE[] | []>(propsState.allPlayer)
@@ -86,6 +108,7 @@ const CreateTeam = (props: Props) => {
   const [captainData, setCaptainData] = useState<CaptainInterface | null>(null)
   const [capData, setCapData] = useState(0)
   const [selectedPlayer, setSelectedPlayer] = useState<PLAYERS_INTERFACE | null>(null)
+  const [open, setOpen] = useState<boolean>(false)
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
   const location = useLocation()
@@ -96,6 +119,7 @@ const CreateTeam = (props: Props) => {
     }
     const requestBody = getLeaguesRequestBody(null, DEFAULT_PAGE_NUMBER, 1000)
     dispatch(fetchLeagueAction(requestBody))
+    dispatch(getCurrentMatch())
     return () => {
       setSubs(DEFAULT_SUBS_DATA)
       dispatch(getTeamByIdActionSuccess(null))
@@ -145,7 +169,7 @@ const CreateTeam = (props: Props) => {
       if (validationData.flag) {
         const { allPlayers, selectedPlayers } = updatePlayerList(data, availablePlayers, propsState.selectedPlayers)
         setAvailablePlayers(allPlayers)
-        const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch)
+        const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch, propsState.currentMatch)
         setFilteredAllPlayers(filteredData)
         dispatch(updateSelectedPlayers(selectedPlayers))
         setAvailableSelectedPlayers(selectedPlayers)
@@ -185,7 +209,7 @@ const CreateTeam = (props: Props) => {
   }
   const handleOnSearch = (availPlayers: PLAYERS_INTERFACE[] | [], flow: string, searchString: string) => {
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
-      const filterData = getFilteredData(availPlayers, tabsValue, searchString)
+      const filterData = getFilteredData(availPlayers, tabsValue, searchString, propsState.currentMatch)
       setFilteredAllPlayers(filterData)
       setAvailablePlayersSearch(searchString)
     } else {
@@ -196,8 +220,7 @@ const CreateTeam = (props: Props) => {
   }
   const handleTabsChange = (tabsValue: string, players: PLAYERS_INTERFACE[] | [], flow: string) => {
     setTabsValue(tabsValue)
-
-    const availableData = getFilteredData(players, tabsValue, availablePlayersSearch)
+    const availableData = getFilteredData(players, tabsValue, availablePlayersSearch, propsState.currentMatch)
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
       setFilteredAllPlayers(availableData)
     } else {
@@ -281,7 +304,12 @@ const CreateTeam = (props: Props) => {
   }, [propsState.selectedTeamFailure])
   useEffect(() => {
     if (propsState.teamSuccess && propsState.teamSuccess.message) {
-      dispatch(updateLoaderState(false))
+      setOpen(true)
+      const predictionRequestBody = getPreviousPredictionRequestBody(
+        teamFormData,
+        propsState.leagueData ? propsState.leagueData.data : [],
+      )
+      dispatch(fetchPreviousPrediction(predictionRequestBody))
       dispatch(updateToastState({ message: propsState.teamSuccess.message, type: 'success' }))
     }
   }, [propsState.teamSuccess])
@@ -301,6 +329,39 @@ const CreateTeam = (props: Props) => {
   const handleCloseStats = () => {
     setSelectedPlayer(null)
   }
+  const handlePrediction = (selectedPrediction: string) => {
+    dispatch(updateLoaderState(true))
+    const predictionRequestBody = getPredictionRequestBody(
+      selectedPrediction,
+      teamFormData,
+      propsState.leagueData ? propsState.leagueData.data : [],
+    )
+    dispatch(predictWinnerAction(predictionRequestBody))
+  }
+  useEffect(() => {
+    if (propsState.predictedResult) {
+      setOpen(false)
+      dispatch(updateLoaderState(false))
+      dispatch(updateToastState({ message: propsState.predictedResult, type: 'success' }))
+    }
+  }, [propsState.predictedResult])
+  useEffect(() => {
+    if (propsState.predictedResultFailure) {
+      setOpen(false)
+      dispatch(updateLoaderState(false))
+      dispatch(updateToastState({ message: propsState.predictedResultFailure.message, type: 'error' }))
+    }
+  }, [propsState.predictedResultFailure])
+  useEffect(() => {
+    if (propsState.previousPrediction) {
+      dispatch(updateLoaderState(false))
+    }
+  }, [propsState.previousPrediction])
+  useEffect(() => {
+    if (propsState.previousPredictionFailure) {
+      dispatch(updateLoaderState(false))
+    }
+  }, [propsState.previousPredictionFailure])
   return (
     <>
       <Grid container direction='row' sx={{ margin: '2% 0%' }}>
@@ -352,8 +413,24 @@ const CreateTeam = (props: Props) => {
           Remaining Substitutions:{' '}
           <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{subs ? subs : 0}</span>
         </Grid>
-        <Grid item xs={12} sm={3} md={3}>
+        <Grid item xs={12} sm={1} md={1}>
           Cap: <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{capData ? capData : 0}</span>
+        </Grid>
+        <Grid item xs={12} sm={2} md={2}>
+          {propsState.currentMatch && (
+            <div>
+              <div style={{ textAlign: 'center', fontWeight: '600', marginBottom: '1%' }}>Current Match</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                <div>
+                  <img width={25} height={25} src={propsState.currentMatch.teamA.image} />
+                </div>
+                <div>Vs</div>
+                <div>
+                  <img width={25} height={25} src={propsState.currentMatch.teamB.image} />
+                </div>
+              </div>
+            </div>
+          )}
         </Grid>
       </Grid>
       {selectedPlayer && (
@@ -373,6 +450,7 @@ const CreateTeam = (props: Props) => {
             allPlayers={availablePlayers}
             tabsValue={tabsValue}
             handleCardClick={handleCardClick}
+            currentMatch={propsState.currentMatch}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -389,6 +467,69 @@ const CreateTeam = (props: Props) => {
             handleCardClick={handleCardClick}
           />
         </Grid>
+        <Dialog fullWidth={false} open={open} TransitionComponent={Transition}>
+          <DialogTitle sx={{ textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }}>Predict Winner</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              <div style={{ textAlign: 'center' }}>Who's gonna win today's match</div>
+              <div>(Prediction result will effect your points)</div>
+            </DialogContentText>
+            <div
+              style={{ display: 'flex', flexDirection: 'row', margin: '8% 4%  0 4%', justifyContent: 'space-between' }}
+            >
+              <div
+                style={{
+                  border: `${
+                    getPreviousPredictionBorder(propsState.previousPrediction, propsState.currentMatch, 'teamA')
+                      ? `1px solid ${colors.greenAccent[400]}`
+                      : 'none'
+                  }`,
+                  padding: '2%',
+                }}
+              >
+                {propsState.currentMatch && (
+                  <div
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handlePrediction(propsState.currentMatch ? propsState.currentMatch.teamA.name : '')}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <img width='25' height='25' src={propsState.currentMatch.teamA.image} />
+                    </div>
+                    <div>({propsState.currentMatch.teamA.name})</div>
+                  </div>
+                )}
+              </div>
+              <div>Vs</div>
+              <div
+                style={{
+                  border: `${
+                    getPreviousPredictionBorder(propsState.previousPrediction, propsState.currentMatch, 'teamB')
+                      ? `1px solid ${colors.greenAccent[400]}`
+                      : 'none'
+                  }`,
+                  padding: '2%',
+                }}
+              >
+                {propsState.currentMatch && (
+                  <div
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handlePrediction(propsState.currentMatch ? propsState.currentMatch.teamB.name : '')}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <img width='25' height='25' src={propsState.currentMatch.teamB.image} />
+                    </div>
+                    <div>{propsState.currentMatch.teamB.name}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button sx={{ color: colors.greenAccent[400] }} onClick={() => handlePrediction(PREDICTION_SKIP)}>
+              No Prediction
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
     </>
   )

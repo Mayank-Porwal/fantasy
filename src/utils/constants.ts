@@ -26,6 +26,8 @@ export enum API_URLS {
   FETCH_PUBLIC_LEAGUES = '/public-leagues',
   SEND_OTP = '/forgot-password',
   VERIFY_OTP = 'validate-otp',
+  CURRENT_MATCH = '/current-match',
+  PREDICTION = '/prediction',
 }
 
 export interface ResponseGenerator {
@@ -44,6 +46,7 @@ export enum CATEGORY_ENUM {
   ar = 'All Rounder',
   wk = 'Wicket Keeper',
   all = 'All',
+  cm = 'Current Match',
 }
 export const CATEGORY_ENUM_BY_KEY = {
   Batsman: 'batsman',
@@ -51,6 +54,7 @@ export const CATEGORY_ENUM_BY_KEY = {
   'All Rounder': 'ar',
   'Wicket Keeper': 'wk',
   All: 'all',
+  'Current Match': 'CM',
 }
 export const MESSAGES = {
   SOMETHING_WENT_WRONG: 'Something went wrong, Please try again later!',

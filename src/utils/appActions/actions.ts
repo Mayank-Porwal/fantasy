@@ -1,4 +1,4 @@
-import { NotificationInterface, PopupInterface, ToggleData, UsersTeamsInterface } from './types'
+import { CurrentMatch, NotificationInterface, PopupInterface, ToggleData, UsersTeamsInterface } from './types'
 
 export enum APP_ACTIONS {
   SHOW_LOADER = `SHOW_LOADER`,
@@ -9,6 +9,9 @@ export enum APP_ACTIONS {
   FETCH_USERS_TEAM_SUCCESS = 'FETCH_USERS_TEAM_SUCCESS',
   FETCH_USERS_TEAM_FAILURE = 'FETCH_USERS_TEAM_FAILURE',
   SIDEBAR_TOGGLE_DATA = 'SIDEBAR_TOGGLE_DATA',
+  FETCH_CURRENT_MATCH = 'FETCH_CURRENT_MATCH',
+  FETCH_CURRENT_MATCH_SUCCESS = 'FETCH_CURRENT_MATCH_SUCCESS',
+  FETCH_CURRENT_MATCH_FAILURE = 'FETCH_CURRENT_MATCH_FAILURE',
 }
 export interface UpdateLoaderInterface {
   type: APP_ACTIONS.SHOW_LOADER
@@ -99,6 +102,40 @@ export const updateToggleData = (payload: ToggleData): UpdateToggleData => {
   }
 }
 
+export interface FetchCurrentMatchInterface {
+  type: APP_ACTIONS.FETCH_CURRENT_MATCH
+}
+
+export const getCurrentMatch = (): FetchCurrentMatchInterface => {
+  return {
+    type: APP_ACTIONS.FETCH_CURRENT_MATCH,
+  }
+}
+
+export interface FetchCurrentMatchInterfaceSuccess {
+  type: APP_ACTIONS.FETCH_CURRENT_MATCH_SUCCESS
+  payload: CurrentMatch
+}
+
+export const getCurrentMatchSuccess = (payload: CurrentMatch): FetchCurrentMatchInterfaceSuccess => {
+  return {
+    type: APP_ACTIONS.FETCH_CURRENT_MATCH_SUCCESS,
+    payload,
+  }
+}
+
+export interface FetchCurrentMatchInterfaceFailure {
+  type: APP_ACTIONS.FETCH_CURRENT_MATCH_FAILURE
+  payload: any
+}
+
+export const getCurrentMatchFailure = (payload: any): FetchCurrentMatchInterfaceFailure => {
+  return {
+    type: APP_ACTIONS.FETCH_CURRENT_MATCH_FAILURE,
+    payload,
+  }
+}
+
 export type Actions =
   | UpdateLoaderInterface
   | UpdateToastState
@@ -108,3 +145,6 @@ export type Actions =
   | FetchTeamsInterfaceSuccess
   | FetchTeamsInterfaceFailure
   | UpdateToggleData
+  | FetchCurrentMatchInterface
+  | FetchCurrentMatchInterfaceSuccess
+  | FetchCurrentMatchInterfaceFailure

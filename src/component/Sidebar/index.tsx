@@ -155,13 +155,13 @@ const AppSidebar = () => {
         </SidebarHeader>
         <SidebarContent>
           <Menu iconShape='circle'>
-            <Item
+            {/* <Item
               title='Dashboard'
               selected={selected}
               to='/home'
               setSelected={setSelected}
               icon={<HomeOutlinedIcon />}
-            />
+            /> */}
             <Item
               title='Manage Leagues'
               to='/manage-league?type=my-leagues'

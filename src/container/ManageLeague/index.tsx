@@ -154,7 +154,7 @@ const ManageLeague = () => {
             data={leagueTableData}
             pagination={true}
             onCallback={handleGridCallback}
-            gridActions={getGridActions(handleCellActions)}
+            //gridActions={getGridActions(handleCellActions)}
             pageCount={propsState.leagueData ? parseInt(propsState.leagueData.total_pages) : 0}
             rowCount={propsState.leagueData ? propsState.leagueData.total : 0}
           />
