@@ -263,7 +263,14 @@ export const getSubsDataAfterDelete = (
   if (!lastSubmittedTeam || (Array.isArray(lastSubmittedTeam) && lastSubmittedTeam.length === 0)) {
     return subs
   }
-  return subs - 1
+  let cloneSubs = subs
+  const findData = lastSubmittedTeam.find((team) => team.id === selectedPlayerData.id)
+  if (findData) {
+    cloneSubs--
+  } else {
+    //cloneSubs++
+  }
+  return cloneSubs
 }
 
 export const getSubsAfterAddPlayer = (
@@ -281,6 +288,8 @@ export const getSubsAfterAddPlayer = (
   const findData = lastSubmittedTeam.find((team) => team.id === selectedPlayerData.id)
   if (findData) {
     cloneSubs++
+  } else {
+    //cloneSubs--
   }
 
   return cloneSubs
