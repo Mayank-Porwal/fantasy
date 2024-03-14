@@ -25,7 +25,7 @@ export const getSelectedPlayersCount = (players: PLAYERS_INTERFACE[] | [] | null
       countObject = { ...countObject, [play.category]: 0 }
     }
   })
-  return { ...countObject, [DEFAULT_AVAILABLE_PLAYERS_TABS_DATA[0].id]: players.length }
+  return { ...countObject, [DEFAULT_AVAILABLE_PLAYERS_TABS_DATA[1].id]: players.length }
 }
 
 export const getTabsDataByCurrentMatch = (currentMatchFlag: boolean, flow: string | undefined) => {

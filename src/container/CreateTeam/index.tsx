@@ -18,6 +18,7 @@ import {
   createTeam,
   fetchPreviousPrediction,
   getAllPlayers,
+  getAllPlayersFailure,
   getTeamByIdAction,
   getTeamByIdActionFailure,
   getTeamByIdActionSuccess,
@@ -161,6 +162,9 @@ const CreateTeam = (props: Props) => {
     if (propsState.allPlayerError) {
       dispatch(updateLoaderState(false))
       dispatch(updateToastState({ message: propsState.allPlayerError, type: 'error' }))
+      return () => {
+        dispatch(getAllPlayersFailure(null))
+      }
     }
   }, [propsState.allPlayerError])
   const handleActions = (data: PLAYERS_INTERFACE, flow: string) => {
