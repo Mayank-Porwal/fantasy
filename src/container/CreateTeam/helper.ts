@@ -43,7 +43,7 @@ export const getFilteredData = (
   playersData: PLAYERS_INTERFACE[] | [],
   filterValue: string,
   searchString: string,
-  currentMatch: CurrentMatch | null,
+  currentMatch: CurrentMatch[] | null,
 ) => {
   let filteredData: PLAYERS_INTERFACE[] | [] = []
   switch (filterValue) {
@@ -66,7 +66,7 @@ export const getFilteredData = (
     case CATEGORY_ENUM_BY_KEY['Current Match']:
       if (currentMatch) {
         filteredData = playersData.filter((player) => {
-          if (player.team === currentMatch.teamA.name || player.team === currentMatch.teamB.name) {
+          if (player.team === currentMatch[0].teamA.name || player.team === currentMatch[0].teamB.name) {
             return player
           }
         })
@@ -378,7 +378,7 @@ export const getPreviousPredictionRequestBody = (
 
 export const getPreviousPredictionBorder = (
   previousPrediction: PreviousPredictedTeam | null,
-  currentMatch: CurrentMatch | null,
+  currentMatch: CurrentMatch[] | null,
   team: string,
 ) => {
   if (!previousPrediction) {
@@ -388,12 +388,12 @@ export const getPreviousPredictionBorder = (
     return false
   }
   if (team === 'teamA') {
-    if (previousPrediction.name && previousPrediction.name === currentMatch.teamA.name) {
+    if (previousPrediction.name && previousPrediction.name === currentMatch[0].teamA.name) {
       return true
     }
   }
   if (team === 'teamB') {
-    if (previousPrediction.name && previousPrediction.name === currentMatch.teamB.name) {
+    if (previousPrediction.name && previousPrediction.name === currentMatch[0].teamB.name) {
       return true
     }
   }

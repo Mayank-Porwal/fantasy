@@ -26,7 +26,7 @@ interface Props {
   handleChipSelection?: Function
   captainData?: CaptainInterface | null
   handleCardClick?: Function
-  currentMatch?: CurrentMatch | null
+  currentMatch?: CurrentMatch[] | null
 }
 const CardTable = (props: Props) => {
   const theme = useTheme()

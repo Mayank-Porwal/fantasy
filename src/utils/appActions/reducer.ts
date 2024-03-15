@@ -8,7 +8,7 @@ interface InitialStateInterface {
   usersTeams: UsersTeamsInterface[] | null
   usersTeamsFailure: any
   toggleData: ToggleData
-  currentMatch: CurrentMatch | null
+  currentMatch: CurrentMatch[] | null
   currentMatchFailure: any
 }
 const initialState = {

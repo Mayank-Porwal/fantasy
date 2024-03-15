@@ -426,11 +426,11 @@ const CreateTeam = (props: Props) => {
               <div style={{ textAlign: 'center', fontWeight: '600', marginBottom: '1%' }}>Current Match</div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
                 <div>
-                  <img width={25} height={25} src={propsState.currentMatch.teamA.image} />
+                  <img width={25} height={25} src={propsState.currentMatch[0].teamA.image} />
                 </div>
                 <div>Vs</div>
                 <div>
-                  <img width={25} height={25} src={propsState.currentMatch.teamB.image} />
+                  <img width={25} height={25} src={propsState.currentMatch[0].teamB.image} />
                 </div>
               </div>
             </div>
@@ -494,12 +494,14 @@ const CreateTeam = (props: Props) => {
                 {propsState.currentMatch && (
                   <div
                     style={{ cursor: 'pointer' }}
-                    onClick={() => handlePrediction(propsState.currentMatch ? propsState.currentMatch.teamA.name : '')}
+                    onClick={() =>
+                      handlePrediction(propsState.currentMatch ? propsState.currentMatch[0].teamA.name : '')
+                    }
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img width='25' height='25' src={propsState.currentMatch.teamA.image} />
+                      <img width='25' height='25' src={propsState.currentMatch[0].teamA.image} />
                     </div>
-                    <div>({propsState.currentMatch.teamA.name})</div>
+                    <div>({propsState.currentMatch[0].teamA.name})</div>
                   </div>
                 )}
               </div>
@@ -517,12 +519,14 @@ const CreateTeam = (props: Props) => {
                 {propsState.currentMatch && (
                   <div
                     style={{ cursor: 'pointer' }}
-                    onClick={() => handlePrediction(propsState.currentMatch ? propsState.currentMatch.teamB.name : '')}
+                    onClick={() =>
+                      handlePrediction(propsState.currentMatch ? propsState.currentMatch[0].teamB.name : '')
+                    }
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img width='25' height='25' src={propsState.currentMatch.teamB.image} />
+                      <img width='25' height='25' src={propsState.currentMatch[0].teamB.image} />
                     </div>
-                    <div>{propsState.currentMatch.teamB.name}</div>
+                    <div>{propsState.currentMatch[0].teamB.name}</div>
                   </div>
                 )}
               </div>

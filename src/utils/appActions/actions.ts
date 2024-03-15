@@ -114,10 +114,10 @@ export const getCurrentMatch = (): FetchCurrentMatchInterface => {
 
 export interface FetchCurrentMatchInterfaceSuccess {
   type: APP_ACTIONS.FETCH_CURRENT_MATCH_SUCCESS
-  payload: CurrentMatch
+  payload: CurrentMatch[]
 }
 
-export const getCurrentMatchSuccess = (payload: CurrentMatch): FetchCurrentMatchInterfaceSuccess => {
+export const getCurrentMatchSuccess = (payload: CurrentMatch[]): FetchCurrentMatchInterfaceSuccess => {
   return {
     type: APP_ACTIONS.FETCH_CURRENT_MATCH_SUCCESS,
     payload,

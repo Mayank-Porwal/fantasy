@@ -36,11 +36,11 @@ export const getTabsDataByCurrentMatch = (currentMatchFlag: boolean, flow: strin
   }
 }
 
-export const getPlayingEleven = (player: PLAYERS_INTERFACE, currentMatch: CurrentMatch | undefined | null) => {
+export const getPlayingEleven = (player: PLAYERS_INTERFACE, currentMatch: CurrentMatch[] | undefined | null) => {
   if (!currentMatch) {
     return false
   }
-  if (currentMatch.teamA.players.includes(player.id) || currentMatch.teamB.players.includes(player.id)) {
+  if (currentMatch[0].teamA.players.includes(player.id) || currentMatch[0].teamB.players.includes(player.id)) {
     return true
   }
   return false
