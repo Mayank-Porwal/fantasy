@@ -197,6 +197,7 @@ export const getUpdatedLeagueOptions = (leagueData: LeagueResponseDataInterface[
 export const prePopulateSelectedPlayers = (
   selectedPlayers: TeamDetailsInterface | null,
   allPlayers: PLAYERS_INTERFACE[] | [],
+  draftFlag: boolean,
 ) => {
   if (!selectedPlayers) {
     return {
@@ -206,7 +207,12 @@ export const prePopulateSelectedPlayers = (
   }
   const cloneSelectedPlayers = _.cloneDeep(selectedPlayers)
   const cloneAllPlayers = _.cloneDeep(allPlayers)
-  selectedPlayers.draft_team.forEach((player) => {
+  const selectedPlayersData = draftFlag
+    ? selectedPlayers.draft_team
+    : selectedPlayers.last_submitted_team
+    ? selectedPlayers.last_submitted_team
+    : []
+  selectedPlayersData.forEach((player) => {
     const findPlayerIndex = cloneAllPlayers.findIndex((x) => x.id === player.id)
     if (findPlayerIndex > -1) {
       cloneAllPlayers.splice(findPlayerIndex, 1)
@@ -214,7 +220,11 @@ export const prePopulateSelectedPlayers = (
   })
   return {
     playersList: cloneAllPlayers,
-    selectedPlayers: cloneSelectedPlayers.draft_team,
+    selectedPlayers: draftFlag
+      ? cloneSelectedPlayers.draft_team
+      : cloneSelectedPlayers.last_submitted_team
+      ? cloneSelectedPlayers.last_submitted_team
+      : [],
   }
 }
 

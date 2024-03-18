@@ -60,6 +60,7 @@ import { fetchLeagueAction, fetchLeagueDetailsActionSuccess } from '../ManageLea
 import PlayersStats from './PlayerStats/index'
 import { tokens } from '../../utils/theme'
 import { Transition } from '../ManageLeague/LeagueDetails/LeagueRules'
+import Matches from '../../component/Matches'
 interface Props {
   [key: string]: any
 }
@@ -93,6 +94,7 @@ const CreateTeam = (props: Props) => {
   )
   const [availableSelectedPlayers, setAvailableSelectedPlayers] = useState<PLAYERS_INTERFACE[] | []>([])
   const [tabsValue, setTabsValue] = useState<string>('all')
+  const [tabsValueSelectedPlayer, setTabsValueSelectedPlayer] = useState<string>('all')
   const [availablePlayersSearch, setAvailablePlayersSearch] = useState<string>('')
   const [teamFormData, setTeamFormData] = useState<{
     teamName: string
@@ -223,12 +225,13 @@ const CreateTeam = (props: Props) => {
     }
   }
   const handleTabsChange = (tabsValue: string, players: PLAYERS_INTERFACE[] | [], flow: string) => {
-    setTabsValue(tabsValue)
     const availableData = getFilteredData(players, tabsValue, availablePlayersSearch, propsState.currentMatch)
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
       setFilteredAllPlayers(availableData)
+      setTabsValue(tabsValue)
     } else {
       setFilteredSelectedPlayers(availableData)
+      setTabsValueSelectedPlayer(tabsValue)
     }
 
     //setAvailablePlayers(availableData);
@@ -249,6 +252,8 @@ const CreateTeam = (props: Props) => {
       [event.target.id || event.target.name]: event.target.value,
     }
     if (event.target.name && event.target.name === 'league') {
+      setTabsValueSelectedPlayer('all')
+      setTabsValue('all')
       if (event.target.value) {
         dispatch(updateLoaderState(true))
         const findSelectedLeague = findLeagueById(propsState.leagueData, parseInt(event.target.value))
@@ -268,6 +273,7 @@ const CreateTeam = (props: Props) => {
       } else {
         formData.teamName = ''
         dispatch(getTeamByIdActionSuccess(null))
+        setTeamFormData(formData)
       }
     } else {
       setTeamFormData(formData)
@@ -275,7 +281,11 @@ const CreateTeam = (props: Props) => {
   }
   useEffect(() => {
     if (propsState.selectedTeam) {
-      const { playersList, selectedPlayers } = prePopulateSelectedPlayers(propsState.selectedTeam, propsState.allPlayer)
+      const { playersList, selectedPlayers } = prePopulateSelectedPlayers(
+        propsState.selectedTeam,
+        propsState.allPlayer,
+        true,
+      )
       const updatedSelectedPlayers = updatedSelectedTeamByRemovingCaptainData(selectedPlayers)
       const updatedCaptainData = getCaptainDataFromSelectedTeam(selectedPlayers)
       setCaptainData(updatedCaptainData)
@@ -366,29 +376,76 @@ const CreateTeam = (props: Props) => {
       dispatch(updateLoaderState(false))
     }
   }, [propsState.previousPredictionFailure])
+  const handleReset = () => {
+    if (propsState.selectedTeam) {
+      const { playersList, selectedPlayers } = prePopulateSelectedPlayers(
+        propsState.selectedTeam,
+        propsState.allPlayer,
+        false,
+      )
+      const updatedSelectedPlayers = updatedSelectedTeamByRemovingCaptainData(selectedPlayers)
+      const updatedCaptainData = getCaptainDataFromSelectedTeam(selectedPlayers)
+      setCaptainData(updatedCaptainData)
+      setAvailablePlayers(playersList)
+      setFilteredAllPlayers(playersList)
+      dispatch(updateSelectedPlayers(updatedSelectedPlayers))
+      setAvailableSelectedPlayers(updatedSelectedPlayers)
+      dispatch(updateLoaderState(false))
+      const updatedCapData = getCapData(updatedSelectedPlayers)
+      setCapData(updatedCapData)
+      setSubs(propsState.selectedTeam.substitutions)
+    }
+  }
   return (
     <>
-      <Grid container direction='row' sx={{ margin: '2% 0%' }}>
-        <Typography variant='h2' sx={{ fontWeight: 'bold' }}>
-          Manage Teams
-        </Typography>
+      <Grid
+        container
+        direction='row'
+        sx={{ flexGrow: '1', margin: '2% 0%' }}
+        alignItems={'center'}
+        justifyContent={'space-between'}
+      >
+        <Grid item xs={12} md={8}>
+          <Typography variant='h2' sx={{ fontWeight: 'bold' }}>
+            Manage Teams
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>
+            {CREATE_TEAM_VALIDATION_MESSAGES.MINIMUM_PLAYERS_REQUIRED}
+          </Typography>
+        </Grid>
       </Grid>
-      <div style={{ margin: '2% 0%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
-          <span>* {CREATE_TEAM_VALIDATION_MESSAGES.MINIMUM_PLAYERS_REQUIRED}</span>
-        </div>
-        <div>
+      <Grid
+        container
+        direction={'row'}
+        style={{ margin: '2% 0%', alignItems: 'center', justifyContent: 'space-between' }}
+        spacing={0}
+      >
+        <Grid item xs={12} md={10}>
+          <Matches currentMatch={propsState.currentMatch} />
+        </Grid>
+        <Grid item xs={12} md={2}>
           <Button
             variant='outlined'
             color='secondary'
+            disabled={teamFormData.league ? false : true}
+            onClick={handleReset}
+            sx={{ fontWeight: 'bold', margin: '2px' }}
+          >
+            Reset
+          </Button>
+          <Button
+            variant='contained'
+            color='secondary'
             disabled={checkMaximumPlayerAllowedValidation(availableSelectedPlayers, teamFormData, captainData)}
             onClick={handleSaveTeam}
-            sx={{ fontWeight: 'bold' }}
+            sx={{ fontWeight: 'bold', margin: '2px' }}
           >
             Save Team
           </Button>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
       <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
         <Grid item xs={12} sm={3} md={3}>
           <FantasyDropdowns
@@ -419,22 +476,6 @@ const CreateTeam = (props: Props) => {
         </Grid>
         <Grid item xs={12} sm={1} md={1}>
           Cap: <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{capData ? capData : 0}</span>
-        </Grid>
-        <Grid item xs={12} sm={2} md={2}>
-          {propsState.currentMatch && (
-            <div>
-              <div style={{ textAlign: 'center', fontWeight: '600', marginBottom: '1%' }}>Current Match</div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
-                <div>
-                  <img width={25} height={25} src={propsState.currentMatch[0].teamA.image} />
-                </div>
-                <div>Vs</div>
-                <div>
-                  <img width={25} height={25} src={propsState.currentMatch[0].teamB.image} />
-                </div>
-              </div>
-            </div>
-          )}
         </Grid>
       </Grid>
       {selectedPlayer && (
@@ -469,6 +510,7 @@ const CreateTeam = (props: Props) => {
             handleChipSelection={handleChipSelection}
             onTabsChange={handleTabsChange}
             handleCardClick={handleCardClick}
+            tabsValue={tabsValueSelectedPlayer}
           />
         </Grid>
         <Dialog fullWidth={false} open={open} TransitionComponent={Transition}>

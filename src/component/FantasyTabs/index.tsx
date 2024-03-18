@@ -38,6 +38,14 @@ export default function FantasyTabs(props: Props) {
             <Tab
               key={tab.id}
               value={tab.id}
+              sx={{
+                color:
+                  props.dataCount && props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS
+                    ? tab?.id !== 'all' && !props.dataCount[tab.id]
+                      ? 'red'
+                      : ''
+                    : '',
+              }}
               label={`${tab.name} ${
                 props.dataCount && props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS
                   ? `(${tab?.id === 'all' ? `${props.dataCount[tab.id]} / 11` : props.dataCount[tab.id]})`

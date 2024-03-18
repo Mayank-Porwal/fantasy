@@ -28,6 +28,7 @@ export interface ToggleData {
 }
 
 export interface CurrentMatch {
+  match_time: string
   teamA: CurrentMatchTeam
   teamB: CurrentMatchTeam
 }
