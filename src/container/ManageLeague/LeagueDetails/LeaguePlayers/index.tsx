@@ -11,7 +11,9 @@ interface Props {
 const LeaguePlayers = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const handleClickActions = () => {}
+  const handleClickActions = (rowData: any) => {
+    console.log(rowData)
+  }
   const [columns, setColumns] = useState(getManageLeaguesDetailsColumns(handleClickActions))
   const handleCellActions = () => {}
   const handleGridCallback = () => {}

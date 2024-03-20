@@ -127,6 +127,7 @@ const CreateTeam = (props: Props) => {
       setSubs(DEFAULT_SUBS_DATA)
       dispatch(getTeamByIdActionSuccess(null))
       dispatch(fetchLeagueDetailsActionSuccess(null))
+      setTeamFormData({ league: '', teamName: '', teamId: 0, substitutions: -1 })
     }
   }, [])
   useEffect(() => {
@@ -148,6 +149,21 @@ const CreateTeam = (props: Props) => {
         dispatch(getTeamByIdAction(location.state.team_id))
         //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
         setTeamFormData(formData)
+      } else if (!teamFormData.league) {
+        if (Array.isArray(propsState.leagueData.data) && propsState.leagueData.data.length > 0) {
+          const teamData = { ...propsState.leagueData.data[0] }
+          const formData = {
+            teamName: teamData.team_name,
+            league: teamData.league_id.toString(),
+            teamId: teamData.team_id,
+            substitutions: teamData.remaining_subs ? teamData.remaining_subs : 150,
+          }
+          setSubs(teamData.remaining_subs ? teamData.remaining_subs : 150)
+          dispatch(updateLoaderState(true))
+          dispatch(getTeamByIdAction(teamData.team_id))
+          //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
+          setTeamFormData(formData)
+        }
       }
     }
   }, [propsState.leagueData])
@@ -255,21 +271,7 @@ const CreateTeam = (props: Props) => {
       setTabsValueSelectedPlayer('all')
       setTabsValue('all')
       if (event.target.value) {
-        dispatch(updateLoaderState(true))
-        const findSelectedLeague = findLeagueById(propsState.leagueData, parseInt(event.target.value))
-        setTeamFormData({
-          ...teamFormData,
-          teamName: findSelectedLeague ? findSelectedLeague.team_name : '',
-          teamId: findSelectedLeague ? findSelectedLeague.team_id : NaN,
-          substitutions: findSelectedLeague ? findSelectedLeague.remaining_subs : 0,
-          [event.target.id || event.target.name]: event.target.value,
-        })
-        //setSubs(findSelectedLeague ? findSelectedLeague.remaining_subs : 0)
-        if (findSelectedLeague && findSelectedLeague.team_id) {
-          dispatch(getTeamByIdAction(findSelectedLeague.team_id))
-        } else {
-          dispatch(updateLoaderState(false))
-        }
+        updateTeamDataBySelectedLeague(parseInt(event.target.value), event.target.id, event.target.name)
       } else {
         formData.teamName = ''
         dispatch(getTeamByIdActionSuccess(null))
@@ -277,6 +279,23 @@ const CreateTeam = (props: Props) => {
       }
     } else {
       setTeamFormData(formData)
+    }
+  }
+  const updateTeamDataBySelectedLeague = (value: number, id: string, name: string) => {
+    dispatch(updateLoaderState(true))
+    const findSelectedLeague = findLeagueById(propsState.leagueData, value)
+    setTeamFormData({
+      ...teamFormData,
+      teamName: findSelectedLeague ? findSelectedLeague.team_name : '',
+      teamId: findSelectedLeague ? findSelectedLeague.team_id : NaN,
+      substitutions: findSelectedLeague ? findSelectedLeague.remaining_subs : 0,
+      [id || name]: value,
+    })
+    //setSubs(findSelectedLeague ? findSelectedLeague.remaining_subs : 0)
+    if (findSelectedLeague && findSelectedLeague.team_id) {
+      dispatch(getTeamByIdAction(findSelectedLeague.team_id))
+    } else {
+      dispatch(updateLoaderState(false))
     }
   }
   useEffect(() => {
@@ -446,7 +465,7 @@ const CreateTeam = (props: Props) => {
           </Button>
         </Grid>
       </Grid>
-      <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={2}>
+      <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={1}>
         <Grid item xs={12} sm={3} md={3}>
           <FantasyDropdowns
             options={propsState.leagueData ? getUpdatedLeagueOptions(propsState.leagueData.data) : []}

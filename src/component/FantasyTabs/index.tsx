@@ -2,6 +2,7 @@ import { Tab, Tabs } from '@mui/material'
 import { DEFAULT_AVAILABLE_PLAYERS_TABS_DATA, PlayersCountInterface } from '../CardTable/constants'
 import { CREATE_TEAM_FLOW } from '../../container/CreateTeam/constants'
 import React, { useEffect } from 'react'
+import { getTabColor } from './helper'
 interface Props {
   tabsData: { id: string; name: string }[] | []
   onChange: Function
@@ -39,12 +40,7 @@ export default function FantasyTabs(props: Props) {
               key={tab.id}
               value={tab.id}
               sx={{
-                color:
-                  props.dataCount && props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS
-                    ? tab?.id !== 'all' && !props.dataCount[tab.id]
-                      ? 'red'
-                      : ''
-                    : '',
+                color: `${getTabColor(props.dataCount, tab.id, props.flow)} !important`,
               }}
               label={`${tab.name} ${
                 props.dataCount && props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS

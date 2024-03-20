@@ -13,7 +13,10 @@ import { RulesDataInterface } from './types'
 import { checkLeagueOwnerOrNot, getUpdateRulesRequestBody } from './helper'
 import { updateRules, updateRulesFailure, updateRulesSuccess } from './actions'
 import { socket } from '../../../utils/sockets'
-
+import FantasyTabs from '../../../component/FantasyTabs'
+import { LEAGUE_DETAILS_TABS_DATA } from './constants'
+import { CREATE_TEAM_FLOW } from '../../CreateTeam/constants'
+import LeagueLeaderBoard from './Leaderboard/index'
 const LeagueDetails = () => {
   const dispatch = useDispatch()
   const location = useLocation()
@@ -30,6 +33,7 @@ const LeagueDetails = () => {
   const [leagueId, setLeagueId] = useState<string | null>('')
   const [open, setOpen] = useState<boolean>(false)
   const [updatedRulesData, setUpdatedRulesData] = useState<RulesDataInterface[] | null>(null)
+  const [tabsValue, setTabsValue] = useState<string>('leagueHome')
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search)
     const id = urlParams.get('league')
@@ -87,7 +91,9 @@ const LeagueDetails = () => {
       dispatch(updateToastState({ type: 'error', message: propsState.updateRulesFailure }))
     }
   }, [propsState.updateRulesFailure])
-
+  const handleTabsChange = (tabsValue: string) => {
+    setTabsValue(tabsValue)
+  }
   return (
     <>
       <div>
@@ -113,20 +119,43 @@ const LeagueDetails = () => {
         </Grid>
       </div>
       <Grid container direction={'row'} spacing='2'>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          style={{
-            margin: '1%',
-            padding: '0.5%',
-            maxHeight: '500px',
-            overflowY: 'auto',
-          }}
-        >
-          <LeaguePlayers leagueData={propsState.leagueDetailData} />
-        </Grid>
+        <FantasyTabs
+          tabsData={LEAGUE_DETAILS_TABS_DATA}
+          onChange={handleTabsChange}
+          value={tabsValue ? tabsValue : ''}
+          flow={CREATE_TEAM_FLOW.ALL_PLAYERS}
+        />
+        {tabsValue === 'leagueHome' ? (
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            style={{
+              margin: '1%',
+              padding: '0.5%',
+              maxHeight: '500px',
+              overflowY: 'auto',
+            }}
+          >
+            <LeaguePlayers leagueData={propsState.leagueDetailData} />
+          </Grid>
+        ) : (
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            style={{
+              margin: '1%',
+              padding: '0.5%',
+              maxHeight: '500px',
+              overflowY: 'auto',
+            }}
+          >
+            <LeagueLeaderBoard leagueId={leagueId} />
+          </Grid>
+        )}
         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
           <AppBar sx={{ position: 'relative' }}>
             <Toolbar>

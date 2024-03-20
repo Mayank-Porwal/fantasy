@@ -28,6 +28,8 @@ export enum API_URLS {
   VERIFY_OTP = 'validate-otp',
   CURRENT_MATCH = '/current-match',
   PREDICTION = '/prediction',
+  COMPLETED_MATCHES = '/completed-matches',
+  FETCH_LEADER_BOARD = '/match-leaderboard',
 }
 
 export interface ResponseGenerator {

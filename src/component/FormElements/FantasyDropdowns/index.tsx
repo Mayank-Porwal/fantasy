@@ -59,7 +59,13 @@ const FantasyDropdowns = (props: Props) => {
       <TextField
         fullWidth
         sx={getDropdownCss(colors).root}
-        value={props.value ? props.value : null}
+        value={
+          props.value
+            ? props.value
+            : Array.isArray(props.options) && props.options.length > 0
+            ? props.options[0].id
+            : ''
+        }
         onChange={handleChange}
         variant='outlined'
         id={props.id}
@@ -84,9 +90,9 @@ const FantasyDropdowns = (props: Props) => {
           style: { ...inputStyle, width: '100%' },
         }}
       >
-        <MenuItem value={''}>
+        {/* <MenuItem value={''}>
           <em>None</em>
-        </MenuItem>
+        </MenuItem> */}
         {props.options &&
           props.options.map((option: OptionsInterface) => {
             return (
