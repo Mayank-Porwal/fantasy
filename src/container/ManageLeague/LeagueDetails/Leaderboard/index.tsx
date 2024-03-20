@@ -1,12 +1,11 @@
 import {
-  Badge,
+  Alert,
   Box,
-  Card,
-  CardContent,
   Collapse,
   Grid,
   IconButton,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -28,7 +27,6 @@ import {
 import { RootState } from '../../../../utils/store/rootReducer'
 import { getColorBasedOnPoints, getCompletedMatchesOptions, getUpdatedLeaderBoardByOwner } from './helper'
 import { tokens } from '../../../../utils/theme'
-import BookmarkIcon from '@mui/icons-material/Bookmark'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { MatchLeaderBoardInterface, MatchLeaderBoardPlayersInterface } from '../types'
@@ -125,10 +123,25 @@ const LeagueLeaderBoard = (props: Props) => {
                 <TableCell align='center'>Trades</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {leaderBoardData &&
-                leaderBoardData.map((row: MatchLeaderBoardInterface) => <Row key={row.team_id} row={row} />)}
-            </TableBody>
+            {leaderBoardData && Array.isArray(leaderBoardData) && leaderBoardData.length > 0 ? (
+              <TableBody>
+                {leaderBoardData &&
+                  leaderBoardData.map((row: MatchLeaderBoardInterface) => <Row key={row.team_id} row={row} />)}
+              </TableBody>
+            ) : (
+              <TableBody>
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <Stack
+                      sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      spacing={2}
+                    >
+                      No Record to display !
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            )}
           </Table>
         </TableContainer>
       </Grid>
