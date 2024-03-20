@@ -58,21 +58,7 @@ function* getCompletedMatchesData(action: actionTypes.CompletedMatchesInterface)
       headers: HTTPS_HEADERS,
     })
     if (response.status && response.status >= 200 && response.status <= 299) {
-      //yield put(actionTypes.completedMatchesSuccessAction(response?.data))
-      yield put(
-        actionTypes.completedMatchesSuccessAction([
-          {
-            match: 'KKR vs SRH',
-            match_id: 58334,
-            number: 2,
-          },
-          {
-            match: 'CSK vs RCB',
-            match_id: 58328,
-            number: 1,
-          },
-        ]),
-      )
+      yield put(actionTypes.completedMatchesSuccessAction(response?.data))
     } else {
       yield put(
         actionTypes.completedMatchesFailureAction(
