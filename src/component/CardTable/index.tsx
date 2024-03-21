@@ -78,7 +78,7 @@ const CardTable = (props: Props) => {
       >
         {props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS && (
           <React.Fragment>
-            <Grid item xs={2} sm={2} md={1} lg={1} xl={1} sx={{ padding: '0 1%' }}>
+            <Grid item xs={3} sm={3} md={2} lg={2} xl={2} sx={{ padding: '0 1%' }}>
               <FantasyDropdowns
                 options={propsState.teamsOptions ? propsState.teamsOptions : []}
                 required
