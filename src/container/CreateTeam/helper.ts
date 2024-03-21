@@ -1,7 +1,7 @@
 import { CurrentMatch } from '../../utils/appActions/types'
 import { CATEGORY_ENUM_BY_KEY, MAXIMUM_ALLOWED_PLAYERS } from '../../utils/constants'
 import { FetchLeagueResponseInterface, LeagueResponseDataInterface } from '../ManageLeague/types'
-import { C, CREATE_TEAM_VALIDATION_MESSAGES, PREDICTION_SKIP, VC } from './constants'
+import { C, CREATE_TEAM_VALIDATION_MESSAGES, PREDICTION_SKIP, SORTING_DATA, VC } from './constants'
 import {
   CaptainInterface,
   CreateTeamInterface,
@@ -10,7 +10,7 @@ import {
   TeamDetailsInterface,
   TeamInterface,
 } from './types'
-import _ from 'lodash'
+import _, { cloneDeep } from 'lodash'
 export const updatePlayerList = (
   player: PLAYERS_INTERFACE,
   playersList: PLAYERS_INTERFACE[] | [],
@@ -407,4 +407,58 @@ export const getPreviousPredictionBorder = (
       return true
     }
   }
+}
+
+export const getSortingData = (sorting: { direction: string; flow: string } | null, flow: string) => {
+  if (!sorting) {
+    return { ...SORTING_DATA, flow: flow }
+  }
+  if (sorting.direction === 'asc') {
+    return { direction: 'dec', flow: flow }
+  } else if (sorting.direction === 'dec') {
+    return null
+  } else {
+    return null
+  }
+}
+
+export const getSortedUpdatedData = (
+  availableData: PLAYERS_INTERFACE[],
+  sorting: { direction: string; flow: string } | null,
+  allAvailableData: PLAYERS_INTERFACE[],
+) => {
+  if (!sorting) {
+    return allAvailableData
+  }
+  let sortedData = cloneDeep(availableData)
+  if (sorting.direction === 'asc') {
+    sortedData = sortedData.sort((a, b) => {
+      return a.cap - b.cap
+    })
+  } else if (sorting.direction === 'dec') {
+    sortedData = sortedData.sort((a, b) => {
+      return b.cap - a.cap
+    })
+  }
+  return sortedData
+}
+
+export const getTeamFilterOptions = (playersData: PLAYERS_INTERFACE[]) => {
+  if (!playersData) {
+    return []
+  }
+  const teamData = _.cloneDeep(_.uniqBy(playersData, 'team'))
+  const updatedOptions = teamData.map((team) => {
+    return { id: team.team, name: team.team }
+  })
+  updatedOptions.unshift({ id: 'none', name: 'None' })
+  return updatedOptions
+}
+
+export const getDataByTeamFilter = (teamName: string, allPlayers: PLAYERS_INTERFACE[]) => {
+  if (teamName === 'none') {
+    return allPlayers
+  }
+  const filterPlayers = allPlayers.filter((x) => x.team === teamName)
+  return filterPlayers
 }

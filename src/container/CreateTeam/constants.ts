@@ -16,3 +16,7 @@ export const VC = 'ViceCaptain'
 export const DEFAULT_SUBS_DATA = 0
 
 export const PREDICTION_SKIP = 'No Prediction'
+export const SORTING_DATA = {
+  direction: 'asc',
+  flow: '',
+}

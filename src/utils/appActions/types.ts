@@ -38,3 +38,8 @@ interface CurrentMatchTeam {
   players: number[]
   image: string
 }
+
+export interface IplTeamsOptionsData {
+  id: string
+  name: string
+}

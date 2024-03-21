@@ -1,4 +1,11 @@
-import { CurrentMatch, NotificationInterface, PopupInterface, ToggleData, UsersTeamsInterface } from './types'
+import {
+  CurrentMatch,
+  IplTeamsOptionsData,
+  NotificationInterface,
+  PopupInterface,
+  ToggleData,
+  UsersTeamsInterface,
+} from './types'
 
 export enum APP_ACTIONS {
   SHOW_LOADER = `SHOW_LOADER`,
@@ -12,6 +19,7 @@ export enum APP_ACTIONS {
   FETCH_CURRENT_MATCH = 'FETCH_CURRENT_MATCH',
   FETCH_CURRENT_MATCH_SUCCESS = 'FETCH_CURRENT_MATCH_SUCCESS',
   FETCH_CURRENT_MATCH_FAILURE = 'FETCH_CURRENT_MATCH_FAILURE',
+  IPL_TEAMS_OPTIONS = 'IPL_TEAMS_OPTIONS',
 }
 export interface UpdateLoaderInterface {
   type: APP_ACTIONS.SHOW_LOADER
@@ -136,6 +144,18 @@ export const getCurrentMatchFailure = (payload: any): FetchCurrentMatchInterface
   }
 }
 
+export interface IplTeamsOptionsInterface {
+  type: APP_ACTIONS.IPL_TEAMS_OPTIONS
+  payload: IplTeamsOptionsData[] | null
+}
+
+export const getIplTeamsOptions = (payload: IplTeamsOptionsData[] | null): IplTeamsOptionsInterface => {
+  return {
+    type: APP_ACTIONS.IPL_TEAMS_OPTIONS,
+    payload,
+  }
+}
+
 export type Actions =
   | UpdateLoaderInterface
   | UpdateToastState
@@ -148,3 +168,4 @@ export type Actions =
   | FetchCurrentMatchInterface
   | FetchCurrentMatchInterfaceSuccess
   | FetchCurrentMatchInterfaceFailure
+  | IplTeamsOptionsInterface

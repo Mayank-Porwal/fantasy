@@ -12,7 +12,12 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CardTable from '../../component/CardTable'
-import { getCurrentMatch, updateLoaderState, updateToastState } from '../../utils/appActions/actions'
+import {
+  getCurrentMatch,
+  getIplTeamsOptions,
+  updateLoaderState,
+  updateToastState,
+} from '../../utils/appActions/actions'
 import { RootState } from '../../utils/store/rootReducer'
 import {
   createTeam,
@@ -32,12 +37,16 @@ import {
   findLeagueById,
   getCapData,
   getCaptainDataFromSelectedTeam,
+  getDataByTeamFilter,
   getFilteredData,
   getPredictionRequestBody,
   getPreviousPredictionBorder,
   getPreviousPredictionRequestBody,
+  getSortedUpdatedData,
+  getSortingData,
   getSubsAfterAddPlayer,
   getSubsDataAfterDelete,
+  getTeamFilterOptions,
   getUpdatedCapDataAfterAddPlayer,
   getUpdatedCapDataAfterDelete,
   getUpdatedCaptainData,
@@ -61,13 +70,13 @@ import PlayersStats from './PlayerStats/index'
 import { tokens } from '../../utils/theme'
 import { Transition } from '../ManageLeague/LeagueDetails/LeagueRules'
 import Matches from '../../component/Matches'
+import { cloneDeep } from 'lodash'
 interface Props {
   [key: string]: any
 }
 const CreateTeam = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const navigate = useNavigate()
   window.history.replaceState({}, document.title)
   const propsState = useSelector((state: RootState) => {
     return {
@@ -112,6 +121,8 @@ const CreateTeam = (props: Props) => {
   const [capData, setCapData] = useState(0)
   const [selectedPlayer, setSelectedPlayer] = useState<PLAYERS_INTERFACE | null>(null)
   const [open, setOpen] = useState<boolean>(false)
+  const [sortingData, setSortingData] = useState<{ direction: string; flow: string } | null>(null)
+  const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>('')
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
   const location = useLocation()
@@ -173,6 +184,8 @@ const CreateTeam = (props: Props) => {
         setAvailablePlayers(propsState.allPlayer)
         setFilteredAllPlayers(propsState.allPlayer)
         dispatch(updateLoaderState(false))
+        const teamFilter = getTeamFilterOptions(propsState.allPlayer)
+        dispatch(getIplTeamsOptions(teamFilter))
       }
     }
   }, [propsState.allPlayer])
@@ -232,7 +245,11 @@ const CreateTeam = (props: Props) => {
   const handleOnSearch = (availPlayers: PLAYERS_INTERFACE[] | [], flow: string, searchString: string) => {
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
       const filterData = getFilteredData(availPlayers, tabsValue, searchString, propsState.currentMatch)
-      setFilteredAllPlayers(filterData)
+      let filterByTeam = cloneDeep(filterData)
+      if (selectedTeamFilter !== 'none') {
+        filterByTeam = getDataByTeamFilter(selectedTeamFilter, filterData)
+      }
+      setFilteredAllPlayers(filterByTeam)
       setAvailablePlayersSearch(searchString)
     } else {
       const filterData = searchAvailablePlayers(availPlayers, searchString)
@@ -243,7 +260,11 @@ const CreateTeam = (props: Props) => {
   const handleTabsChange = (tabsValue: string, players: PLAYERS_INTERFACE[] | [], flow: string) => {
     const availableData = getFilteredData(players, tabsValue, availablePlayersSearch, propsState.currentMatch)
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
-      setFilteredAllPlayers(availableData)
+      let filterByTeam = cloneDeep(availableData)
+      if (selectedTeamFilter !== 'none') {
+        filterByTeam = getDataByTeamFilter(selectedTeamFilter, availableData)
+      }
+      setFilteredAllPlayers(filterByTeam)
       setTabsValue(tabsValue)
     } else {
       setFilteredSelectedPlayers(availableData)
@@ -415,6 +436,23 @@ const CreateTeam = (props: Props) => {
       setSubs(propsState.selectedTeam.substitutions)
     }
   }
+  const handleSorting = (flow: string) => {
+    const updatedSortingData = getSortingData(sortingData, flow)
+    if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
+      const sortedData = getSortedUpdatedData(filteredAllPlayers, updatedSortingData, availablePlayers)
+      setFilteredAllPlayers(sortedData)
+    } else if (flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS) {
+      const sortedData = getSortedUpdatedData(filteredSelectedPlayers, updatedSortingData, availableSelectedPlayers)
+      setFilteredSelectedPlayers(sortedData)
+    }
+    setSortingData(updatedSortingData)
+  }
+  const handleTeamFilter = (teamName: string) => {
+    setSelectedTeamFilter(teamName)
+    const dataByTeamFilter = getDataByTeamFilter(teamName, availablePlayers)
+    setFilteredAllPlayers(dataByTeamFilter)
+    setTabsValue('all')
+  }
   return (
     <>
       <Grid
@@ -515,6 +553,10 @@ const CreateTeam = (props: Props) => {
             tabsValue={tabsValue}
             handleCardClick={handleCardClick}
             currentMatch={propsState.currentMatch}
+            sortingCallback={handleSorting}
+            sortingData={sortingData}
+            handleTeamFilterCallback={handleTeamFilter}
+            selectedTeamFilter={selectedTeamFilter}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -530,6 +572,8 @@ const CreateTeam = (props: Props) => {
             onTabsChange={handleTabsChange}
             handleCardClick={handleCardClick}
             tabsValue={tabsValueSelectedPlayer}
+            sortingCallback={handleSorting}
+            sortingData={sortingData}
           />
         </Grid>
         <Dialog fullWidth={false} open={open} TransitionComponent={Transition}>

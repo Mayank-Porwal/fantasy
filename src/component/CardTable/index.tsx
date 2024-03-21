@@ -1,4 +1,4 @@
-import { Grid, useTheme } from '@mui/material'
+import { Card, CardContent, CardMedia, Grid, Icon, Typography, useTheme } from '@mui/material'
 import FantasyTextField from '../FormElements/TextFlied'
 import { tokens } from '../../utils/theme'
 import SearchIcon from '@mui/icons-material/Search'
@@ -11,14 +11,17 @@ import {
 import { CaptainInterface, PLAYERS_INTERFACE } from '../../container/CreateTeam/types'
 import Cards from '../Cards'
 import { CREATE_TEAM_FLOW } from '../../container/CreateTeam/constants'
-import { getPlayingEleven, getSelectedPlayersCount, getTabsDataByCurrentMatch } from './helper'
-import { useState } from 'react'
+import { getPlayingEleven, getSelectedPlayersCount, getSortingIcon, getTabsDataByCurrentMatch } from './helper'
+import React, { useState } from 'react'
 import { CurrentMatch } from '../../utils/appActions/types'
+import FantasyDropdowns from '../FormElements/FantasyDropdowns'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../utils/store/rootReducer'
 interface Props {
   filter: boolean
   availablePlayers?: PLAYERS_INTERFACE[] | [] | null
   handleActions: Function
-  flow?: string
+  flow: string
   onSearch?: Function
   onTabsChange?: Function
   allPlayers?: PLAYERS_INTERFACE[] | [] | null
@@ -27,11 +30,20 @@ interface Props {
   captainData?: CaptainInterface | null
   handleCardClick?: Function
   currentMatch?: CurrentMatch[] | null
+  sortingCallback?: Function
+  sortingData?: { direction: string; flow: string } | null
+  handleTeamFilterCallback?: Function
+  selectedTeamFilter?: string
 }
 const CardTable = (props: Props) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [searchText, setSearchText] = useState('')
+  const propsState = useSelector((state: RootState) => {
+    return {
+      teamsOptions: state.appReducer.iplTeamsOptions,
+    }
+  })
   const onSearch = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     if (props.onSearch) {
       setSearchText(event.target.value)
@@ -41,6 +53,17 @@ const CardTable = (props: Props) => {
   const handleTabsChange = (tabsValue: string) => {
     if (props.onTabsChange) {
       props.onTabsChange(tabsValue, props.allPlayers, props.flow)
+    }
+  }
+  const handleCapSort = () => {
+    if (props.sortingCallback) {
+      props.sortingCallback(props.flow)
+    }
+  }
+  const handleIplTeamFilter = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (props.handleTeamFilterCallback) {
+      props.handleTeamFilterCallback(event.target.value)
+      setSearchText('')
     }
   }
   return (
@@ -54,16 +77,31 @@ const CardTable = (props: Props) => {
         spacing={0}
       >
         {props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS && (
-          <Grid item xs={12} sm={12} md={4} lg={4} xl={4} sx={{ marginRight: '10px' }}>
-            <FantasyTextField
-              required={false}
-              id='searchAvailablePlayers'
-              label='Search'
-              onChange={onSearch}
-              endAdornment={<SearchIcon />}
-              value={searchText}
-            />
-          </Grid>
+          <React.Fragment>
+            <Grid item xs={2} sm={2} md={1} lg={1} xl={1} sx={{ padding: '0 1%' }}>
+              <FantasyDropdowns
+                options={propsState.teamsOptions ? propsState.teamsOptions : []}
+                required
+                placeholder={'Select League'}
+                id={'league'}
+                label={'Team'}
+                value={props.selectedTeamFilter ? props.selectedTeamFilter : ''}
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
+                  handleIplTeamFilter(event)
+                }
+              />
+            </Grid>
+            <Grid item xs={9} sm={9} md={3} lg={3} xl={3}>
+              <FantasyTextField
+                required={false}
+                id='searchAvailablePlayers'
+                label='Search'
+                onChange={onSearch}
+                endAdornment={<SearchIcon />}
+                value={searchText}
+              />
+            </Grid>
+          </React.Fragment>
         )}
         {props.filter && (
           <Grid
@@ -92,6 +130,38 @@ const CardTable = (props: Props) => {
           marginTop: '1%',
         }}
       >
+        <Card sx={{ display: 'flex', width: '100%', cursor: props.handleCardClick ? 'pointer' : '' }}>
+          {/* <CardMedia
+            component='img'
+            sx={{ width: 85, color: 'white', border: 'none', display: 'none' }}
+            image={AccountIcon}
+          /> */}
+          <div style={{ width: '100px' }}></div>
+          <CardContent sx={{ width: '100%' }}>
+            <Grid container direction='row' alignItems={'center'} justifyContent={'center'}>
+              <Grid item xs={4}>
+                Name
+              </Grid>
+              <Grid item xs={props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS ? 2 : 4}>
+                Team
+              </Grid>
+              <Grid item xs={props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS ? 2 : 3}>
+                <span onClick={handleCapSort} style={{ display: 'flex', alignItems: 'center' }}>
+                  Cap {props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS ? getSortingIcon(props.sortingData, props.flow) : ''}
+                  {props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS
+                    ? getSortingIcon(props.sortingData, props.flow)
+                    : ''}
+                </span>
+              </Grid>
+              {props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS && (
+                <Grid item xs={3}>
+                  Stars
+                </Grid>
+              )}
+              <Grid item xs={1}></Grid>
+            </Grid>
+          </CardContent>
+        </Card>
         {props.availablePlayers &&
           props.availablePlayers.map((player) => {
             return (
