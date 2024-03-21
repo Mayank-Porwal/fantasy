@@ -1,6 +1,6 @@
 import { SuccessMessageInterface } from '../../utils/types'
 import { CREATE_TEAM_ACTIONS, CreateTeamActions } from './actions'
-import { PLAYERS_INTERFACE, PreviousPredictedTeam, TeamDetailsInterface } from './types'
+import { PLAYERS_INTERFACE, PlayerStatsDataInterface, PreviousPredictedTeam, TeamDetailsInterface } from './types'
 interface InitialState {
   allPlayers: PLAYERS_INTERFACE[] | []
   allPlayersFailure: any
@@ -13,6 +13,8 @@ interface InitialState {
   predictionFailure: any
   previousPrediction: PreviousPredictedTeam | null
   previousPredictionFailure: any
+  playerStats: PlayerStatsDataInterface[] | null
+  playerStatsFailure: any
 }
 const initialState = {
   allPlayers: [],
@@ -26,6 +28,8 @@ const initialState = {
   predictionFailure: null,
   previousPrediction: null,
   previousPredictionFailure: null,
+  playerStats: null,
+  playerStatsFailure: null,
 }
 const createTeamReducer = (state: InitialState = initialState, action: CreateTeamActions): InitialState => {
   switch (action.type) {
@@ -51,6 +55,10 @@ const createTeamReducer = (state: InitialState = initialState, action: CreateTea
       return { ...state, previousPrediction: action.payload }
     case CREATE_TEAM_ACTIONS.GET_PREVIOUS_PREDICTION_FAILURE:
       return { ...state, previousPredictionFailure: action.payload }
+    case CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS_SUCCESS:
+      return { ...state, playerStats: action.payload }
+    case CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS_FAILURE:
+      return { ...state, playerStatsFailure: action.payload }
     default:
       return { ...state }
   }

@@ -48,19 +48,6 @@ export interface TeamInterface {
   team_img: string
 }
 
-export interface StatsInterface {
-  runs_scored: number
-  balls_faced: number
-  strike_rate: number
-  wickets: number
-  economy: number
-  total_overs_bowled: number
-  runs_conceded: number
-  catches: number
-  stumping: number
-  run_outs: number
-}
-
 export interface PredictWinnerRequestBody {
   predicted_team: string | null
   league_id: number | null
@@ -74,4 +61,23 @@ export interface PreviousPredictionRequestBody {
 
 export interface PreviousPredictedTeam {
   name: string | null
+}
+
+export interface PlayerStatsRequestBodyInterface {
+  player_id: number
+  n: number
+}
+
+export interface PlayerStatsDataInterface {
+  opponent: string
+  runs_scored: number
+  balls_faced: number
+  strike_rate: number
+  wickets: number
+  economy: number
+  overs: string
+  runs_conceded: number
+  catches: number
+  stumping: number
+  run_outs: number
 }

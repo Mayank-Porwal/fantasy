@@ -30,6 +30,7 @@ export enum API_URLS {
   PREDICTION = '/prediction',
   COMPLETED_MATCHES = '/completed-matches',
   FETCH_LEADER_BOARD = '/match-leaderboard',
+  FETCH_PLAYER_STATS = '/last-n-matches-stats',
 }
 
 export interface ResponseGenerator {

@@ -2,6 +2,8 @@ import { SuccessMessageInterface } from '../../utils/types'
 import {
   CreateTeamInterface,
   PLAYERS_INTERFACE,
+  PlayerStatsDataInterface,
+  PlayerStatsRequestBodyInterface,
   PredictWinnerRequestBody,
   PreviousPredictedTeam,
   PreviousPredictionRequestBody,
@@ -25,6 +27,9 @@ export enum CREATE_TEAM_ACTIONS {
   GET_PREVIOUS_PREDICTION = 'GET_PREVIOUS_PREDICTION',
   GET_PREVIOUS_PREDICTION_SUCCESS = 'GET_PREVIOUS_PREDICTION_SUCCESS',
   GET_PREVIOUS_PREDICTION_FAILURE = 'GET_PREVIOUS_PREDICTION_FAILURE',
+  FETCH_PLAYER_STATS = 'FETCH_PLAYER_STATS',
+  FETCH_PLAYER_STATS_SUCCESS = 'FETCH_PLAYER_STATS_SUCCESS',
+  FETCH_PLAYER_STATS_FAILURE = 'FETCH_PLAYER_STATS_FAILURE',
 }
 export interface GetAllPlayersInterface {
   type: string
@@ -195,6 +200,39 @@ export const fetchPreviousPredictionFailure = (payload: any): PreviousPrediction
   }
 }
 
+export interface PlayerStatsInterface {
+  type: CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS
+  payload: PlayerStatsRequestBodyInterface
+}
+export const fetchPlayerStats = (payload: PlayerStatsRequestBodyInterface): PlayerStatsInterface => {
+  return {
+    type: CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS,
+    payload,
+  }
+}
+
+export interface PlayerStatsSuccessInterface {
+  type: CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS_SUCCESS
+  payload: PlayerStatsDataInterface[] | null
+}
+export const fetchPlayerStatsSuccess = (payload: PlayerStatsDataInterface[] | null): PlayerStatsSuccessInterface => {
+  return {
+    type: CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS_SUCCESS,
+    payload,
+  }
+}
+
+export interface PlayerStatsFailureInterface {
+  type: CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS_FAILURE
+  payload: any
+}
+export const fetchPlayerStatsFailure = (payload: any): PlayerStatsFailureInterface => {
+  return {
+    type: CREATE_TEAM_ACTIONS.FETCH_PLAYER_STATS_FAILURE,
+    payload,
+  }
+}
+
 export type CreateTeamActions =
   | GetAllPlayersSuccessInterface
   | GetAllPlayersFailureInterface
@@ -211,3 +249,6 @@ export type CreateTeamActions =
   | PreviousPredictionAction
   | PreviousPredictionSuccessAction
   | PreviousPredictionFailureAction
+  | PlayerStatsInterface
+  | PlayerStatsSuccessInterface
+  | PlayerStatsFailureInterface
