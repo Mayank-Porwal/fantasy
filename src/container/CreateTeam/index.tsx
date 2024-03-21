@@ -122,7 +122,7 @@ const CreateTeam = (props: Props) => {
   const [selectedPlayer, setSelectedPlayer] = useState<PLAYERS_INTERFACE | null>(null)
   const [open, setOpen] = useState<boolean>(false)
   const [sortingData, setSortingData] = useState<{ direction: string; flow: string } | null>(null)
-  const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>('')
+  const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>('none')
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
   const location = useLocation()
@@ -205,7 +205,11 @@ const CreateTeam = (props: Props) => {
         const { allPlayers, selectedPlayers } = updatePlayerList(data, availablePlayers, propsState.selectedPlayers)
         setAvailablePlayers(allPlayers)
         const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch, propsState.currentMatch)
-        setFilteredAllPlayers(filteredData)
+        let teamFilter = cloneDeep(filteredData)
+        if (selectedTeamFilter !== 'none') {
+          teamFilter = getDataByTeamFilter(selectedTeamFilter, filteredData)
+        }
+        setFilteredAllPlayers(teamFilter)
         dispatch(updateSelectedPlayers(selectedPlayers))
         setAvailableSelectedPlayers(selectedPlayers)
         const updatedSubs = getSubsAfterAddPlayer(
@@ -227,7 +231,11 @@ const CreateTeam = (props: Props) => {
     } else {
       const { allPlayers, selectedPlayers } = updatePlayerList(data, propsState.selectedPlayers, availablePlayers)
       setAvailablePlayers(selectedPlayers)
-      setFilteredAllPlayers(selectedPlayers)
+      let teamFilter = cloneDeep(selectedPlayers)
+      if (selectedTeamFilter !== 'none') {
+        teamFilter = getDataByTeamFilter(selectedTeamFilter, selectedPlayers)
+      }
+      setFilteredAllPlayers(teamFilter)
       dispatch(updateSelectedPlayers(allPlayers))
       setAvailableSelectedPlayers(allPlayers)
       const updatedSubs = getSubsDataAfterDelete(
