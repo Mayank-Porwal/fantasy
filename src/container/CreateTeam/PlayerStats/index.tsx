@@ -74,7 +74,11 @@ const PlayersStats = (props: Props) => {
                 <TableHead>
                   <TableRow>
                     {STATS_COLUMNS.map((column) => {
-                      return <TableCell key={column.id}>{column.name}</TableCell>
+                      return (
+                        <TableCell sx={{ textAlign: 'center' }} key={column.id}>
+                          {column.name}
+                        </TableCell>
+                      )
                     })}
                   </TableRow>
                 </TableHead>
@@ -116,7 +120,7 @@ function Row(props: { key: number; row: PlayerStatsDataInterface }) {
           const column: string = stats.id
           const value = row[column as keyof PlayerStatsDataInterface]
           return (
-            <TableCell key={stats.id} component='th' scope='row'>
+            <TableCell key={stats.id} component='th' scope='row' sx={{ textAlign: 'center' }}>
               {value}
             </TableCell>
           )

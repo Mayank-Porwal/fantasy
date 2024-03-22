@@ -7,7 +7,7 @@ export const STATS_COLUMNS = [
   { id: 'strike_rate', name: 'Strike Rate' },
   { id: 'wickets', name: 'Wickets' },
   { id: 'economy', name: 'Economy' },
-  { id: 'total_overs_bowled', name: 'Overs' },
+  { id: 'overs', name: 'Overs' },
   { id: 'runs_conceded', name: 'Runs Conceded' },
   { id: 'catches', name: 'Catches' },
   { id: 'stumping', name: 'Stumping' },
