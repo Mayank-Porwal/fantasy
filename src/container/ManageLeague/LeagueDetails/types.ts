@@ -25,10 +25,10 @@ export interface MatchLeaderBoardInterface {
   team_id: number
   team_name: string
   owner: string
+  owner_id: number
   trades: number
   total_points: number
   rank: number
-  user_id: number
   data: MatchLeaderBoardPlayersInterface[]
 }
 

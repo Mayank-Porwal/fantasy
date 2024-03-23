@@ -2,6 +2,25 @@ import FantasyTextField from '../../../../component/FormElements/TextFlied'
 
 export const getManageLeaguesDetailsColumns = (handleLeagueActions: Function) => [
   {
+    accessorKey: 'rank',
+    accessorFn: (row: any) => <div>{row.rank > 0 ? row.rank : '-'}</div>,
+    id: 'rank',
+    header: 'Rank',
+    size: 150,
+    style: {
+      textAlign: 'center',
+    },
+    Filter: () => {
+      return
+    },
+    muiTableHeadCellProps: {
+      align: 'center',
+    },
+    muiTableBodyCellProps: {
+      align: 'center',
+    },
+  },
+  {
     accessorKey: 'team_name',
     id: 'team_name',
     header: 'Team Name',
@@ -76,25 +95,6 @@ export const getManageLeaguesDetailsColumns = (handleLeagueActions: Function) =>
     },
     Filter: () => {
       return
-    },
-  },
-  {
-    accessorKey: 'rank',
-    accessorFn: (row: any) => <div>{row.rank > 0 ? row.rank : '-'}</div>,
-    id: 'rank',
-    header: 'Rank',
-    size: 150,
-    style: {
-      textAlign: 'center',
-    },
-    Filter: () => {
-      return
-    },
-    muiTableHeadCellProps: {
-      align: 'center',
-    },
-    muiTableBodyCellProps: {
-      align: 'center',
     },
   },
 ]

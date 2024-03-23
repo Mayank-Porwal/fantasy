@@ -28,9 +28,8 @@ export const getUpdatedLeaderBoardByOwner = (leaders: MatchLeaderBoardInterface[
   const updatedLeaders = cloneDeep(leaders).sort((a, b) => {
     return a.rank - b.rank
   })
-
   if (loggedInUser) {
-    const findLoggedInUser = updatedLeaders.findIndex((x) => x.user_id === parseInt(loggedInUser))
+    const findLoggedInUser = updatedLeaders.findIndex((x) => x.owner_id === parseInt(loggedInUser))
     if (findLoggedInUser > -1) {
       const currentUserData = updatedLeaders[findLoggedInUser]
       updatedLeaders.splice(findLoggedInUser, 1)

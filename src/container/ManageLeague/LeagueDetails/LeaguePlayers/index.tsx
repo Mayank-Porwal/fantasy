@@ -4,7 +4,7 @@ import { LeagueDetailsInterface } from '../../types'
 import { tokens } from '../../../../utils/theme'
 import { getManageLeaguesDetailsColumns } from './columns'
 import FantasyDataGrid from '../../../../component/DataGrid'
-import { getGridActions } from './helper'
+import { getGridActions, getSortedLeaguePlayers } from './helper'
 interface Props {
   leagueData: LeagueDetailsInterface | null
 }

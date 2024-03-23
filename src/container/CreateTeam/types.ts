@@ -34,6 +34,7 @@ export interface TeamDetailsInterface {
   rank: number
   draft_team: TeamInterface[]
   last_submitted_team: TeamInterface[]
+  previous_remaining_substitutes: number
 }
 
 export interface TeamInterface {

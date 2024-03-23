@@ -441,7 +441,7 @@ const CreateTeam = (props: Props) => {
       dispatch(updateLoaderState(false))
       const updatedCapData = getCapData(updatedSelectedPlayers)
       setCapData(updatedCapData)
-      setSubs(propsState.selectedTeam.substitutions)
+      setSubs(propsState.selectedTeam.previous_remaining_substitutes)
     }
   }
   const handleSorting = (flow: string) => {
