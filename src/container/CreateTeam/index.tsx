@@ -9,7 +9,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CardTable from '../../component/CardTable'
 import {
@@ -58,6 +58,7 @@ import {
   setCaptainAndViceCaptain,
   updatePlayerList,
   updatedSelectedTeamByRemovingCaptainData,
+  validateCap,
 } from './helper'
 import { CaptainInterface, PLAYERS_INTERFACE } from './types'
 import { DEFAULT_PAGE_NUMBER } from '../../utils/constants'
@@ -122,6 +123,9 @@ const CreateTeam = (props: Props) => {
   const [selectedPlayer, setSelectedPlayer] = useState<PLAYERS_INTERFACE | null>(null)
   const [open, setOpen] = useState<boolean>(false)
   const [sortingData, setSortingData] = useState<{ direction: string; flow: string } | null>(null)
+  const [selectedTeamSortingData, setSelectedTeamSortingData] = useState<{ direction: string; flow: string } | null>(
+    null,
+  )
   const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>('none')
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
@@ -203,23 +207,35 @@ const CreateTeam = (props: Props) => {
       const validationData = maximumPlayerAllowedValidation(availableSelectedPlayers, capData)
       if (validationData.flag) {
         const { allPlayers, selectedPlayers } = updatePlayerList(data, availablePlayers, propsState.selectedPlayers)
-        setAvailablePlayers(allPlayers)
-        const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch, propsState.currentMatch)
-        let teamFilter = cloneDeep(filteredData)
-        if (selectedTeamFilter !== 'none') {
-          teamFilter = getDataByTeamFilter(selectedTeamFilter, filteredData)
+        const capValidation = validateCap(selectedPlayers)
+        if (capValidation.flag) {
+          setAvailablePlayers(allPlayers)
+          const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch, propsState.currentMatch)
+          const sortedData = getSortedUpdatedData(filteredData, sortingData, allPlayers)
+          let teamFilter = cloneDeep(sortedData)
+          if (selectedTeamFilter !== 'none') {
+            teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData)
+          }
+          const selectedTeamSorting = getSortedUpdatedData(selectedPlayers, selectedTeamSortingData, selectedPlayers)
+          setFilteredAllPlayers(teamFilter)
+          dispatch(updateSelectedPlayers(selectedTeamSorting))
+          setAvailableSelectedPlayers(selectedTeamSorting)
+          const updatedSubs = getSubsAfterAddPlayer(
+            subs,
+            data,
+            propsState.selectedTeam ? propsState.selectedTeam.last_submitted_team : null,
+          )
+          setSubs(updatedSubs)
+          const updatedCapData = getUpdatedCapDataAfterAddPlayer(capData, data)
+          setCapData(updatedCapData)
+        } else {
+          dispatch(
+            updateToastState({
+              message: capValidation.message,
+              type: 'error',
+            }),
+          )
         }
-        setFilteredAllPlayers(teamFilter)
-        dispatch(updateSelectedPlayers(selectedPlayers))
-        setAvailableSelectedPlayers(selectedPlayers)
-        const updatedSubs = getSubsAfterAddPlayer(
-          subs,
-          data,
-          propsState.selectedTeam ? propsState.selectedTeam.last_submitted_team : null,
-        )
-        setSubs(updatedSubs)
-        const updatedCapData = getUpdatedCapDataAfterAddPlayer(capData, data)
-        setCapData(updatedCapData)
       } else {
         dispatch(
           updateToastState({
@@ -232,10 +248,11 @@ const CreateTeam = (props: Props) => {
       const { allPlayers, selectedPlayers } = updatePlayerList(data, propsState.selectedPlayers, availablePlayers)
       setAvailablePlayers(selectedPlayers)
       let teamFilter = cloneDeep(selectedPlayers)
+      const sortedData = getSortedUpdatedData(teamFilter, sortingData, teamFilter)
       if (selectedTeamFilter !== 'none') {
-        teamFilter = getDataByTeamFilter(selectedTeamFilter, selectedPlayers)
+        teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData)
       }
-      setFilteredAllPlayers(teamFilter)
+      setFilteredAllPlayers(sortedData)
       dispatch(updateSelectedPlayers(allPlayers))
       setAvailableSelectedPlayers(allPlayers)
       const updatedSubs = getSubsDataAfterDelete(
@@ -445,15 +462,17 @@ const CreateTeam = (props: Props) => {
     }
   }
   const handleSorting = (flow: string) => {
-    const updatedSortingData = getSortingData(sortingData, flow)
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
+      const updatedSortingData = getSortingData(sortingData, flow)
       const sortedData = getSortedUpdatedData(filteredAllPlayers, updatedSortingData, availablePlayers)
       setFilteredAllPlayers(sortedData)
+      setSortingData(updatedSortingData)
     } else if (flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS) {
+      const updatedSortingData = getSortingData(selectedTeamSortingData, flow)
       const sortedData = getSortedUpdatedData(filteredSelectedPlayers, updatedSortingData, availableSelectedPlayers)
       setFilteredSelectedPlayers(sortedData)
+      setSelectedTeamSortingData(updatedSortingData)
     }
-    setSortingData(updatedSortingData)
   }
   const handleTeamFilter = (teamName: string) => {
     setSelectedTeamFilter(teamName)
@@ -581,7 +600,7 @@ const CreateTeam = (props: Props) => {
             handleCardClick={handleCardClick}
             tabsValue={tabsValueSelectedPlayer}
             sortingCallback={handleSorting}
-            sortingData={sortingData}
+            sortingData={selectedTeamSortingData}
           />
         </Grid>
         <Dialog fullWidth={false} open={open} TransitionComponent={Transition}>
