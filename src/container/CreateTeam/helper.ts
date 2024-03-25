@@ -86,15 +86,16 @@ export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFAC
   if (selectedPlayers.length > MAXIMUM_ALLOWED_PLAYERS.CRICKET - 1) {
     return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_ALLOWED_PLAYERS }
   }
-  const cap =
+  /*const cap =
     selectedPlayers.length > 0
       ? selectedPlayers.reduce((accumulator: number, player: PLAYERS_INTERFACE) => {
           return accumulator + player.cap
         }, 0)
       : 0
-  if (cap > 100) {
+  debugger
+  if (cap >= 100) {
     return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_CAP }
-  }
+  }*/
   return { flag: true, message: '' }
 }
 
@@ -461,4 +462,20 @@ export const getDataByTeamFilter = (teamName: string, allPlayers: PLAYERS_INTERF
   }
   const filterPlayers = allPlayers.filter((x) => x.team === teamName)
   return filterPlayers
+}
+
+export const validateCap = (selectedPlayers: PLAYERS_INTERFACE[]) => {
+  const cap =
+    selectedPlayers.length > 0
+      ? selectedPlayers.reduce((accumulator: number, player: PLAYERS_INTERFACE) => {
+          return accumulator + player.cap
+        }, 0)
+      : 0
+  if (cap > 100) {
+    return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_CAP }
+  }
+  return {
+    flag: true,
+    message: '',
+  }
 }
