@@ -470,7 +470,7 @@ export const validateCap = (selectedPlayers: PLAYERS_INTERFACE[]) => {
           return accumulator + player.cap
         }, 0)
       : 0
-  if (cap >= 100) {
+  if (cap > 100) {
     return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_CAP }
   }
   return {
