@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { HTTPS_HEADERS, REQUEST_TYPE } from './constants'
 import Cookies from 'js-cookie'
 
-export const BASE_URL = 'https://iplfantasy-refactor.onrender.com'
+export const BASE_URL = 'https://iplfantasy-maya.onrender.com/' //'https://iplfantasy-refactor.onrender.com'
 export const _request = async (config: AxiosRequestConfig) => {
   let authHeaders = config?.headers ? config.headers : HTTPS_HEADERS
   authHeaders = { ...authHeaders, Authorization: `Bearer ${Cookies.get('jwtToken')}` }
