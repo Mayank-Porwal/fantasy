@@ -193,6 +193,7 @@ const CreateTeam = (props: Props) => {
         setFilteredAllPlayers(propsState.allPlayer)
         dispatch(updateLoaderState(false))
         const teamFilter = getTeamFilterOptions(propsState.allPlayer)
+        debugger
         dispatch(getIplTeamsOptions(teamFilter))
       }
     }

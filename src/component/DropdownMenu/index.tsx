@@ -75,8 +75,13 @@ const DropdownMenu = (props: Props) => {
   }, [props.value])
   const handleCheckbox = (value: OptionsInterface) => {
     const updatedValue = cloneDeep(menuValue)
-    debugger
-    props.onChange(updatedValue.concat(value.name), value.name)
+    const findValueIndex = updatedValue.findIndex((x) => x === value.id)
+    if (findValueIndex > -1) {
+      updatedValue.splice(findValueIndex, 1)
+      props.onChange(updatedValue)
+    } else {
+      props.onChange(updatedValue.concat(value.name), value.name)
+    }
   }
   console.log(menuValue)
   const handleBadgeClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -116,9 +121,23 @@ const DropdownMenu = (props: Props) => {
           props.options.map((option, index) => {
             if (props.divider.isDivider && index === props.divider.index) {
               return (
-                <Divider key={index} sx={{ my: 0.5, color: 'white' }}>
-                  {props.divider.text}
-                </Divider>
+                <React.Fragment key={index}>
+                  <Divider sx={{ my: 0.5, color: 'white' }}>{props.divider.text}</Divider>
+                  <MenuItem disableRipple>
+                    <Checkbox
+                      sx={{
+                        color: colors.greenAccent[400],
+                        '&.Mui-checked': {
+                          color: colors.greenAccent[400],
+                        },
+                      }}
+                      id={option.id.toString()}
+                      onChange={() => handleCheckbox(option)}
+                      checked={menuValue.find((x) => x === option.id) ? true : false}
+                    />
+                    {option.name}
+                  </MenuItem>
+                </React.Fragment>
               )
             } else {
               return (
