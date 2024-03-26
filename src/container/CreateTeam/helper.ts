@@ -92,7 +92,6 @@ export const maximumPlayerAllowedValidation = (selectedPlayers: PLAYERS_INTERFAC
           return accumulator + player.cap
         }, 0)
       : 0
-  debugger
   if (cap >= 100) {
     return { flag: false, message: CREATE_TEAM_VALIDATION_MESSAGES.MAXIMUM_CAP }
   }*/

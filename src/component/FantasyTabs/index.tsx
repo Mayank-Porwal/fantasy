@@ -44,7 +44,7 @@ export default function FantasyTabs(props: Props) {
               }}
               label={`${tab.name} ${
                 props.dataCount && props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS
-                  ? `(${tab?.id === 'all' ? `${props.dataCount[tab.id]} / 11` : props.dataCount[tab.id]})`
+                  ? `(${tab.id === 'all' ? `${props.dataCount[tab.id]} / 11` : props.dataCount[tab.id]})`
                   : ''
               }`}
             />
