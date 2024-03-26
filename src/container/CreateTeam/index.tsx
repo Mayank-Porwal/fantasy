@@ -111,11 +111,13 @@ const CreateTeam = (props: Props) => {
     league: string
     teamId: number
     substitutions: number
+    rank: number
   }>({
     league: '',
     teamName: '',
     teamId: 0,
     substitutions: -1,
+    rank: -1,
   })
   const [subs, setSubs] = useState<number>(DEFAULT_SUBS_DATA)
   const [captainData, setCaptainData] = useState<CaptainInterface | null>(null)
@@ -142,7 +144,7 @@ const CreateTeam = (props: Props) => {
       setSubs(DEFAULT_SUBS_DATA)
       dispatch(getTeamByIdActionSuccess(null))
       dispatch(fetchLeagueDetailsActionSuccess(null))
-      setTeamFormData({ league: '', teamName: '', teamId: 0, substitutions: -1 })
+      setTeamFormData({ league: '', teamName: '', teamId: 0, substitutions: -1, rank: -1 })
     }
   }, [])
   useEffect(() => {
@@ -157,9 +159,10 @@ const CreateTeam = (props: Props) => {
           teamName: location.state.team_name,
           league: location.state.league_id,
           teamId: location.state.team_id,
-          substitutions: location.state.remaining_subs ? location.state.remaining_subs : 150,
+          substitutions: location.state.remaining_subs ? location.state.remaining_subs : 250,
+          rank: location.state.rank ? location.state.rank : -1,
         }
-        setSubs(location.state.remaining_subs ? location.state.remaining_subs : 150)
+        setSubs(location.state.remaining_subs ? location.state.remaining_subs : 250)
         dispatch(updateLoaderState(true))
         dispatch(getTeamByIdAction(location.state.team_id))
         //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
@@ -171,9 +174,10 @@ const CreateTeam = (props: Props) => {
             teamName: teamData.team_name,
             league: teamData.league_id.toString(),
             teamId: teamData.team_id,
-            substitutions: teamData.remaining_subs ? teamData.remaining_subs : 150,
+            substitutions: teamData.remaining_subs ? teamData.remaining_subs : 250,
+            rank: teamData.rank ? teamData.rank : -1,
           }
-          setSubs(teamData.remaining_subs ? teamData.remaining_subs : 150)
+          setSubs(teamData.remaining_subs ? teamData.remaining_subs : 250)
           dispatch(updateLoaderState(true))
           dispatch(getTeamByIdAction(teamData.team_id))
           //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
@@ -561,6 +565,12 @@ const CreateTeam = (props: Props) => {
         </Grid>
         <Grid item xs={12} sm={1} md={1}>
           Cap: <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{capData ? capData : 0}</span>
+        </Grid>
+        <Grid item xs={12} sm={1} md={1}>
+          Rank:{' '}
+          <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>
+            {teamFormData.rank && teamFormData.rank > 0 ? teamFormData.rank : '-'}
+          </span>
         </Grid>
       </Grid>
       {selectedPlayer && (
