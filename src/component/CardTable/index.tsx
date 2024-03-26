@@ -17,6 +17,7 @@ import { CurrentMatch } from '../../utils/appActions/types'
 import FantasyDropdowns from '../FormElements/FantasyDropdowns'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../utils/store/rootReducer'
+import DropdownMenu from '../DropdownMenu'
 interface Props {
   filter: boolean
   availablePlayers?: PLAYERS_INTERFACE[] | [] | null
@@ -33,7 +34,7 @@ interface Props {
   sortingCallback?: Function
   sortingData?: { direction: string; flow: string } | null
   handleTeamFilterCallback?: Function
-  selectedTeamFilter?: string
+  selectedTeamFilter?: string[]
 }
 const CardTable = (props: Props) => {
   const theme = useTheme()
@@ -60,9 +61,17 @@ const CardTable = (props: Props) => {
       props.sortingCallback(props.flow)
     }
   }
-  const handleIplTeamFilter = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const handleIplTeamFilter = (value: string[], currentValue: string) => {
     if (props.handleTeamFilterCallback) {
-      props.handleTeamFilterCallback(event.target.value)
+      if (currentValue === 'Current Match') {
+        props.handleTeamFilterCallback(['Current Match'])
+      } else {
+        const findCurrentMatchIndex = value.findIndex((x) => x === 'Current Match')
+        if (findCurrentMatchIndex > -1) {
+          value.splice(findCurrentMatchIndex, 1)
+        }
+        props.handleTeamFilterCallback(value)
+      }
       setSearchText('')
     }
   }
@@ -78,8 +87,8 @@ const CardTable = (props: Props) => {
       >
         {props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS && (
           <React.Fragment>
-            <Grid item xs={3} sm={3} md={2} lg={2} xl={2} sx={{ padding: '0 1%' }}>
-              <FantasyDropdowns
+            <Grid item xs={1} sm={1} md={1} lg={1} xl={1} sx={{ padding: '0 1%' }}>
+              {/* <FantasyDropdowns
                 options={propsState.teamsOptions ? propsState.teamsOptions : []}
                 required
                 placeholder={'Select League'}
@@ -89,9 +98,25 @@ const CardTable = (props: Props) => {
                 onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
                   handleIplTeamFilter(event)
                 }
+              /> */}
+              {/* <FantasyMultiselect
+                options={propsState.teamsOptions ? propsState.teamsOptions : []}
+                required
+                placeholder={'Select League'}
+                id={'league'}
+                label={'Team'}
+                value={props.selectedTeamFilter ? props.selectedTeamFilter : []}
+                onChange={(value: string[]) => handleIplTeamFilter(value)}
+              /> */}
+              <DropdownMenu
+                options={propsState.teamsOptions ? propsState.teamsOptions : []}
+                divider={{ index: 1, isDivider: true, text: 'OR' }}
+                checkbox={true}
+                value={props.selectedTeamFilter ? props.selectedTeamFilter : []}
+                onChange={(value: string[], currentValue: string) => handleIplTeamFilter(value, currentValue)}
               />
             </Grid>
-            <Grid item xs={9} sm={9} md={3} lg={3} xl={3}>
+            <Grid item xs={11} sm={11} md={4} lg={4} xl={4}>
               <FantasyTextField
                 required={false}
                 id='searchAvailablePlayers'
@@ -131,11 +156,6 @@ const CardTable = (props: Props) => {
         }}
       >
         <Card sx={{ display: 'flex', width: '100%', cursor: props.handleCardClick ? 'pointer' : '' }}>
-          {/* <CardMedia
-            component='img'
-            sx={{ width: 85, color: 'white', border: 'none', display: 'none' }}
-            image={AccountIcon}
-          /> */}
           <div style={{ width: '100px' }}></div>
           <CardContent sx={{ width: '100%' }}>
             <Grid container direction='row' alignItems={'center'} justifyContent={'center'}>
@@ -173,9 +193,7 @@ const CardTable = (props: Props) => {
                   boxShadow: getPlayingEleven(player, props.currentMatch)
                     ? PLAYING_ELEVEN_BOX_SHADOW
                     : NON_PLAYING_ELEVEN_BOX_SHADOW,
-                  borderLeft: getPlayingEleven(player, props.currentMatch)
-                    ? `4px solid${colors.greenAccent[400]}`
-                    : 'none',
+                  border: getPlayingEleven(player, props.currentMatch) ? `2px solid${colors.greenAccent[400]}` : 'none',
                 }}
               >
                 <Cards
@@ -186,6 +204,7 @@ const CardTable = (props: Props) => {
                   handleActions={props.handleActions}
                   handleChipSelection={props.handleChipSelection}
                   captainData={props.captainData}
+                  playingFlag={getPlayingEleven(player, props.currentMatch)}
                 />
               </div>
             )

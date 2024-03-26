@@ -111,11 +111,13 @@ const CreateTeam = (props: Props) => {
     league: string
     teamId: number
     substitutions: number
+    rank: number
   }>({
     league: '',
     teamName: '',
     teamId: 0,
     substitutions: -1,
+    rank: -1,
   })
   const [subs, setSubs] = useState<number>(DEFAULT_SUBS_DATA)
   const [captainData, setCaptainData] = useState<CaptainInterface | null>(null)
@@ -126,7 +128,7 @@ const CreateTeam = (props: Props) => {
   const [selectedTeamSortingData, setSelectedTeamSortingData] = useState<{ direction: string; flow: string } | null>(
     null,
   )
-  const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>('none')
+  const [selectedTeamFilter, setSelectedTeamFilter] = useState<string[]>([])
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
   const location = useLocation()
@@ -142,7 +144,7 @@ const CreateTeam = (props: Props) => {
       setSubs(DEFAULT_SUBS_DATA)
       dispatch(getTeamByIdActionSuccess(null))
       dispatch(fetchLeagueDetailsActionSuccess(null))
-      setTeamFormData({ league: '', teamName: '', teamId: 0, substitutions: -1 })
+      setTeamFormData({ league: '', teamName: '', teamId: 0, substitutions: -1, rank: -1 })
     }
   }, [])
   useEffect(() => {
@@ -157,9 +159,10 @@ const CreateTeam = (props: Props) => {
           teamName: location.state.team_name,
           league: location.state.league_id,
           teamId: location.state.team_id,
-          substitutions: location.state.remaining_subs ? location.state.remaining_subs : 150,
+          substitutions: location.state.remaining_subs ? location.state.remaining_subs : 250,
+          rank: location.state.rank ? location.state.rank : -1,
         }
-        setSubs(location.state.remaining_subs ? location.state.remaining_subs : 150)
+        setSubs(location.state.remaining_subs ? location.state.remaining_subs : 250)
         dispatch(updateLoaderState(true))
         dispatch(getTeamByIdAction(location.state.team_id))
         //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
@@ -171,9 +174,10 @@ const CreateTeam = (props: Props) => {
             teamName: teamData.team_name,
             league: teamData.league_id.toString(),
             teamId: teamData.team_id,
-            substitutions: teamData.remaining_subs ? teamData.remaining_subs : 150,
+            substitutions: teamData.remaining_subs ? teamData.remaining_subs : 250,
+            rank: teamData.rank ? teamData.rank : -1,
           }
-          setSubs(teamData.remaining_subs ? teamData.remaining_subs : 150)
+          setSubs(teamData.remaining_subs ? teamData.remaining_subs : 250)
           dispatch(updateLoaderState(true))
           dispatch(getTeamByIdAction(teamData.team_id))
           //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
@@ -213,8 +217,8 @@ const CreateTeam = (props: Props) => {
           const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch, propsState.currentMatch)
           const sortedData = getSortedUpdatedData(filteredData, sortingData, allPlayers)
           let teamFilter = cloneDeep(sortedData)
-          if (selectedTeamFilter !== 'none') {
-            teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData)
+          if (!selectedTeamFilter.includes('none')) {
+            teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData, propsState.currentMatch)
           }
           const selectedTeamSorting = getSortedUpdatedData(selectedPlayers, selectedTeamSortingData, selectedPlayers)
           setFilteredAllPlayers(teamFilter)
@@ -249,8 +253,8 @@ const CreateTeam = (props: Props) => {
       setAvailablePlayers(selectedPlayers)
       let teamFilter = cloneDeep(selectedPlayers)
       const sortedData = getSortedUpdatedData(teamFilter, sortingData, teamFilter)
-      if (selectedTeamFilter !== 'none') {
-        teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData)
+      if (!selectedTeamFilter.includes('none')) {
+        teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData, propsState.currentMatch)
       }
       setFilteredAllPlayers(sortedData)
       dispatch(updateSelectedPlayers(allPlayers))
@@ -271,8 +275,8 @@ const CreateTeam = (props: Props) => {
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
       const filterData = getFilteredData(availPlayers, tabsValue, searchString, propsState.currentMatch)
       let filterByTeam = cloneDeep(filterData)
-      if (selectedTeamFilter !== 'none') {
-        filterByTeam = getDataByTeamFilter(selectedTeamFilter, filterData)
+      if (!selectedTeamFilter.includes('none')) {
+        filterByTeam = getDataByTeamFilter(selectedTeamFilter, filterData, propsState.currentMatch)
       }
       setFilteredAllPlayers(filterByTeam)
       setAvailablePlayersSearch(searchString)
@@ -286,8 +290,9 @@ const CreateTeam = (props: Props) => {
     const availableData = getFilteredData(players, tabsValue, availablePlayersSearch, propsState.currentMatch)
     if (flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
       let filterByTeam = cloneDeep(availableData)
-      if (selectedTeamFilter !== 'none') {
-        filterByTeam = getDataByTeamFilter(selectedTeamFilter, availableData)
+      if (selectedTeamFilter.find((x) => x === 'none')) {
+      } else {
+        filterByTeam = getDataByTeamFilter(selectedTeamFilter, availableData, propsState.currentMatch)
       }
       setFilteredAllPlayers(filterByTeam)
       setTabsValue(tabsValue)
@@ -474,9 +479,9 @@ const CreateTeam = (props: Props) => {
       setSelectedTeamSortingData(updatedSortingData)
     }
   }
-  const handleTeamFilter = (teamName: string) => {
+  const handleTeamFilter = (teamName: string[]) => {
     setSelectedTeamFilter(teamName)
-    const dataByTeamFilter = getDataByTeamFilter(teamName, availablePlayers)
+    const dataByTeamFilter = getDataByTeamFilter(teamName, availablePlayers, propsState.currentMatch)
     setFilteredAllPlayers(dataByTeamFilter)
     setTabsValue('all')
   }
@@ -561,6 +566,12 @@ const CreateTeam = (props: Props) => {
         <Grid item xs={12} sm={1} md={1}>
           Cap: <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{capData ? capData : 0}</span>
         </Grid>
+        <Grid item xs={12} sm={1} md={1}>
+          Rank:{' '}
+          <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>
+            {teamFormData.rank && teamFormData.rank > 0 ? teamFormData.rank : '-'}
+          </span>
+        </Grid>
       </Grid>
       {selectedPlayer && (
         <Grid container direction='row' spacing={2} alignItems={'center'}>
@@ -601,6 +612,7 @@ const CreateTeam = (props: Props) => {
             tabsValue={tabsValueSelectedPlayer}
             sortingCallback={handleSorting}
             sortingData={selectedTeamSortingData}
+            currentMatch={propsState.currentMatch}
           />
         </Grid>
         <Dialog fullWidth={false} open={open} TransitionComponent={Transition}>

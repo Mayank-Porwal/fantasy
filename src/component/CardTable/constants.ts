@@ -1,10 +1,10 @@
 import { CATEGORY_ENUM, CATEGORY_ENUM_BY_KEY } from '../../utils/constants'
 
 export const DEFAULT_AVAILABLE_PLAYERS_TABS_DATA = [
-  {
-    id: CATEGORY_ENUM_BY_KEY['Current Match'],
-    name: CATEGORY_ENUM.cm,
-  },
+  // {
+  //   id: CATEGORY_ENUM_BY_KEY['Current Match'],
+  //   name: CATEGORY_ENUM.cm,
+  // },
   {
     id: CATEGORY_ENUM_BY_KEY.All,
     name: CATEGORY_ENUM.all,

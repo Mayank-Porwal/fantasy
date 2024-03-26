@@ -7,6 +7,7 @@ import img from '../../static/images/account-icon.png'
 import { CATEGORY_ENUM } from '../../utils/constants'
 import { getEnumValueByKey } from '../../utils/helper'
 import { tokens } from '../../utils/theme'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 interface Props {
   keyItem?: string
   player?: PLAYERS_INTERFACE
@@ -15,6 +16,7 @@ interface Props {
   handleChipSelection?: Function
   captainData?: CaptainInterface | null
   handleCardClick?: Function
+  playingFlag?: boolean
 }
 const Cards = (props: Props) => {
   const theme = useTheme()
@@ -41,7 +43,11 @@ const Cards = (props: Props) => {
     >
       <CardMedia
         component='img'
-        sx={{ width: 85, height: 85, color: 'white' }}
+        sx={{
+          width: 85,
+          height: 85,
+          color: 'white',
+        }}
         image={props.player ? (props.player.img ? props.player.img : img) : null}
         alt={props.player ? props.player.img : null}
       />
@@ -56,27 +62,17 @@ const Cards = (props: Props) => {
             </Typography>
           </Grid>
           <Grid item xs={props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS ? 2 : 4}>
-            {/* <Typography component='div' variant='h5'>
-              Team
-            </Typography> */}
-            <Typography variant='subtitle1' color='text.secondary' component='div'>
-              {/* {props.player ? props.player.team : null} */}
-              {props.player?.team_img && <img src={props.player.team_img} width='20px' height='20px' />}
+            <Typography variant='subtitle1' color='text.secondary' component='div' sx={{ padding: '2%' }}>
+              {props.player?.team_img && <img src={props.player.team_img} width='30px' height='30px' />}
             </Typography>
           </Grid>
           <Grid item xs={props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS ? 2 : 3}>
-            {/* <Typography component='div' variant='h5'>
-              Cap
-            </Typography> */}
             <Typography variant='subtitle1' color='text.secondary' component='div'>
               {props.player ? props.player.cap : null}
             </Typography>
           </Grid>
           {props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS && (
             <Grid item xs={3}>
-              {/* <Typography component='div' variant='h5'>
-                Game Changers
-              </Typography> */}
               <Stack direction='row' spacing={2}>
                 <Avatar
                   onClick={(event) => {

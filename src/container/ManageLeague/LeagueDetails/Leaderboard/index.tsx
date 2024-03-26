@@ -120,6 +120,7 @@ const LeagueLeaderBoard = (props: Props) => {
                 <TableCell>Rank</TableCell>
                 <TableCell align='left'>Team Name</TableCell>
                 <TableCell align='left'>Owner</TableCell>
+                <TableCell align='left'>Points</TableCell>
                 <TableCell align='center'>Trades</TableCell>
               </TableRow>
             </TableHead>
@@ -166,24 +167,42 @@ function Row(props: { key: number; row: MatchLeaderBoardInterface }) {
         </TableCell>
         <TableCell align='left'>{row.team_name}</TableCell>
         <TableCell align='left'>{row.owner}</TableCell>
+        <TableCell align='left'>{row.total_points}</TableCell>
         <TableCell align='center'>{row.trades}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant='h6' gutterBottom component='div' sx={{ color: colors.greenAccent[400] }}>
-                Players
-              </Typography>
-              <Grid container direction={'row'}>
-                {row.data.map((playerData: MatchLeaderBoardPlayersInterface) => {
+              <TableHead>
+                <TableRow>
+                  {row.data.map((playerName) => {
+                    return (
+                      <TableCell sx={{ color: colors.greenAccent[400] }} key={`${playerName.id}`}>
+                        {playerName.name}
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  {row.data.map((playerName, index) => {
+                    return (
+                      <TableCell align='left' component={'th'} key={`${playerName.id}-${index}`}>
+                        {playerName.points}
+                      </TableCell>
+                    )
+                  })}
+                </TableRow>
+              </TableBody>
+              {/* {row.data.map((playerData: MatchLeaderBoardPlayersInterface) => {
                   return (
                     <Grid item key={playerData.id} xs={3} sx={{ color: getColorBasedOnPoints(playerData.points) }}>
-                      {`${playerData.name} - ${playerData.points}`}
+                      {`${playerData.name}: ${playerData.points}`}
                     </Grid>
                   )
-                })}
-              </Grid>
+                })} */}
             </Box>
           </Collapse>
         </TableCell>
