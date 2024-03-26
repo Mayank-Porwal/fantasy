@@ -193,7 +193,6 @@ const CreateTeam = (props: Props) => {
         setFilteredAllPlayers(propsState.allPlayer)
         dispatch(updateLoaderState(false))
         const teamFilter = getTeamFilterOptions(propsState.allPlayer)
-        debugger
         dispatch(getIplTeamsOptions(teamFilter))
       }
     }
@@ -341,6 +340,7 @@ const CreateTeam = (props: Props) => {
       teamName: findSelectedLeague ? findSelectedLeague.team_name : '',
       teamId: findSelectedLeague ? findSelectedLeague.team_id : NaN,
       substitutions: findSelectedLeague ? findSelectedLeague.remaining_subs : 0,
+      rank: findSelectedLeague ? findSelectedLeague.rank : -1,
       [id || name]: value,
     })
     //setSubs(findSelectedLeague ? findSelectedLeague.remaining_subs : 0)
