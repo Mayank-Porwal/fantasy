@@ -35,7 +35,7 @@ export const getTabsDataByCurrentMatch = (currentMatchFlag: boolean, flow: strin
   if (currentMatchFlag && flow && flow === CREATE_TEAM_FLOW.ALL_PLAYERS) {
     return DEFAULT_AVAILABLE_PLAYERS_TABS_DATA
   } else {
-    return DEFAULT_AVAILABLE_PLAYERS_TABS_DATA.slice(1)
+    return DEFAULT_AVAILABLE_PLAYERS_TABS_DATA //DEFAULT_AVAILABLE_PLAYERS_TABS_DATA.slice(1)
   }
 }
 

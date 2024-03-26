@@ -451,15 +451,29 @@ export const getTeamFilterOptions = (playersData: PLAYERS_INTERFACE[]) => {
   const updatedOptions = teamData.map((team) => {
     return { id: team.team, name: team.team }
   })
-  updatedOptions.unshift({ id: 'none', name: 'None' })
+  updatedOptions.unshift({ id: 'Current Match', name: 'Current Match' })
   return updatedOptions
 }
 
-export const getDataByTeamFilter = (teamName: string, allPlayers: PLAYERS_INTERFACE[]) => {
-  if (teamName === 'none') {
+export const getDataByTeamFilter = (
+  teamName: string[],
+  allPlayers: PLAYERS_INTERFACE[],
+  currentMatch: CurrentMatch[] | null,
+) => {
+  if (teamName.length === 0) {
     return allPlayers
   }
-  const filterPlayers = allPlayers.filter((x) => x.team === teamName)
+  if (teamName.includes('Current Match') && currentMatch) {
+    return allPlayers.filter((player) => {
+      if (player.team === currentMatch[0].teamA.name || player.team === currentMatch[0].teamB.name) {
+        return player
+      }
+    })
+  }
+  let filterPlayers: PLAYERS_INTERFACE[] = []
+  teamName.forEach((team) => {
+    filterPlayers = filterPlayers.concat(allPlayers.filter((x) => x.team === team))
+  })
   return filterPlayers
 }
 

@@ -43,3 +43,8 @@ export interface IplTeamsOptionsData {
   id: string
   name: string
 }
+
+export interface OptionsInterface {
+  id: string | number
+  name: string
+}
