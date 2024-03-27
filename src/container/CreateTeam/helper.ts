@@ -428,7 +428,7 @@ export const getSortedUpdatedData = (
   allAvailableData: PLAYERS_INTERFACE[],
 ) => {
   if (!sorting) {
-    return allAvailableData
+    return availableData
   }
   let sortedData = cloneDeep(availableData)
   if (sorting.direction === 'asc') {

@@ -193,7 +193,6 @@ const CreateTeam = (props: Props) => {
         setFilteredAllPlayers(propsState.allPlayer)
         dispatch(updateLoaderState(false))
         const teamFilter = getTeamFilterOptions(propsState.allPlayer)
-        debugger
         dispatch(getIplTeamsOptions(teamFilter))
       }
     }
@@ -215,14 +214,15 @@ const CreateTeam = (props: Props) => {
         const capValidation = validateCap(selectedPlayers)
         if (capValidation.flag) {
           setAvailablePlayers(allPlayers)
-          const filteredData = getFilteredData(allPlayers, tabsValue, availablePlayersSearch, propsState.currentMatch)
+          let teamFilter = getDataByTeamFilter(selectedTeamFilter, allPlayers, propsState.currentMatch)
+          const filteredData = getFilteredData(teamFilter, tabsValue, availablePlayersSearch, propsState.currentMatch)
           const sortedData = getSortedUpdatedData(filteredData, sortingData, allPlayers)
-          let teamFilter = cloneDeep(sortedData)
+          //let teamFilter = cloneDeep(sortedData)
           if (!selectedTeamFilter.includes('none')) {
-            teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData, propsState.currentMatch)
+            //teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData, propsState.currentMatch)
           }
           const selectedTeamSorting = getSortedUpdatedData(selectedPlayers, selectedTeamSortingData, selectedPlayers)
-          setFilteredAllPlayers(teamFilter)
+          setFilteredAllPlayers(sortedData)
           dispatch(updateSelectedPlayers(selectedTeamSorting))
           setAvailableSelectedPlayers(selectedTeamSorting)
           const updatedSubs = getSubsAfterAddPlayer(
@@ -252,10 +252,11 @@ const CreateTeam = (props: Props) => {
     } else {
       const { allPlayers, selectedPlayers } = updatePlayerList(data, propsState.selectedPlayers, availablePlayers)
       setAvailablePlayers(selectedPlayers)
-      let teamFilter = cloneDeep(selectedPlayers)
-      const sortedData = getSortedUpdatedData(teamFilter, sortingData, teamFilter)
+      let teamFilter = getDataByTeamFilter(selectedTeamFilter, selectedPlayers, propsState.currentMatch)
+      const filteredData = getFilteredData(teamFilter, tabsValue, availablePlayersSearch, propsState.currentMatch)
+      const sortedData = getSortedUpdatedData(filteredData, sortingData, filteredData)
       if (!selectedTeamFilter.includes('none')) {
-        teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData, propsState.currentMatch)
+        //teamFilter = getDataByTeamFilter(selectedTeamFilter, sortedData, propsState.currentMatch)
       }
       setFilteredAllPlayers(sortedData)
       dispatch(updateSelectedPlayers(allPlayers))
