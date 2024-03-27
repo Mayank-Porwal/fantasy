@@ -153,6 +153,7 @@ const CardTable = (props: Props) => {
           height: '80vh',
           overflowY: 'auto',
           marginTop: '1%',
+          marginBottom: '1%',
         }}
       >
         <Card sx={{ display: 'flex', width: '100%', cursor: props.handleCardClick ? 'pointer' : '' }}>

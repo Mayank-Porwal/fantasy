@@ -1,3 +1,5 @@
+import GroupsIcon from '@mui/icons-material/Groups'
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
 export enum CREATE_TEAM_FLOW {
   ALL_PLAYERS = 'ALL_PLAYERS',
   SELECTED_PLAYERS = 'SELECTED_PLAYERS',
@@ -20,3 +22,14 @@ export const SORTING_DATA = {
   direction: 'asc',
   flow: '',
 }
+
+export const BOTTOM_NAVIGATION_DATA = [
+  {
+    label: 'All Players',
+    icon: <GroupsIcon />,
+  },
+  {
+    label: 'My Team',
+    icon: <MilitaryTechIcon />,
+  },
+]

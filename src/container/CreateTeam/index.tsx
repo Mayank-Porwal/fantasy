@@ -30,7 +30,13 @@ import {
   predictWinnerAction,
   updateSelectedPlayers,
 } from './actions'
-import { CREATE_TEAM_FLOW, CREATE_TEAM_VALIDATION_MESSAGES, DEFAULT_SUBS_DATA, PREDICTION_SKIP } from './constants'
+import {
+  BOTTOM_NAVIGATION_DATA,
+  CREATE_TEAM_FLOW,
+  CREATE_TEAM_VALIDATION_MESSAGES,
+  DEFAULT_SUBS_DATA,
+  PREDICTION_SKIP,
+} from './constants'
 import {
   checkMaximumPlayerAllowedValidation,
   createTeamRequestBody,
@@ -72,10 +78,14 @@ import { tokens } from '../../utils/theme'
 import { Transition } from '../ManageLeague/LeagueDetails/LeagueRules'
 import Matches from '../../component/Matches'
 import { cloneDeep } from 'lodash'
+import useWindowSize from '../../utils/customHooks/windowSize'
+import BottomNavigationComponent from '../../component/BottomNavigation/index'
 interface Props {
   [key: string]: any
 }
 const CreateTeam = (props: Props) => {
+  const windowWidthSize = useWindowSize()[0]
+  console.log(windowWidthSize)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   window.history.replaceState({}, document.title)
@@ -129,6 +139,7 @@ const CreateTeam = (props: Props) => {
     null,
   )
   const [selectedTeamFilter, setSelectedTeamFilter] = useState<string[]>([])
+  const [selectedBottomNavigation, setSelectedBottomNavigation] = useState(0)
   //const [searchSelectedPlayers, setSearchSelectedPlayers] = useState<string>('');
   const dispatch = useDispatch()
   const location = useLocation()
@@ -488,6 +499,9 @@ const CreateTeam = (props: Props) => {
     setFilteredAllPlayers(dataByTeamFilter)
     setTabsValue('all')
   }
+  const handleNavigationChange = (value: number) => {
+    setSelectedBottomNavigation(value)
+  }
   return (
     <>
       <Grid
@@ -538,8 +552,8 @@ const CreateTeam = (props: Props) => {
           </Button>
         </Grid>
       </Grid>
-      <Grid container direction='row' sx={{ margin: '2% 0%' }} alignItems={'center'} spacing={1}>
-        <Grid item xs={12} sm={3} md={3}>
+      <Grid container direction='row' sx={{ marginTop: '2%', marginBottom: '2%' }} alignItems={'center'} spacing={1}>
+        <Grid item xs={6} sm={3} md={3}>
           <FantasyDropdowns
             options={propsState.leagueData ? getUpdatedLeagueOptions(propsState.leagueData.data) : []}
             required
@@ -550,7 +564,7 @@ const CreateTeam = (props: Props) => {
             onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTeamNameChange(event)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} md={3}>
+        <Grid item xs={6} sm={3} md={3}>
           <FantasyTextField
             required
             placeholder={'Enter Team Name'}
@@ -562,14 +576,14 @@ const CreateTeam = (props: Props) => {
           />
         </Grid>
 
-        <Grid item xs={12} sm={3} md={3}>
+        <Grid item xs={6} sm={3} md={3}>
           Remaining Substitutions:{' '}
           <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{subs ? subs : 0}</span>
         </Grid>
-        <Grid item xs={12} sm={1} md={1}>
+        <Grid item xs={3} sm={1} md={1}>
           Cap: <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>{capData ? capData : 0}</span>
         </Grid>
-        <Grid item xs={12} sm={1} md={1}>
+        <Grid item xs={3} sm={1} md={1}>
           Rank:{' '}
           <span style={{ fontWeight: '600', color: colors.greenAccent[400] }}>
             {teamFormData.rank && teamFormData.rank > 0 ? teamFormData.rank : '-'}
@@ -582,42 +596,94 @@ const CreateTeam = (props: Props) => {
         </Grid>
       )}
       <Grid container direction='row' spacing={2} alignItems={'center'} justifyContent={'center'}>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <CardTable
-            filter={true}
-            availablePlayers={filteredAllPlayers}
-            handleActions={handleActions}
-            flow={CREATE_TEAM_FLOW.ALL_PLAYERS}
-            onSearch={handleOnSearch}
-            onTabsChange={handleTabsChange}
-            allPlayers={availablePlayers}
-            tabsValue={tabsValue}
-            handleCardClick={handleCardClick}
-            currentMatch={propsState.currentMatch}
-            sortingCallback={handleSorting}
-            sortingData={sortingData}
-            handleTeamFilterCallback={handleTeamFilter}
-            selectedTeamFilter={selectedTeamFilter}
+        {windowWidthSize < 500 ? (
+          <BottomNavigationComponent
+            selected={selectedBottomNavigation}
+            navigation={BOTTOM_NAVIGATION_DATA}
+            onChange={handleNavigationChange}
           />
-        </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6}>
-          <CardTable
-            filter={true}
-            availablePlayers={filteredSelectedPlayers}
-            handleActions={handleActions}
-            flow={CREATE_TEAM_FLOW.SELECTED_PLAYERS}
-            allPlayers={availableSelectedPlayers}
-            onSearch={handleOnSearch}
-            captainData={captainData}
-            handleChipSelection={handleChipSelection}
-            onTabsChange={handleTabsChange}
-            handleCardClick={handleCardClick}
-            tabsValue={tabsValueSelectedPlayer}
-            sortingCallback={handleSorting}
-            sortingData={selectedTeamSortingData}
-            currentMatch={propsState.currentMatch}
-          />
-        </Grid>
+        ) : (
+          ''
+        )}
+        {windowWidthSize > 500 ? (
+          <>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <CardTable
+                filter={true}
+                availablePlayers={filteredAllPlayers}
+                handleActions={handleActions}
+                flow={CREATE_TEAM_FLOW.ALL_PLAYERS}
+                onSearch={handleOnSearch}
+                onTabsChange={handleTabsChange}
+                allPlayers={availablePlayers}
+                tabsValue={tabsValue}
+                handleCardClick={handleCardClick}
+                currentMatch={propsState.currentMatch}
+                sortingCallback={handleSorting}
+                sortingData={sortingData}
+                handleTeamFilterCallback={handleTeamFilter}
+                selectedTeamFilter={selectedTeamFilter}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <CardTable
+                filter={true}
+                availablePlayers={filteredSelectedPlayers}
+                handleActions={handleActions}
+                flow={CREATE_TEAM_FLOW.SELECTED_PLAYERS}
+                allPlayers={availableSelectedPlayers}
+                onSearch={handleOnSearch}
+                captainData={captainData}
+                handleChipSelection={handleChipSelection}
+                onTabsChange={handleTabsChange}
+                handleCardClick={handleCardClick}
+                tabsValue={tabsValueSelectedPlayer}
+                sortingCallback={handleSorting}
+                sortingData={selectedTeamSortingData}
+                currentMatch={propsState.currentMatch}
+              />
+            </Grid>
+          </>
+        ) : selectedBottomNavigation === 0 ? (
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <CardTable
+              filter={true}
+              availablePlayers={filteredAllPlayers}
+              handleActions={handleActions}
+              flow={CREATE_TEAM_FLOW.ALL_PLAYERS}
+              onSearch={handleOnSearch}
+              onTabsChange={handleTabsChange}
+              allPlayers={availablePlayers}
+              tabsValue={tabsValue}
+              handleCardClick={handleCardClick}
+              currentMatch={propsState.currentMatch}
+              sortingCallback={handleSorting}
+              sortingData={sortingData}
+              handleTeamFilterCallback={handleTeamFilter}
+              selectedTeamFilter={selectedTeamFilter}
+            />
+          </Grid>
+        ) : (
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <CardTable
+              filter={true}
+              availablePlayers={filteredSelectedPlayers}
+              handleActions={handleActions}
+              flow={CREATE_TEAM_FLOW.SELECTED_PLAYERS}
+              allPlayers={availableSelectedPlayers}
+              onSearch={handleOnSearch}
+              captainData={captainData}
+              handleChipSelection={handleChipSelection}
+              onTabsChange={handleTabsChange}
+              handleCardClick={handleCardClick}
+              tabsValue={tabsValueSelectedPlayer}
+              sortingCallback={handleSorting}
+              sortingData={selectedTeamSortingData}
+              currentMatch={propsState.currentMatch}
+            />
+          </Grid>
+        )}
+
         <Dialog fullWidth={false} open={open} TransitionComponent={Transition}>
           <DialogTitle sx={{ textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }}>Predict Winner</DialogTitle>
           <DialogContent>
@@ -689,5 +755,4 @@ const CreateTeam = (props: Props) => {
     </>
   )
 }
-
 export default CreateTeam
