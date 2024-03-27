@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { HTTPS_HEADERS, REQUEST_TYPE } from './constants'
 import Cookies from 'js-cookie'
-console.log(window.location)
 export const BASE_URL_UAT = 'https://iplfantasy-maya.onrender.com'
 export const BASE_URL_PROD = 'https://iplfantasy-refactor.onrender.com'
 export const _request = async (config: AxiosRequestConfig) => {
