@@ -83,7 +83,6 @@ const DropdownMenu = (props: Props) => {
       props.onChange(updatedValue.concat(value.name), value.name)
     }
   }
-  console.log(menuValue)
   const handleBadgeClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation()
     props.onChange([], '')
