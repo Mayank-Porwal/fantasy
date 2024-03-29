@@ -85,7 +85,6 @@ interface Props {
 }
 const CreateTeam = (props: Props) => {
   const windowWidthSize = useWindowSize()[0]
-  console.log(windowWidthSize)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   window.history.replaceState({}, document.title)

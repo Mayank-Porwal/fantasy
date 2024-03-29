@@ -25,7 +25,7 @@ const getBaseUrl = () => {
   let baseUrl = ''
   switch (window.location.origin) {
     case 'http://localhost:3000':
-      baseUrl = BASE_URL_UAT
+      baseUrl = BASE_URL_PROD
       break
     case 'https://www.fantasybaazi.in':
       baseUrl = BASE_URL_PROD
