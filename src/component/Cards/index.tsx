@@ -34,7 +34,7 @@ const Cards = (props: Props) => {
   return (
     <Card
       key={props.keyItem ? props.keyItem : ''}
-      sx={{ display: 'flex', width: '100%', height: '85px', cursor: props.handleCardClick ? 'pointer' : '' }}
+      sx={{ display: 'flex', width: '100%', height: '', cursor: props.handleCardClick ? 'pointer' : '' }}
       onClick={() => {
         if (props.handleCardClick) {
           props.handleCardClick(props.player ? props.player : null)
@@ -45,7 +45,7 @@ const Cards = (props: Props) => {
         component='img'
         sx={{
           width: 85,
-          height: 85,
+          //height: 85,
           color: 'white',
         }}
         image={props.player ? (props.player.img ? props.player.img : img) : null}
@@ -133,6 +133,28 @@ const Cards = (props: Props) => {
             >
               {props.flow && props.flow === CREATE_TEAM_FLOW.SELECTED_PLAYERS ? <DeleteIcon /> : <AddCircleIcon />}
             </Typography>
+          </Grid>
+        </Grid>
+        <Grid container direction='row'>
+          <Grid item xs={6}>
+            {props.playingFlag && (
+              <Chip
+                sx={{ color: colors.greenAccent[400], fontSize: '9px !important' }}
+                size='small'
+                label='Playing'
+                variant='outlined'
+              />
+            )}
+          </Grid>
+          <Grid item xs={6}>
+            {props.player?.plays_after && (
+              <Chip
+                sx={{ color: 'white', fontSize: '9px !important' }}
+                size='small'
+                label={`Plays after ${props.player?.plays_after ? props.player.plays_after : 0} matches`}
+                variant='outlined'
+              />
+            )}
           </Grid>
         </Grid>
       </CardContent>

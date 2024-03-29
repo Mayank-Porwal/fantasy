@@ -6,6 +6,7 @@ export interface PLAYERS_INTERFACE {
   name: string
   team: string
   team_img: string
+  plays_after: number
 }
 
 export interface CreateTeamInterface {
@@ -47,6 +48,7 @@ export interface TeamInterface {
   captain: boolean
   vice_captain: boolean
   team_img: string
+  plays_after: number
 }
 
 export interface PredictWinnerRequestBody {
