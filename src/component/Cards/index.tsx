@@ -147,13 +147,15 @@ const Cards = (props: Props) => {
             )}
           </Grid>
           <Grid item xs={6}>
-            {props.player?.plays_after && (
+            {props.player?.plays_after ? (
               <Chip
                 sx={{ color: 'white', fontSize: '9px !important' }}
                 size='small'
                 label={`Plays after ${props.player?.plays_after ? props.player.plays_after : 0} matches`}
                 variant='outlined'
               />
+            ) : (
+              ''
             )}
           </Grid>
         </Grid>
