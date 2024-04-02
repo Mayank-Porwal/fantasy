@@ -194,7 +194,7 @@ const CardTable = (props: Props) => {
                   boxShadow: getPlayingEleven(player, props.currentMatch)
                     ? PLAYING_ELEVEN_BOX_SHADOW
                     : NON_PLAYING_ELEVEN_BOX_SHADOW,
-                  border: getPlayingEleven(player, props.currentMatch) ? `2px solid${colors.greenAccent[400]}` : 'none',
+                  //border: getPlayingEleven(player, props.currentMatch) ? `2px solid${colors.greenAccent[400]}` : 'none',
                 }}
               >
                 <Cards
