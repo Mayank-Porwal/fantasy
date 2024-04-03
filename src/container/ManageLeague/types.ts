@@ -60,6 +60,7 @@ export interface LeaguePlayersInterface {
   team_id: number
   team_name: string
   team_owner: string
+  team_owner_id: number
 }
 
 export interface PublicLeagueResponseInterface {
@@ -78,4 +79,10 @@ export interface PublicLeagueDataInterface {
   owner_first_name: string
   owner_last_name: string
   type: string
+}
+
+export interface ComparisonFormDataInterface {
+  match: string
+  teamA: string
+  teamB: string
 }

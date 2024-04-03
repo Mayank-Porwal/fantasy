@@ -1,6 +1,6 @@
 import FantasyTextField from '../../../../component/FormElements/TextFlied'
 
-export const getManageLeaguesDetailsColumns = (handleLeagueActions: Function) => [
+export const getManageLeaguesDetailsColumns = (handleTeamMatch: Function) => [
   {
     accessorKey: 'rank',
     accessorFn: (row: any) => <div>{row.rank > 0 ? row.rank : '-'}</div>,
@@ -21,6 +21,11 @@ export const getManageLeaguesDetailsColumns = (handleLeagueActions: Function) =>
     },
   },
   {
+    accessorFn: (row: any) => (
+      <div onClick={() => handleTeamMatch(row)} style={{ color: '#0070E0', cursor: 'pointer' }}>
+        {row.team_name ? row.team_name : '-'}
+      </div>
+    ),
     accessorKey: 'team_name',
     id: 'team_name',
     header: 'Team Name',

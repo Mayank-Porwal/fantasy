@@ -15,6 +15,7 @@ interface Props {
   options: OptionsInterface[] | []
   required: boolean
   placeholder?: string
+  disabled?: boolean
 }
 const styles = {
   root: {
@@ -70,6 +71,7 @@ const FantasyDropdowns = (props: Props) => {
         variant='outlined'
         id={props.id}
         name={props.id}
+        disabled={props.disabled ? props.disabled : false}
         label={
           props.required ? (
             <>

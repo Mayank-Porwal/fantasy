@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { LeaguePlayersInterface } from '../../types'
+import Cookies from 'js-cookie'
 
 export const getGridActions = (
   handleAction: Function,
@@ -31,4 +32,11 @@ export const getSortedLeaguePlayers = (leaguePlayers: LeaguePlayersInterface[]) 
     return a.rank - b.rank
   })
   return sortedData
+}
+
+export const getCurrentUserTeam = (leagueData: LeaguePlayersInterface[] | null) => {
+  if (!leagueData) {
+    return
+  }
+  const currentUserTeam = leagueData.find((x) => x.team_owner_id.toString() === Cookies.get('id'))
 }
