@@ -106,9 +106,9 @@ export const createTeamFailure = (payload: any): CreateTeamActionInterfaceFailur
 
 export interface FetchTeamByIdInterface {
   type: CREATE_TEAM_ACTIONS.GET_SELECTED_TEAM
-  payload: number
+  payload: { team_id: number; isMember: boolean }
 }
-export const getTeamByIdAction = (payload: number): FetchTeamByIdInterface => {
+export const getTeamByIdAction = (payload: { team_id: number; isMember: boolean }): FetchTeamByIdInterface => {
   return {
     type: CREATE_TEAM_ACTIONS.GET_SELECTED_TEAM,
     payload,

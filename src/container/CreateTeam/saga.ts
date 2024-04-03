@@ -47,7 +47,7 @@ function* makeTeam(action: actionTypes.CreateTeamActionInterface) {
 function* selectedTeamById(action: actionTypes.FetchTeamByIdInterface) {
   try {
     const response: ResponseGenerator = yield call(_request, {
-      url: `${API_URLS.CREATE_TEAM}?team_id=${action.payload}`,
+      url: `${API_URLS.CREATE_TEAM}?team_id=${action.payload.team_id}&is_member=${action.payload.isMember}`,
       method: REQUEST_TYPE.GET,
       headers: HTTPS_HEADERS,
     })

@@ -88,26 +88,6 @@ const CardTable = (props: Props) => {
         {props.flow === CREATE_TEAM_FLOW.ALL_PLAYERS && (
           <React.Fragment>
             <Grid item xs={1} sm={1} md={1} lg={1} xl={1} sx={{ padding: '0 1%' }}>
-              {/* <FantasyDropdowns
-                options={propsState.teamsOptions ? propsState.teamsOptions : []}
-                required
-                placeholder={'Select League'}
-                id={'league'}
-                label={'Team'}
-                value={props.selectedTeamFilter ? props.selectedTeamFilter : ''}
-                onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
-                  handleIplTeamFilter(event)
-                }
-              /> */}
-              {/* <FantasyMultiselect
-                options={propsState.teamsOptions ? propsState.teamsOptions : []}
-                required
-                placeholder={'Select League'}
-                id={'league'}
-                label={'Team'}
-                value={props.selectedTeamFilter ? props.selectedTeamFilter : []}
-                onChange={(value: string[]) => handleIplTeamFilter(value)}
-              /> */}
               <DropdownMenu
                 options={propsState.teamsOptions ? propsState.teamsOptions : []}
                 divider={{ index: 1, isDivider: true, text: 'OR' }}

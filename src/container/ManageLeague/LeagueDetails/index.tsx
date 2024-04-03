@@ -138,7 +138,7 @@ const LeagueDetails = () => {
               overflowY: 'auto',
             }}
           >
-            <LeaguePlayers leagueData={propsState.leagueDetailData} />
+            {propsState.leagueDetailData && <LeaguePlayers leagueData={propsState.leagueDetailData} />}
           </Grid>
         ) : (
           <Grid
