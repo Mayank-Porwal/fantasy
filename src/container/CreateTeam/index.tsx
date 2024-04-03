@@ -189,7 +189,7 @@ const CreateTeam = (props: Props) => {
           }
           setSubs(teamData.remaining_subs ? teamData.remaining_subs : 250)
           dispatch(updateLoaderState(true))
-          dispatch(getTeamByIdAction(teamData.team_id))
+          dispatch(getTeamByIdAction({ team_id: teamData.team_id, isMember: false }))
           //dispatch(fetchLeagueDetailsAction({ league_id: location.state.league_id }))
           setTeamFormData(formData)
         }
@@ -357,7 +357,7 @@ const CreateTeam = (props: Props) => {
     })
     //setSubs(findSelectedLeague ? findSelectedLeague.remaining_subs : 0)
     if (findSelectedLeague && findSelectedLeague.team_id) {
-      dispatch(getTeamByIdAction(findSelectedLeague.team_id))
+      dispatch(getTeamByIdAction({ team_id: findSelectedLeague.team_id, isMember: false }))
     } else {
       dispatch(updateLoaderState(false))
     }

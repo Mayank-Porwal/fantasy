@@ -38,7 +38,7 @@ const PlayersStats = (props: Props) => {
   useEffect(() => {
     if (props.selectedPlayer) {
       dispatch(updateLoaderState(true))
-      dispatch(fetchPlayerStats({ player_id: props.selectedPlayer.id, n: 3 }))
+      dispatch(fetchPlayerStats({ player_id: props.selectedPlayer.id, n: 5 }))
     }
     return () => {
       dispatch(fetchPlayerStatsSuccess(null))
